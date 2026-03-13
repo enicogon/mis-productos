@@ -1,0 +1,841 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
+  <meta name="apple-mobile-web-app-capable" content="yes" />
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
+  <meta name="theme-color" content="#0a1628" />
+  <title>Gestión de Productos</title>
+
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link href="https://fonts.googleapis.com/css2?family=Sora:wght@300;400;500;600;700&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet" />
+
+  <style>
+    :root {
+      --navy:       #0a1628;
+      --deep:       #0f2244;
+      --mid:        #1e3a5f;
+      --steel:      #2c5282;
+      --bright:     #2563eb;
+      --sky:        #38bdf8;
+      --ice:        #bae6fd;
+      --white:      #f0f8ff;
+      --muted:      rgba(186,230,253,0.55);
+      --card-bg:    rgba(30,58,95,0.72);
+      --card-border:rgba(56,189,248,0.22);
+      --danger:     #ef4444;
+      --success:    #22c55e;
+      --radius:     14px;
+      --radius-sm:  8px;
+      --shadow:     0 8px 32px rgba(0,0,0,0.45);
+      --transition: 0.22s cubic-bezier(.4,0,.2,1);
+      --font:       'Sora', sans-serif;
+      --mono:       'DM Mono', monospace;
+    }
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    html { scroll-behavior: smooth; -webkit-text-size-adjust: 100%; }
+    body {
+      font-family: var(--font);
+      background: var(--navy);
+      color: var(--white);
+      min-height: 100dvh;
+      overflow-x: hidden;
+    }
+    body::before {
+      content: '';
+      position: fixed; inset: 0; z-index: 0;
+      background:
+        radial-gradient(ellipse 80% 50% at 20% 0%, rgba(37,99,235,0.25) 0%, transparent 65%),
+        radial-gradient(ellipse 60% 40% at 80% 100%, rgba(56,189,248,0.18) 0%, transparent 60%),
+        linear-gradient(165deg, var(--navy) 0%, var(--deep) 55%, #0d1f3c 100%);
+      pointer-events: none;
+    }
+    #app { position: relative; z-index: 1; min-height: 100dvh; display: flex; flex-direction: column; }
+
+    /* Header */
+    header {
+      background: rgba(10,22,40,0.85);
+      backdrop-filter: blur(18px);
+      -webkit-backdrop-filter: blur(18px);
+      border-bottom: 1px solid var(--card-border);
+      padding: env(safe-area-inset-top, 0) 0 0;
+      position: sticky; top: 0; z-index: 100;
+    }
+    .header-inner {
+      display: flex; align-items: center; justify-content: space-between;
+      padding: 14px 18px; gap: 12px;
+    }
+    .logo { display: flex; align-items: center; gap: 10px; }
+    .logo-icon {
+      width: 36px; height: 36px; border-radius: 10px;
+      background: linear-gradient(135deg, var(--bright), var(--sky));
+      display: flex; align-items: center; justify-content: center;
+      font-size: 18px; flex-shrink: 0;
+    }
+    .logo-text { font-size: 16px; font-weight: 700; letter-spacing: -0.3px; }
+    .logo-sub  { font-size: 10px; color: var(--sky); font-weight: 400; letter-spacing: 0.5px; text-transform: uppercase; }
+    .status-dot { display: flex; align-items: center; gap: 6px; font-size: 11px; color: var(--muted); }
+    .dot { width: 7px; height: 7px; border-radius: 50%; background: var(--success); box-shadow: 0 0 6px var(--success); animation: pulse 2s infinite; }
+    .dot.offline { background: var(--danger); box-shadow: 0 0 6px var(--danger); animation: none; }
+    @keyframes pulse { 0%,100% { opacity:1; transform:scale(1); } 50% { opacity:.6; transform:scale(.85); } }
+
+    /* Toolbar */
+    .toolbar {
+      display: flex; align-items: center; gap: 8px;
+      padding: 10px 18px 12px; border-top: 1px solid var(--card-border);
+    }
+    .search-wrap { flex: 1; position: relative; }
+    .search-wrap input {
+      width: 100%; background: rgba(255,255,255,0.07); border: 1px solid var(--card-border);
+      border-radius: 10px; padding: 9px 14px 9px 36px;
+      color: var(--white); font-family: var(--font); font-size: 14px; outline: none;
+      transition: border-color var(--transition);
+    }
+    .search-wrap input::placeholder { color: var(--muted); }
+    .search-wrap input:focus { border-color: var(--bright); }
+    .search-icon { position: absolute; left: 11px; top: 50%; transform: translateY(-50%); color: var(--muted); font-size: 15px; pointer-events: none; }
+    .btn-add {
+      background: linear-gradient(135deg, var(--bright), #1d4ed8);
+      border: none; border-radius: 10px; padding: 9px 16px;
+      color: #fff; font-family: var(--font); font-size: 13px; font-weight: 600;
+      cursor: pointer; white-space: nowrap; display: flex; align-items: center; gap: 6px;
+      transition: opacity var(--transition), transform var(--transition);
+      box-shadow: 0 4px 14px rgba(37,99,235,0.5);
+    }
+    .btn-add:active { opacity:.85; transform: scale(.97); }
+
+    /* Rate bar */
+    .rate-bar {
+      background: rgba(37,99,235,0.12); border-top: 1px solid rgba(37,99,235,0.2);
+      padding: 6px 18px; display: flex; align-items: center; justify-content: space-between;
+      font-size: 11px;
+    }
+    .rate-val { color: var(--sky); font-family: var(--mono); font-weight: 500; }
+    .rate-refresh { background: none; border: none; color: var(--muted); font-size: 13px; cursor: pointer; padding: 2px 6px; }
+
+    /* Product Grid */
+    #product-list {
+      padding: 16px 16px 100px;
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(min(100%, 340px), 1fr));
+      gap: 14px;
+    }
+
+    /* Product Card */
+    .product-card {
+      background: var(--card-bg);
+      border: 1px solid var(--card-border);
+      border-radius: var(--radius);
+      backdrop-filter: blur(14px);
+      -webkit-backdrop-filter: blur(14px);
+      overflow: hidden;
+      transition: transform var(--transition), box-shadow var(--transition);
+      animation: fadeUp .35s ease forwards;
+      opacity: 0;
+    }
+    @keyframes fadeUp { from { opacity:0; transform:translateY(14px); } to { opacity:1; transform:translateY(0); } }
+    .product-card:hover { transform: translateY(-3px); box-shadow: 0 12px 40px rgba(0,0,0,0.55); }
+    .card-top { display: flex; align-items: center; gap: 14px; padding: 14px 14px 0; }
+    .product-img { width: 62px; height: 62px; border-radius: 10px; object-fit: cover; flex-shrink: 0; background: var(--mid); border: 1px solid var(--card-border); }
+    .product-img-placeholder { width: 62px; height: 62px; border-radius: 10px; flex-shrink: 0; background: var(--mid); border: 1px solid var(--card-border); display: flex; align-items: center; justify-content: center; font-size: 26px; }
+    .card-info { flex: 1; min-width: 0; }
+    .card-name { font-size: 15px; font-weight: 600; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+    .card-desc { font-size: 12px; color: var(--muted); margin-top: 2px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+    .card-prices { display: flex; gap: 8px; margin-top: 6px; flex-wrap: wrap; }
+    .price-badge { font-family: var(--mono); font-size: 12px; font-weight: 500; padding: 3px 8px; border-radius: 6px; background: rgba(37,99,235,0.25); border: 1px solid rgba(37,99,235,0.4); color: var(--sky); }
+    .price-badge.ars { background: rgba(56,189,248,0.15); border-color: rgba(56,189,248,0.3); color: var(--ice); }
+
+    /* Stock Row */
+    .card-bottom { display: flex; align-items: center; justify-content: space-between; padding: 10px 14px 12px; border-top: 1px solid var(--card-border); margin-top: 10px; }
+    .stock-ctrl { display: flex; align-items: center; gap: 8px; }
+    .stock-label { font-size: 11px; color: var(--muted); text-transform: uppercase; letter-spacing: .5px; }
+    .stock-val { font-family: var(--mono); font-size: 15px; font-weight: 600; min-width: 28px; text-align: center; }
+    .stock-val.low { color: #fbbf24; }
+    .stock-val.empty { color: var(--danger); }
+    .stock-btn { width: 28px; height: 28px; border-radius: 7px; background: rgba(255,255,255,0.08); border: 1px solid var(--card-border); color: var(--white); font-size: 16px; cursor: pointer; display: flex; align-items: center; justify-content: center; transition: background var(--transition); }
+    .stock-btn:active { background: rgba(37,99,235,0.4); }
+    .card-actions { display: flex; gap: 6px; }
+    .icon-btn { width: 32px; height: 32px; border-radius: 8px; background: rgba(255,255,255,0.07); border: 1px solid var(--card-border); color: var(--ice); font-size: 15px; cursor: pointer; display: flex; align-items: center; justify-content: center; transition: background var(--transition), color var(--transition); }
+    .icon-btn:hover { background: rgba(37,99,235,0.35); color: var(--white); }
+    .icon-btn.del:hover { background: rgba(239,68,68,0.25); color: var(--danger); border-color: rgba(239,68,68,0.4); }
+
+    /* Empty & Loading */
+    .state-msg { grid-column: 1/-1; text-align: center; padding: 60px 20px; color: var(--muted); }
+    .state-msg .emoji { font-size: 48px; display: block; margin-bottom: 14px; }
+    .state-msg p { font-size: 15px; }
+    .spinner { width: 42px; height: 42px; border: 3px solid rgba(56,189,248,0.2); border-top-color: var(--sky); border-radius: 50%; animation: spin .8s linear infinite; margin: 0 auto 14px; }
+    @keyframes spin { to { transform: rotate(360deg); } }
+
+    /* Modal */
+    .modal-overlay { position: fixed; inset: 0; z-index: 200; background: rgba(5,12,24,0.82); backdrop-filter: blur(8px); -webkit-backdrop-filter: blur(8px); display: flex; align-items: flex-end; justify-content: center; padding: 0; opacity: 0; pointer-events: none; transition: opacity .25s ease; }
+    .modal-overlay.open { opacity: 1; pointer-events: all; }
+    .modal-overlay.open .modal-sheet { transform: translateY(0); }
+    .modal-sheet { background: linear-gradient(160deg, #0f2244 0%, var(--navy) 100%); border: 1px solid var(--card-border); border-bottom: none; border-radius: var(--radius) var(--radius) 0 0; width: 100%; max-width: 580px; max-height: 92dvh; overflow-y: auto; transform: translateY(100%); transition: transform .32s cubic-bezier(.32,0,.67,0); padding-bottom: env(safe-area-inset-bottom, 20px); }
+    .modal-overlay.open .modal-sheet { transition: transform .32s cubic-bezier(.33,1,.68,1); }
+    .modal-header { display: flex; align-items: center; justify-content: space-between; padding: 18px 20px 14px; border-bottom: 1px solid var(--card-border); position: sticky; top: 0; background: rgba(10,22,40,0.95); z-index: 10; }
+    .modal-title { font-size: 16px; font-weight: 700; }
+    .modal-close { width: 30px; height: 30px; border-radius: 8px; background: rgba(255,255,255,0.08); border: 1px solid var(--card-border); color: var(--muted); font-size: 17px; cursor: pointer; display: flex; align-items: center; justify-content: center; }
+    .modal-body { padding: 18px 20px; display: flex; flex-direction: column; gap: 14px; }
+
+    /* Form */
+    .field-group { display: flex; flex-direction: column; gap: 5px; }
+    .field-label { font-size: 11px; font-weight: 600; text-transform: uppercase; letter-spacing: .6px; color: var(--sky); }
+    .field-input, .field-textarea { background: rgba(255,255,255,0.06); border: 1px solid var(--card-border); border-radius: var(--radius-sm); padding: 10px 12px; color: var(--white); font-family: var(--font); font-size: 14px; outline: none; transition: border-color var(--transition), background var(--transition); width: 100%; }
+    .field-input:focus, .field-textarea:focus { border-color: var(--bright); background: rgba(37,99,235,0.1); }
+    .field-textarea { resize: vertical; min-height: 72px; }
+    .field-row { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
+    .field-hint { font-size: 11px; color: var(--muted); margin-top: 2px; }
+    .field-input[readonly] { opacity: .75; cursor: default; background: rgba(56,189,248,0.06); border-color: rgba(56,189,248,0.2); }
+
+    /* Section divider */
+    .section-title { font-size: 12px; font-weight: 700; text-transform: uppercase; letter-spacing: .8px; color: var(--sky); display: flex; align-items: center; gap: 8px; margin-top: 4px; }
+    .section-title::after { content: ''; flex: 1; height: 1px; background: var(--card-border); }
+
+    /* Cotización badge */
+    .rate-badge { display: inline-flex; align-items: center; gap: 5px; background: rgba(37,99,235,0.18); border: 1px solid rgba(37,99,235,0.35); border-radius: 6px; padding: 4px 10px; font-size: 11px; font-family: var(--mono); color: var(--sky); margin-bottom: 2px; }
+    .rate-badge .dot-sm { width: 5px; height: 5px; border-radius: 50%; background: var(--success); animation: pulse 2s infinite; }
+
+    /* Gain display */
+    .gain-display { background: rgba(34,197,94,0.1); border: 1px solid rgba(34,197,94,0.25); border-radius: var(--radius-sm); padding: 10px 14px; display: flex; align-items: center; justify-content: space-between; }
+    .gain-label { font-size: 12px; color: rgba(34,197,94,0.8); }
+    .gain-val { font-family: var(--mono); font-size: 18px; font-weight: 600; color: var(--success); }
+
+    /* Modal Footer */
+    .modal-footer { display: flex; gap: 10px; padding: 0 20px 16px; }
+    .btn { flex: 1; padding: 13px; border-radius: var(--radius-sm); font-family: var(--font); font-size: 14px; font-weight: 600; cursor: pointer; border: none; transition: opacity var(--transition), transform var(--transition); display: flex; align-items: center; justify-content: center; gap: 6px; }
+    .btn:active { opacity:.8; transform:scale(.98); }
+    .btn-primary { background: linear-gradient(135deg, var(--bright), #1d4ed8); color: #fff; box-shadow: 0 4px 14px rgba(37,99,235,0.45); }
+    .btn-ghost { background: rgba(255,255,255,0.07); border: 1px solid var(--card-border); color: var(--muted); }
+
+    /* Detail */
+    .detail-img { width: 100%; max-height: 200px; object-fit: contain; background: var(--mid); border-radius: var(--radius-sm); margin-bottom: 4px; }
+    .detail-row { display: flex; justify-content: space-between; align-items: center; padding: 10px 0; border-bottom: 1px solid var(--card-border); }
+    .detail-row:last-child { border-bottom: none; }
+    .detail-key { font-size: 12px; color: var(--muted); }
+    .detail-val { font-family: var(--mono); font-size: 14px; font-weight: 500; }
+
+    /* Toast */
+    #toast { position: fixed; bottom: 28px; left: 50%; transform: translateX(-50%) translateY(80px); background: rgba(30,58,95,0.95); border: 1px solid var(--card-border); backdrop-filter: blur(14px); padding: 10px 20px; border-radius: 50px; font-size: 13px; font-weight: 500; color: var(--sky); transition: transform .35s cubic-bezier(.33,1,.68,1), opacity .35s; z-index: 300; white-space: nowrap; opacity: 0; box-shadow: var(--shadow); }
+    #toast.show { transform: translateX(-50%) translateY(0); opacity: 1; }
+    #toast.error { color: #fca5a5; border-color: rgba(239,68,68,0.3); background: rgba(50,10,10,0.9); }
+
+    /* Config */
+    #config-banner { background: linear-gradient(90deg, rgba(239,68,68,0.15), rgba(239,68,68,0.08)); border: 1px solid rgba(239,68,68,0.3); border-radius: var(--radius-sm); padding: 12px 16px; margin: 12px 16px 0; font-size: 13px; color: #fca5a5; display: none; align-items: flex-start; gap: 10px; }
+    #config-banner.show { display: flex; }
+    #api-config { margin: 0 16px 16px; padding: 16px; background: var(--card-bg); border: 1px solid var(--card-border); border-radius: var(--radius); display: none; }
+    #api-config.show { display: block; }
+    .api-config-title { font-size: 13px; font-weight: 600; margin-bottom: 10px; color: var(--sky); }
+    .api-config-row { display: flex; gap: 8px; }
+    .api-config-row input { flex: 1; }
+    .btn-sm { padding: 9px 14px; border-radius: var(--radius-sm); font-size: 13px; font-weight: 600; border: none; cursor: pointer; background: linear-gradient(135deg, var(--bright), #1d4ed8); color: #fff; }
+
+    ::-webkit-scrollbar { width: 4px; }
+    ::-webkit-scrollbar-track { background: transparent; }
+    ::-webkit-scrollbar-thumb { background: var(--steel); border-radius: 99px; }
+  </style>
+</head>
+<body>
+<div id="app">
+
+  <header>
+    <div class="header-inner">
+      <div class="logo">
+        <div class="logo-icon">📦</div>
+        <div>
+          <div class="logo-text">Mis Productos</div>
+          <div class="logo-sub">Gestión de stock</div>
+        </div>
+      </div>
+      <div style="display:flex;align-items:center;gap:10px">
+        <div class="status-dot">
+          <div class="dot" id="status-dot"></div>
+          <span id="status-txt">En línea</span>
+        </div>
+        <button class="icon-btn" onclick="toggleConfig()" title="Configuración">⚙️</button>
+      </div>
+    </div>
+
+    <div class="toolbar">
+      <div class="search-wrap">
+        <span class="search-icon">🔍</span>
+        <input type="search" id="search-input" placeholder="Buscar productos..." oninput="filterProducts()" />
+      </div>
+      <button class="btn-add" onclick="openModal()">＋ Nuevo</button>
+    </div>
+
+    <!-- Barra de cotización -->
+    <div class="rate-bar">
+      <span class="rate-val" id="rate-bar-txt">Cargando cotización…</span>
+      <button class="rate-refresh" onclick="fetchUsdRate()" title="Actualizar cotización">↻</button>
+    </div>
+  </header>
+
+  <div id="api-config">
+    <div class="api-config-title">🔗 URL del Web App (Google Apps Script)</div>
+    <div class="api-config-row">
+      <input class="field-input" type="url" id="api-url-input" placeholder="https://script.google.com/macros/s/.../exec" />
+      <button class="btn-sm" onclick="saveApiUrl()">Guardar</button>
+    </div>
+    <p class="field-hint" style="margin-top:8px">Pegá acá la URL que obtenés al desplegar el script como Web App en Google Apps Script.</p>
+  </div>
+
+  <div id="config-banner">
+    <span>⚠️</span>
+    <span>No configuraste la URL de la API. Tocá ⚙️ para conectar con Google Sheets.</span>
+  </div>
+
+  <div id="product-list">
+    <div class="state-msg">
+      <div class="spinner"></div>
+      <p>Cargando productos…</p>
+    </div>
+  </div>
+
+</div>
+
+<!-- MODAL -->
+<div class="modal-overlay" id="modal" onclick="closeOnBack(event)">
+  <div class="modal-sheet">
+    <div class="modal-header">
+      <div class="modal-title" id="modal-title">Nuevo Producto</div>
+      <button class="modal-close" onclick="closeModal()">✕</button>
+    </div>
+
+    <!-- FORM MODE -->
+    <div class="modal-body" id="form-body">
+
+      <div class="section-title">Información básica</div>
+
+      <div class="field-group">
+        <label class="field-label">Nombre del producto</label>
+        <input class="field-input" id="f-nombre" type="text" placeholder="ej. Auriculares Bluetooth" />
+      </div>
+
+      <div class="field-group">
+        <label class="field-label">Descripción</label>
+        <textarea class="field-textarea" id="f-desc" placeholder="Características, uso, detalles…"></textarea>
+      </div>
+
+      <div class="field-group">
+        <label class="field-label">URL de la foto</label>
+        <input class="field-input" id="f-foto" type="url" placeholder="https://…" oninput="autoConvertDriveUrl(this)" onpaste="setTimeout(()=>autoConvertDriveUrl(this),50)" />
+        <span class="field-hint">Podés pegar links de Google Drive, Dropbox o cualquier imagen directa</span>
+      </div>
+
+      <div class="field-group">
+        <label class="field-label">Stock inicial</label>
+        <input class="field-input" id="f-stock" type="number" min="0" placeholder="0" />
+      </div>
+
+      <div class="section-title">Valores</div>
+
+      <!-- Cotización en el form -->
+      <div style="display:flex;align-items:center;justify-content:space-between">
+        <span class="rate-badge">
+          <span class="dot-sm"></span>
+          <span id="rate-display">Cargando cotización…</span>
+        </span>
+        <button class="rate-refresh" onclick="fetchUsdRate()" style="color:var(--sky);font-size:12px">↻ Actualizar</button>
+      </div>
+
+      <div class="field-row">
+        <div class="field-group">
+          <label class="field-label">Costo USD</label>
+          <input class="field-input" id="f-compra" type="number" min="0" step="0.01" placeholder="0.00" oninput="recalcGain()" />
+        </div>
+        <div class="field-group">
+          <label class="field-label">Venta USD</label>
+          <input class="field-input" id="f-venta" type="number" min="0" step="0.01" placeholder="0.00" oninput="recalcGain()" />
+        </div>
+      </div>
+
+      <div class="field-row">
+        <div class="field-group">
+          <label class="field-label">% Ganancia neta</label>
+          <input class="field-input" id="f-pct" type="number" min="0" step="0.1" placeholder="0.0" oninput="recalcFromPct()" />
+        </div>
+        <div class="field-group">
+          <label class="field-label">Venta en ARS $</label>
+          <input class="field-input" id="f-ars" type="number" min="0" step="1" placeholder="Auto" readonly title="Calculado automáticamente con cotización blue" />
+          <span class="field-hint">Calculado automáticamente · podés editarlo</span>
+        </div>
+      </div>
+
+      <div class="gain-display">
+        <span class="gain-label">📊 Ganancia calculada</span>
+        <span class="gain-val" id="gain-display">$ 0.00</span>
+      </div>
+
+    </div>
+
+    <!-- DETAIL MODE -->
+    <div class="modal-body" id="detail-body" style="display:none">
+      <img class="detail-img" id="d-img" src="" alt="Foto del producto" onerror="this.style.display='none'" />
+      <div id="d-rows"></div>
+    </div>
+
+    <div class="modal-footer">
+      <button class="btn btn-ghost" id="btn-cancel" onclick="closeModal()">Cancelar</button>
+      <button class="btn btn-primary" id="btn-save" onclick="saveProduct()">💾 Guardar</button>
+    </div>
+  </div>
+</div>
+
+<div id="toast"></div>
+
+<script>
+// ─────────────────────────────────────────────────────────
+//  CONFIG & STATE
+// ─────────────────────────────────────────────────────────
+let API_URL = localStorage.getItem("gp_api_url") || "";
+let products = [];
+let editingId = null;
+let pollTimer = null;
+const POLL_MS = 6000;
+
+// Cotización dólar blue
+let usdRate = parseFloat(localStorage.getItem("gp_usd_rate")) || 0;
+
+// ─────────────────────────────────────────────────────────
+//  COTIZACIÓN USD BLUE (dolarapi.com)
+// ─────────────────────────────────────────────────────────
+async function fetchUsdRate() {
+  try {
+    const res = await fetch("https://dolarapi.com/v1/dolares/blue");
+    const data = await res.json();
+    // data.venta = precio al que el mercado vende USD (lo que pagás vos para comprar)
+    const rate = data.venta || data.compra || 0;
+    if (rate > 0) {
+      usdRate = rate;
+      localStorage.setItem("gp_usd_rate", rate);
+      updateRateDisplay();
+      recalcGain(); // recalcular ARS con la nueva cotización
+    }
+  } catch (e) {
+    console.warn("No se pudo obtener cotización blue:", e);
+  }
+}
+
+function updateRateDisplay() {
+  const label = usdRate > 0
+    ? `Dólar blue: $${usdRate.toLocaleString("es-AR")} / USD`
+    : "Cotización no disponible";
+  const el1 = document.getElementById("rate-display");
+  const el2 = document.getElementById("rate-bar-txt");
+  if (el1) el1.textContent = label;
+  if (el2) el2.textContent = "💵 " + label;
+}
+
+// ─────────────────────────────────────────────────────────
+//  INIT
+// ─────────────────────────────────────────────────────────
+document.addEventListener("DOMContentLoaded", () => {
+  if (API_URL) {
+    document.getElementById("api-url-input").value = API_URL;
+    startPolling();
+  } else {
+    showConfigBanner();
+    renderEmpty();
+  }
+  fetchUsdRate();
+  // Refrescar cotización cada 5 minutos
+  setInterval(fetchUsdRate, 5 * 60 * 1000);
+  // mostrar cotización guardada mientras carga
+  if (usdRate > 0) updateRateDisplay();
+});
+
+// ─────────────────────────────────────────────────────────
+//  API CONFIG
+// ─────────────────────────────────────────────────────────
+function toggleConfig() {
+  const el = document.getElementById("api-config");
+  el.classList.toggle("show");
+  if (el.classList.contains("show"))
+    document.getElementById("api-url-input").focus();
+}
+
+function saveApiUrl() {
+  const val = document.getElementById("api-url-input").value.trim();
+  if (!val) return toast("Ingresá una URL válida", true);
+  API_URL = val;
+  localStorage.setItem("gp_api_url", val);
+  document.getElementById("api-config").classList.remove("show");
+  document.getElementById("config-banner").classList.remove("show");
+  toast("URL guardada. Conectando…");
+  startPolling();
+}
+
+function showConfigBanner() {
+  document.getElementById("config-banner").classList.add("show");
+}
+
+// ─────────────────────────────────────────────────────────
+//  POLLING (real-time sync)
+// ─────────────────────────────────────────────────────────
+function startPolling() {
+  fetchProducts();
+  clearInterval(pollTimer);
+  pollTimer = setInterval(fetchProducts, POLL_MS);
+}
+
+async function fetchProducts() {
+  if (!API_URL) return;
+  try {
+    const res = await fetch(`${API_URL}?action=list&_t=${Date.now()}`);
+    if (!res.ok) throw new Error(`HTTP ${res.status}`);
+    const data = await res.json();
+    if (data.error) throw new Error(data.error);
+    products = data.products || [];
+    setOnline(true);
+    renderProducts();
+  } catch (e) {
+    setOnline(false);
+    console.error("Poll error:", e);
+  }
+}
+
+function setOnline(on) {
+  const dot = document.getElementById("status-dot");
+  const txt = document.getElementById("status-txt");
+  dot.className = "dot" + (on ? "" : " offline");
+  txt.textContent = on ? "En línea" : "Sin conexión";
+}
+
+// ─────────────────────────────────────────────────────────
+//  RENDER
+// ─────────────────────────────────────────────────────────
+function renderProducts() {
+  const query = document.getElementById("search-input").value.toLowerCase();
+  const filtered = products.filter(p =>
+    p.nombre.toLowerCase().includes(query) ||
+    (p.descripcion || "").toLowerCase().includes(query)
+  );
+  const el = document.getElementById("product-list");
+
+  if (filtered.length === 0) {
+    el.innerHTML = `<div class="state-msg"><span class="emoji">📭</span><p>${query ? "Sin resultados para esa búsqueda." : "No hay productos aún. ¡Agregá el primero!"}</p></div>`;
+    return;
+  }
+
+  el.innerHTML = filtered.map((p, i) => productCard(p, i)).join("");
+}
+
+function renderEmpty() {
+  document.getElementById("product-list").innerHTML =
+    `<div class="state-msg"><span class="emoji">🔗</span><p>Configurá la URL de la API para comenzar.</p></div>`;
+}
+
+function productCard(p, idx) {
+  const stockClass = p.stock === 0 ? "empty" : p.stock <= 3 ? "low" : "";
+  const stockLabel = p.stock === 0 ? "Sin stock" : p.stock <= 3 ? "Stock bajo" : "En stock";
+  const img = p.fotoURL
+    ? `<img class="product-img" src="${esc(normalizeFotoUrl(p.fotoURL))}" alt="${esc(p.nombre)}" loading="lazy" onerror="this.replaceWith(makePlaceholder())">`
+    : `<div class="product-img-placeholder">📦</div>`;
+
+  const delay = `animation-delay:${idx * 0.05}s`;
+
+  return `
+  <div class="product-card" style="${delay}" data-id="${p.id}">
+    <div class="card-top">
+      ${img}
+      <div class="card-info">
+        <div class="card-name">${esc(p.nombre)}</div>
+        <div class="card-desc">${esc(p.descripcion || "Sin descripción")}</div>
+        <div class="card-prices">
+          <span class="price-badge">USD ${fmt(p.valorVentaUSD)}</span>
+          <span class="price-badge ars">ARS $${fmtARS(p.valorVentaARS)}</span>
+        </div>
+      </div>
+    </div>
+    <div class="card-bottom">
+      <div class="stock-ctrl">
+        <span class="stock-label">Stock</span>
+        <button class="stock-btn" onclick="changeStock('${p.id}', -1)">−</button>
+        <span class="stock-val ${stockClass}" title="${stockLabel}">${p.stock}</span>
+        <button class="stock-btn" onclick="changeStock('${p.id}', +1)">＋</button>
+      </div>
+      <div class="card-actions">
+        <button class="icon-btn" onclick="openDetail('${p.id}')" title="Ver detalle">👁</button>
+        <button class="icon-btn" onclick="openModal('${p.id}')" title="Editar">✏️</button>
+        <button class="icon-btn del" onclick="deleteProduct('${p.id}')" title="Eliminar">🗑</button>
+      </div>
+    </div>
+  </div>`;
+}
+
+function makePlaceholder() {
+  const div = document.createElement("div");
+  div.className = "product-img-placeholder";
+  div.textContent = "📦";
+  return div;
+}
+
+function filterProducts() { renderProducts(); }
+
+// ─────────────────────────────────────────────────────────
+//  STOCK CHANGE
+// ─────────────────────────────────────────────────────────
+async function changeStock(id, delta) {
+  const p = products.find(x => x.id === id);
+  if (!p) return;
+  const newStock = Math.max(0, p.stock + delta);
+  if (newStock === p.stock) return;
+  p.stock = newStock;
+  renderProducts();
+  await apiPost("update", p);
+}
+
+// ─────────────────────────────────────────────────────────
+//  MODAL
+// ─────────────────────────────────────────────────────────
+function openModal(id = null) {
+  editingId = id;
+  showFormMode();
+  updateRateDisplay();
+
+  if (id) {
+    const p = products.find(x => x.id === id);
+    if (!p) return;
+    document.getElementById("modal-title").textContent = "Editar Producto";
+    document.getElementById("f-nombre").value  = p.nombre;
+    document.getElementById("f-desc").value    = p.descripcion || "";
+    document.getElementById("f-foto").value    = p.fotoURL || "";
+    document.getElementById("f-stock").value   = p.stock;
+    document.getElementById("f-compra").value  = p.valorCompraUSD;
+    document.getElementById("f-venta").value   = p.valorVentaUSD;
+    document.getElementById("f-pct").value     = p.gananciaPct;
+    document.getElementById("f-ars").value     = p.valorVentaARS;
+    recalcGain();
+  } else {
+    document.getElementById("modal-title").textContent = "Nuevo Producto";
+    ["f-nombre","f-desc","f-foto","f-stock","f-compra","f-venta","f-pct","f-ars"].forEach(fid => {
+      document.getElementById(fid).value = "";
+    });
+    document.getElementById("gain-display").textContent = "$ 0.00";
+  }
+
+  document.getElementById("modal").classList.add("open");
+  setTimeout(() => document.getElementById("f-nombre").focus(), 300);
+}
+
+function openDetail(id) {
+  const p = products.find(x => x.id === id);
+  if (!p) return;
+  showDetailMode();
+  document.getElementById("modal-title").textContent = p.nombre;
+
+  const img = document.getElementById("d-img");
+  img.src = normalizeFotoUrl(p.fotoURL || "");
+  img.style.display = p.fotoURL ? "block" : "none";
+
+  const rows = [
+    ["📝 Descripción",     p.descripcion || "—"],
+    ["📦 Stock actual",    p.stock],
+    ["💵 Costo (USD)",     `$ ${fmt(p.valorCompraUSD)}`],
+    ["💲 Venta (USD)",     `$ ${fmt(p.valorVentaUSD)}`],
+    ["📈 Ganancia neta",   `${fmt(p.gananciaPct)} %`],
+    ["🏛 Venta (ARS)",     `$ ${fmtARS(p.valorVentaARS)}`],
+    ["💰 Ganancia USD $",  `$ ${fmt(p.valorVentaUSD - p.valorCompraUSD)}`],
+  ];
+
+  document.getElementById("d-rows").innerHTML = rows.map(([k,v]) =>
+    `<div class="detail-row"><span class="detail-key">${k}</span><span class="detail-val">${v}</span></div>`
+  ).join("");
+
+  document.getElementById("btn-save").style.display = "none";
+  document.getElementById("btn-cancel").textContent = "Cerrar";
+  document.getElementById("modal").classList.add("open");
+}
+
+function showFormMode() {
+  document.getElementById("form-body").style.display = "flex";
+  document.getElementById("detail-body").style.display = "none";
+  document.getElementById("btn-save").style.display = "flex";
+  document.getElementById("btn-cancel").textContent = "Cancelar";
+}
+
+function showDetailMode() {
+  document.getElementById("form-body").style.display = "none";
+  document.getElementById("detail-body").style.display = "flex";
+}
+
+function closeModal() {
+  document.getElementById("modal").classList.remove("open");
+  editingId = null;
+}
+
+function closeOnBack(e) {
+  if (e.target === document.getElementById("modal")) closeModal();
+}
+
+// ─────────────────────────────────────────────────────────
+//  CALCULATIONS
+// ─────────────────────────────────────────────────────────
+function recalcGain() {
+  const compra = parseFloat(document.getElementById("f-compra").value) || 0;
+  const venta  = parseFloat(document.getElementById("f-venta").value)  || 0;
+  const diff   = venta - compra;
+  const pct    = compra > 0 ? ((diff / compra) * 100).toFixed(1) : 0;
+
+  // Solo actualiza % si el usuario no está escribiendo en ese campo
+  if (!document.getElementById("f-pct").matches(":focus"))
+    document.getElementById("f-pct").value = pct;
+
+  document.getElementById("gain-display").textContent = `$ ${fmt(diff)}`;
+
+  // Auto-calcular ARS con cotización blue
+  autoFillARS(venta);
+}
+
+function recalcFromPct() {
+  const compra = parseFloat(document.getElementById("f-compra").value) || 0;
+  const pct    = parseFloat(document.getElementById("f-pct").value)    || 0;
+  if (compra > 0) {
+    const venta = compra * (1 + pct / 100);
+    if (!document.getElementById("f-venta").matches(":focus"))
+      document.getElementById("f-venta").value = venta.toFixed(2);
+    document.getElementById("gain-display").textContent = `$ ${fmt(venta - compra)}`;
+    autoFillARS(venta);
+  }
+}
+
+function autoFillARS(ventaUSD) {
+  // Solo rellena si el usuario no está escribiendo en el campo ARS
+  if (document.getElementById("f-ars").matches(":focus")) return;
+  if (usdRate > 0 && ventaUSD > 0) {
+    const ars = Math.round(ventaUSD * usdRate);
+    document.getElementById("f-ars").value = ars;
+  }
+}
+
+// ─────────────────────────────────────────────────────────
+//  SAVE / DELETE
+// ─────────────────────────────────────────────────────────
+async function saveProduct() {
+  const nombre = document.getElementById("f-nombre").value.trim();
+  if (!nombre) { toast("El nombre es obligatorio", true); return; }
+
+  const product = {
+    id:             editingId || null,
+    nombre,
+    descripcion:    document.getElementById("f-desc").value.trim(),
+    fotoURL:        normalizeFotoUrl(document.getElementById("f-foto").value.trim()),
+    stock:          parseInt(document.getElementById("f-stock").value)  || 0,
+    valorCompraUSD: parseFloat(document.getElementById("f-compra").value) || 0,
+    valorVentaUSD:  parseFloat(document.getElementById("f-venta").value)  || 0,
+    gananciaPct:    parseFloat(document.getElementById("f-pct").value)    || 0,
+    valorVentaARS:  parseFloat(document.getElementById("f-ars").value)    || 0,
+  };
+
+  const action = editingId ? "update" : "create";
+  const btn = document.getElementById("btn-save");
+  btn.textContent = "⏳ Guardando…"; btn.disabled = true;
+
+  try {
+    const res = await apiPost(action, product);
+    if (res.error) throw new Error(res.error);
+    toast(editingId ? "Producto actualizado ✓" : "Producto creado ✓");
+    closeModal();
+    fetchProducts();
+  } catch (e) {
+    toast("Error: " + e.message, true);
+  } finally {
+    btn.textContent = "💾 Guardar"; btn.disabled = false;
+  }
+}
+
+async function deleteProduct(id) {
+  if (!confirm("¿Eliminar este producto?")) return;
+  try {
+    const res = await apiPost("delete", { id });
+    if (res.error) throw new Error(res.error);
+    toast("Producto eliminado");
+    fetchProducts();
+  } catch (e) {
+    toast("Error: " + e.message, true);
+  }
+}
+
+// ─────────────────────────────────────────────────────────
+//  API HELPER
+//  CORS fix: "text/plain" evita el preflight OPTIONS que
+//  Google Apps Script no sabe manejar. El body sigue siendo
+//  JSON válido — el backend lo parsea igual.
+// ─────────────────────────────────────────────────────────
+async function apiPost(action, product) {
+  if (!API_URL) { toast("Configurá la URL de la API primero", true); return {}; }
+  const res = await fetch(API_URL, {
+    method: "POST",
+    body: JSON.stringify({ action, product }),
+    headers: { "Content-Type": "text/plain;charset=utf-8" }
+  });
+  return res.json();
+}
+
+// ─────────────────────────────────────────────────────────
+//  TOAST
+// ─────────────────────────────────────────────────────────
+let toastTimer;
+function toast(msg, isError = false) {
+  const el = document.getElementById("toast");
+  el.textContent = msg;
+  el.className = "show" + (isError ? " error" : "");
+  clearTimeout(toastTimer);
+  toastTimer = setTimeout(() => { el.className = ""; }, 2800);
+}
+
+// ─────────────────────────────────────────────────────────
+//  UTILS
+// ─────────────────────────────────────────────────────────
+// Convert Google Drive / Dropbox share links to direct image URLs
+function normalizeFotoUrl(url) {
+  if (!url) return "";
+  // Google Drive: extraer el file ID de cualquier formato de link
+  // Formatos: /file/d/ID/view, /open?id=ID, /uc?id=ID, uc?export=view&id=ID
+  const gdrive = url.match(/(?:drive\.google\.com\/(?:file\/d\/|open\?id=|uc\?(?:export=\w+&)?id=)|id=)([\w-]{25,})/);
+  if (gdrive) {
+    // Usar thumbnail URL — funciona sin bloqueos CORS y sin redirects
+    return "https://drive.google.com/thumbnail?id=" + gdrive[1] + "&sz=w400";
+  }
+  // Dropbox: ?dl=0 → raw
+  if (url.includes("dropbox.com")) return url.replace(/[?&]dl=0/, "").replace("dropbox.com", "dl.dropboxusercontent.com");
+  return url;
+}
+
+function autoConvertDriveUrl(input) {
+  const converted = normalizeFotoUrl(input.value.trim());
+  if (converted !== input.value.trim()) {
+    input.value = converted;
+    input.style.borderColor = "var(--success)";
+    setTimeout(() => { input.style.borderColor = ""; }, 1500);
+  }
+}
+
+function esc(s) {
+  return String(s ?? "").replace(/[&<>"']/g, c => ({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]));
+}
+function fmt(n)    { return (parseFloat(n)||0).toFixed(2); }
+function fmtARS(n) { return (parseFloat(n)||0).toLocaleString("es-AR"); }
+
+// ─────────────────────────────────────────────────────────
+//  PWA MANIFEST injection
+// ─────────────────────────────────────────────────────────
+(function(){
+  const m = {
+    name: "Gestión de Productos",
+    short_name: "MisProductos",
+    start_url: ".",
+    display: "standalone",
+    background_color: "#0a1628",
+    theme_color: "#0a1628",
+    icons: [{ src:"https://emojicdn.elk.sh/📦?style=apple", sizes:"192x192", type:"image/png" }]
+  };
+  const blob = new Blob([JSON.stringify(m)], {type:"application/manifest+json"});
+  const link = document.createElement("link");
+  link.rel = "manifest"; link.href = URL.createObjectURL(blob);
+  document.head.appendChild(link);
+})();
+</script>
+</body>
+</html>
