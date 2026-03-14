@@ -140,23 +140,23 @@
     .product-img { width: 62px; height: 62px; border-radius: 10px; object-fit: cover; flex-shrink: 0; background: var(--mid); border: 1px solid var(--card-border); }
     .product-img-placeholder { width: 62px; height: 62px; border-radius: 10px; flex-shrink: 0; background: var(--mid); border: 1px solid var(--card-border); display: flex; align-items: center; justify-content: center; font-size: 26px; }
     .card-info { flex: 1; min-width: 0; }
-    .card-name { font-size: 15px; font-weight: 600; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
-    .card-desc { font-size: 12px; color: var(--muted); margin-top: 2px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+    .card-name { font-size: 17px; font-weight: 700; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+    .card-desc { font-size: 13px; color: var(--muted); margin-top: 3px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
     .card-prices { display: flex; gap: 8px; margin-top: 6px; flex-wrap: wrap; }
-    .price-badge { font-family: var(--mono); font-size: 12px; font-weight: 500; padding: 3px 8px; border-radius: 6px; background: rgba(37,99,235,0.25); border: 1px solid rgba(37,99,235,0.4); color: var(--sky); }
+    .price-badge { font-family: var(--mono); font-size: 13px; font-weight: 600; padding: 4px 10px; border-radius: 6px; background: rgba(37,99,235,0.25); border: 1px solid rgba(37,99,235,0.4); color: var(--sky); }
     .price-badge.ars { background: rgba(56,189,248,0.15); border-color: rgba(56,189,248,0.3); color: var(--ice); }
 
     /* Stock Row */
     .card-bottom { display: flex; align-items: center; justify-content: space-between; padding: 10px 14px 12px; border-top: 1px solid var(--card-border); margin-top: 10px; }
     .stock-ctrl { display: flex; align-items: center; gap: 8px; }
-    .stock-label { font-size: 11px; color: var(--muted); text-transform: uppercase; letter-spacing: .5px; }
-    .stock-val { font-family: var(--mono); font-size: 15px; font-weight: 600; min-width: 28px; text-align: center; }
+    .stock-label { font-size: 13px; color: var(--muted); text-transform: uppercase; letter-spacing: .5px; font-weight: 600; }
+    .stock-val { font-family: var(--mono); font-size: 18px; font-weight: 700; min-width: 32px; text-align: center; }
     .stock-val.low { color: #fbbf24; }
     .stock-val.empty { color: var(--danger); }
     .stock-btn { width: 28px; height: 28px; border-radius: 7px; background: rgba(255,255,255,0.08); border: 1px solid var(--card-border); color: var(--white); font-size: 16px; cursor: pointer; display: flex; align-items: center; justify-content: center; transition: background var(--transition); }
     .stock-btn:active { background: rgba(37,99,235,0.4); }
     .card-actions { display: flex; gap: 6px; }
-    .icon-btn { width: 32px; height: 32px; border-radius: 8px; background: rgba(255,255,255,0.07); border: 1px solid var(--card-border); color: var(--ice); font-size: 15px; cursor: pointer; display: flex; align-items: center; justify-content: center; transition: background var(--transition), color var(--transition); }
+    .icon-btn { width: 44px; height: 44px; border-radius: 10px; background: rgba(255,255,255,0.07); border: 1px solid var(--card-border); color: var(--ice); font-size: 20px; cursor: pointer; display: flex; align-items: center; justify-content: center; transition: background var(--transition), color var(--transition); }
     .icon-btn:hover { background: rgba(37,99,235,0.35); color: var(--white); }
     .icon-btn.del:hover { background: rgba(239,68,68,0.25); color: var(--danger); border-color: rgba(239,68,68,0.4); }
 
@@ -174,14 +174,14 @@
     .modal-sheet { background: linear-gradient(160deg, #0f2244 0%, var(--navy) 100%); border: 1px solid var(--card-border); border-bottom: none; border-radius: var(--radius) var(--radius) 0 0; width: 100%; max-width: 580px; max-height: 92dvh; overflow-y: auto; transform: translateY(100%); transition: transform .32s cubic-bezier(.32,0,.67,0); padding-bottom: env(safe-area-inset-bottom, 20px); }
     .modal-overlay.open .modal-sheet { transition: transform .32s cubic-bezier(.33,1,.68,1); }
     .modal-header { display: flex; align-items: center; justify-content: space-between; padding: 18px 20px 14px; border-bottom: 1px solid var(--card-border); position: sticky; top: 0; background: rgba(10,22,40,0.95); z-index: 10; }
-    .modal-title { font-size: 16px; font-weight: 700; }
+    .modal-title { font-size: 18px; font-weight: 700; }
     .modal-close { width: 30px; height: 30px; border-radius: 8px; background: rgba(255,255,255,0.08); border: 1px solid var(--card-border); color: var(--muted); font-size: 17px; cursor: pointer; display: flex; align-items: center; justify-content: center; }
     .modal-body { padding: 18px 20px; display: flex; flex-direction: column; gap: 14px; }
 
     /* Form */
     .field-group { display: flex; flex-direction: column; gap: 5px; }
-    .field-label { font-size: 11px; font-weight: 600; text-transform: uppercase; letter-spacing: .6px; color: var(--sky); }
-    .field-input, .field-textarea { background: rgba(255,255,255,0.06); border: 1px solid var(--card-border); border-radius: var(--radius-sm); padding: 10px 12px; color: var(--white); font-family: var(--font); font-size: 14px; outline: none; transition: border-color var(--transition), background var(--transition); width: 100%; }
+    .field-label { font-size: 12px; font-weight: 700; text-transform: uppercase; letter-spacing: .6px; color: var(--sky); }
+    .field-input, .field-textarea { background: rgba(255,255,255,0.06); border: 1px solid var(--card-border); border-radius: var(--radius-sm); padding: 12px 14px; color: var(--white); font-family: var(--font); font-size: 15px; outline: none; transition: border-color var(--transition), background var(--transition); width: 100%; }
     .field-input:focus, .field-textarea:focus { border-color: var(--bright); background: rgba(37,99,235,0.1); }
     .field-textarea { resize: vertical; min-height: 72px; }
     .field-row { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
@@ -207,14 +207,21 @@
     .btn:active { opacity:.8; transform:scale(.98); }
     .btn-primary { background: linear-gradient(135deg, var(--bright), #1d4ed8); color: #fff; box-shadow: 0 4px 14px rgba(37,99,235,0.45); }
     .btn-ghost { background: rgba(255,255,255,0.07); border: 1px solid var(--card-border); color: var(--muted); }
+    .btn-danger { background: rgba(239,68,68,0.18); border: 1px solid rgba(239,68,68,0.4); color: #fca5a5; flex: 0 0 auto; padding: 13px 16px; }
+    .btn-danger:hover { background: rgba(239,68,68,0.35); color: #fff; }
 
     /* Detail */
     .detail-img { width: 100%; max-height: 200px; object-fit: contain; background: var(--mid); border-radius: var(--radius-sm); margin-bottom: 4px; }
     .detail-row { display: flex; justify-content: space-between; align-items: center; padding: 10px 0; border-bottom: 1px solid var(--card-border); }
     .detail-row:last-child { border-bottom: none; }
-    .detail-key { font-size: 12px; color: var(--muted); }
-    .detail-val { font-family: var(--mono); font-size: 14px; font-weight: 500; }
+    .detail-key { font-size: 13px; color: var(--muted); font-weight: 500; }
+    .detail-val { font-family: var(--mono); font-size: 15px; font-weight: 600; }
 
+
+    /* Descripción en detalle */
+    .detail-desc-block { background: rgba(37,99,235,0.08); border: 1px solid var(--card-border); border-radius: var(--radius-sm); padding: 14px 16px; margin-bottom: 4px; }
+    .detail-desc-title { font-size: 11px; font-weight: 700; text-transform: uppercase; letter-spacing: .7px; color: var(--sky); margin-bottom: 10px; }
+    .detail-desc-text { font-size: 14px; line-height: 1.65; color: var(--white); white-space: pre-wrap; }
     /* Toast */
     #toast { position: fixed; bottom: 28px; left: 50%; transform: translateX(-50%) translateY(80px); background: rgba(30,58,95,0.95); border: 1px solid var(--card-border); backdrop-filter: blur(14px); padding: 10px 20px; border-radius: 50px; font-size: 13px; font-weight: 500; color: var(--sky); transition: transform .35s cubic-bezier(.33,1,.68,1), opacity .35s; z-index: 300; white-space: nowrap; opacity: 0; box-shadow: var(--shadow); }
     #toast.show { transform: translateX(-50%) translateY(0); opacity: 1; }
@@ -230,6 +237,12 @@
     .api-config-row input { flex: 1; }
     .btn-sm { padding: 9px 14px; border-radius: var(--radius-sm); font-size: 13px; font-weight: 600; border: none; cursor: pointer; background: linear-gradient(135deg, var(--bright), #1d4ed8); color: #fff; }
 
+
+    /* Stock badge */
+    .stock-badge { font-size: 11px; font-weight: 600; padding: 3px 9px; border-radius: 20px; letter-spacing: .3px; }
+    .stock-badge-ok    { background: rgba(34,197,94,0.15);  color: var(--success); border: 1px solid rgba(34,197,94,0.3); }
+    .stock-badge-low   { background: rgba(251,191,36,0.15); color: #fbbf24; border: 1px solid rgba(251,191,36,0.3); }
+    .stock-badge-empty { background: rgba(239,68,68,0.15);  color: var(--danger); border: 1px solid rgba(239,68,68,0.3); }
     ::-webkit-scrollbar { width: 4px; }
     ::-webkit-scrollbar-track { background: transparent; }
     ::-webkit-scrollbar-thumb { background: var(--steel); border-radius: 99px; }
@@ -375,8 +388,9 @@
       <div id="d-rows"></div>
     </div>
 
-    <div class="modal-footer">
+    <div class="modal-footer" id="modal-footer">
       <button class="btn btn-ghost" id="btn-cancel" onclick="closeModal()">Cancelar</button>
+      <button class="btn btn-danger" id="btn-delete" onclick="deleteFromModal()" style="display:none">🗑 Eliminar</button>
       <button class="btn btn-primary" id="btn-save" onclick="saveProduct()">💾 Guardar</button>
     </div>
   </div>
@@ -551,14 +565,12 @@ function productCard(p, idx) {
     <div class="card-bottom">
       <div class="stock-ctrl">
         <span class="stock-label">Stock</span>
-        <button class="stock-btn" onclick="changeStock('${p.id}', -1)">−</button>
         <span class="stock-val ${stockClass}" title="${stockLabel}">${p.stock}</span>
-        <button class="stock-btn" onclick="changeStock('${p.id}', +1)">＋</button>
+        <span class="stock-badge stock-badge-${p.stock === 0 ? 'empty' : p.stock <= 3 ? 'low' : 'ok'}">${stockLabel}</span>
       </div>
       <div class="card-actions">
         <button class="icon-btn" onclick="openDetail('${p.id}')" title="Ver detalle">👁</button>
         <button class="icon-btn" onclick="openModal('${p.id}')" title="Editar">✏️</button>
-        <button class="icon-btn del" onclick="deleteProduct('${p.id}')" title="Eliminar">🗑</button>
       </div>
     </div>
   </div>`;
@@ -639,9 +651,20 @@ function openDetail(id) {
     ["💰 Ganancia USD $",  `$ ${fmt(p.valorVentaUSD - p.valorCompraUSD)}`],
   ];
 
-  document.getElementById("d-rows").innerHTML = rows.map(([k,v]) =>
+  // Descripción como bloque especial con título
+  const desc = rows.find(r => r[0].includes("Descripción"));
+  const otherRows = rows.filter(r => !r[0].includes("Descripción"));
+  let html = "";
+  if (desc && desc[1] && desc[1] !== "—") {
+    html += `<div class="detail-desc-block">
+      <div class="detail-desc-title">📝 Descripción</div>
+      <div class="detail-desc-text">${esc(desc[1])}</div>
+    </div>`;
+  }
+  html += otherRows.map(([k,v]) =>
     `<div class="detail-row"><span class="detail-key">${k}</span><span class="detail-val">${v}</span></div>`
   ).join("");
+  document.getElementById("d-rows").innerHTML = html;
 
   document.getElementById("btn-save").style.display = "none";
   document.getElementById("btn-cancel").textContent = "Cerrar";
@@ -653,6 +676,23 @@ function showFormMode() {
   document.getElementById("detail-body").style.display = "none";
   document.getElementById("btn-save").style.display = "flex";
   document.getElementById("btn-cancel").textContent = "Cancelar";
+  // Mostrar botón eliminar solo al editar un producto existente
+  const btnDel = document.getElementById("btn-delete");
+  btnDel.style.display = editingId ? "flex" : "none";
+}
+
+async function deleteFromModal() {
+  if (!editingId) return;
+  if (!confirm("¿Eliminar este producto?")) return;
+  try {
+    const res = await apiPost("delete", { id: editingId });
+    if (res.error) throw new Error(res.error);
+    toast("Producto eliminado");
+    closeModal();
+    fetchProducts();
+  } catch (e) {
+    toast("Error: " + e.message, true);
+  }
 }
 
 function showDetailMode() {
