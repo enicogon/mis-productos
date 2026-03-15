@@ -8,6 +8,7 @@
   <meta name="theme-color" content="#0a1628" />
   <title>Gestión de Productos</title>
 
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link href="https://fonts.googleapis.com/css2?family=Sora:wght@300;400;500;600;700&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet" />
 
@@ -410,6 +411,15 @@
     .calc-result-val { font-family: var(--mono); font-size: 13px; font-weight: 600; color: var(--ice); }
     .calc-result-val.total-val { font-size: 20px; color: var(--sky); }
     .calc-result-val.ars-val { font-size: 15px; color: var(--white); }
+    .btn-export-pdf {
+      width: 100%; margin-top: 16px;
+      background: rgba(56,189,248,0.12); border: 1px solid rgba(56,189,248,0.4);
+      border-radius: var(--radius-sm); padding: 12px;
+      color: var(--sky); font-family: var(--font); font-size: 14px; font-weight: 600;
+      cursor: pointer; display: flex; align-items: center; justify-content: center; gap: 8px;
+      transition: background var(--transition);
+    }
+    .btn-export-pdf:active { background: rgba(56,189,248,0.25); }
     ::-webkit-scrollbar { width: 4px; }
     ::-webkit-scrollbar-track { background: transparent; }
     ::-webkit-scrollbar-thumb { background: var(--steel); border-radius: 99px; }
@@ -586,6 +596,9 @@
     <div id="calc-result-block" class="calc-result-block" style="margin:0 16px 12px;">
       <div class="calc-result-title">📊 Resumen de compra</div>
       <div id="calc-result-rows"></div>
+      <button class="btn-export-pdf" id="btn-export-pdf" onclick="exportPDF()">
+        📄 Exportar como PDF
+      </button>
     </div>
     <!-- Espaciador para que el último elemento no quede bajo el footer fijo -->
     <div style="height:140px"></div>
@@ -1075,6 +1088,7 @@ function fmtARS(n) { return (parseFloat(n)||0).toLocaleString("es-AR"); }
 //  CÁLCULO DE COMPRA
 // ─────────────────────────────────────────────────────────
 let calcQtys = {}; // { productId: cantidad }
+let lastCalcData = null; // datos del último cálculo para PDF
 
 function openCalc() {
   calcQtys = {};
@@ -1212,6 +1226,9 @@ function calcularTotal() {
   }
 
   document.getElementById("calc-result-rows").innerHTML = rowsHtml;
+  // Guardar datos para exportar PDF
+  lastCalcData = { selected, totalUSD, totalARS, totalItems, date: new Date() };
+
   document.getElementById("calc-result-block").classList.add("show");
   document.getElementById("btn-calc-action").classList.add("has-items");
   document.getElementById("btn-calc-action").innerHTML = `✅ Total: USD ${fmt(totalUSD)}`;
@@ -1225,6 +1242,167 @@ function calcularTotal() {
   }, 80);
 }
 
+
+// ─────────────────────────────────────────────────────────
+//  EXPORTAR PDF
+// ─────────────────────────────────────────────────────────
+function exportPDF() {
+  if (!lastCalcData) return;
+  if (typeof window.jspdf === "undefined") {
+    toast("Cargando librería PDF, intentá de nuevo…", true);
+    return;
+  }
+
+  const { jsPDF } = window.jspdf;
+  const doc = new jsPDF({ unit: "mm", format: "a4" });
+
+  const W = 210, margin = 18;
+  const col1 = margin, col2 = W - margin;
+  let y = 0;
+
+  // ── Paleta ──
+  const NAVY   = [10,  22,  40];
+  const BRIGHT = [37,  99, 235];
+  const SKY    = [56, 189, 248];
+  const WHITE  = [240, 248, 255];
+  const MUTED  = [100, 116, 139];
+  const SUCCESS= [22, 163, 74];
+  const LIGHT  = [226, 232, 240];
+
+  // ── Header azul ──────────────────────────────────────────
+  doc.setFillColor(...NAVY);
+  doc.rect(0, 0, W, 38, "F");
+
+  doc.setFillColor(...BRIGHT);
+  doc.roundedRect(margin, 8, 14, 14, 3, 3, "F");
+  doc.setTextColor(...WHITE);
+  doc.setFontSize(16);
+  doc.text("📦", margin + 2.5, 18);
+
+  doc.setTextColor(...WHITE);
+  doc.setFontSize(16);
+  doc.setFont("helvetica", "bold");
+  doc.text("Mis Productos", margin + 18, 16);
+  doc.setFontSize(8);
+  doc.setFont("helvetica", "normal");
+  doc.setTextColor(...SKY);
+  doc.text("GESTIÓN DE STOCK", margin + 18, 21);
+
+  // Fecha arriba a la derecha
+  const fechaStr = lastCalcData.date.toLocaleDateString("es-AR", {
+    day: "2-digit", month: "2-digit", year: "numeric",
+    hour: "2-digit", minute: "2-digit"
+  });
+  doc.setFontSize(8);
+  doc.setTextColor(...MUTED);
+  doc.text(fechaStr, col2, 21, { align: "right" });
+
+  y = 48;
+
+  // ── Título sección ───────────────────────────────────────
+  doc.setFillColor(...BRIGHT);
+  doc.rect(margin, y - 5, 4, 12, "F");
+  doc.setTextColor(...NAVY);
+  doc.setFontSize(14);
+  doc.setFont("helvetica", "bold");
+  doc.text("Resumen de compra", margin + 8, y + 3);
+
+  // Cotización
+  if (usdRate > 0) {
+    doc.setFontSize(8);
+    doc.setFont("helvetica", "normal");
+    doc.setTextColor(...MUTED);
+    doc.text(`Cotización dólar blue: $${usdRate.toLocaleString("es-AR")} / USD`, col2, y + 3, { align: "right" });
+  }
+  y += 16;
+
+  // ── Encabezado tabla ─────────────────────────────────────
+  doc.setFillColor(...NAVY);
+  doc.rect(margin, y, W - margin * 2, 9, "F");
+  doc.setTextColor(...WHITE);
+  doc.setFontSize(8);
+  doc.setFont("helvetica", "bold");
+  doc.text("PRODUCTO", col1 + 3, y + 6);
+  doc.text("CANT.", col2 - 42, y + 6, { align: "right" });
+  doc.text("COSTO UNIT.", col2 - 22, y + 6, { align: "right" });
+  doc.text("SUBTOTAL", col2, y + 6, { align: "right" });
+  y += 9;
+
+  // ── Filas de productos ───────────────────────────────────
+  doc.setFont("helvetica", "normal");
+  let rowBg = false;
+  for (const [id, qty] of lastCalcData.selected) {
+    const p = products.find(x => x.id === id);
+    if (!p) continue;
+    const sub = p.valorCompraUSD * qty;
+    const rowH = 9;
+
+    if (rowBg) {
+      doc.setFillColor(248, 250, 252);
+      doc.rect(margin, y, W - margin * 2, rowH, "F");
+    }
+    rowBg = !rowBg;
+
+    doc.setTextColor(...NAVY);
+    doc.setFontSize(9);
+    // Nombre — truncar si es muy largo
+    const nombre = p.nombre.length > 42 ? p.nombre.substring(0, 40) + "…" : p.nombre;
+    doc.text(nombre, col1 + 3, y + 6);
+    doc.setFont("helvetica", "normal");
+    doc.text(String(qty), col2 - 42, y + 6, { align: "right" });
+    doc.setTextColor(...MUTED);
+    doc.text(`USD ${fmt(p.valorCompraUSD)}`, col2 - 22, y + 6, { align: "right" });
+    doc.setTextColor(...NAVY);
+    doc.setFont("helvetica", "bold");
+    doc.text(`USD ${fmt(sub)}`, col2, y + 6, { align: "right" });
+    doc.setFont("helvetica", "normal");
+
+    // Línea separadora
+    doc.setDrawColor(...LIGHT);
+    doc.setLineWidth(0.2);
+    doc.line(margin, y + rowH, col2, y + rowH);
+    y += rowH;
+  }
+
+  // ── Fila total ───────────────────────────────────────────
+  y += 2;
+  doc.setFillColor(...NAVY);
+  doc.rect(margin, y, W - margin * 2, 14, "F");
+  doc.setTextColor(...WHITE);
+  doc.setFontSize(9);
+  doc.setFont("helvetica", "bold");
+  doc.text(`TOTAL  (${lastCalcData.totalItems} unidades)`, col1 + 3, y + 6);
+
+  doc.setFontSize(12);
+  doc.setTextColor(...SKY);
+  doc.text(`USD ${fmt(lastCalcData.totalUSD)}`, col2, y + 6, { align: "right" });
+
+  if (lastCalcData.totalARS > 0) {
+    doc.setFontSize(8);
+    doc.setTextColor(186, 230, 253);
+    doc.text(`ARS $ ${fmtARS(lastCalcData.totalARS)}`, col2, y + 12, { align: "right" });
+    y += 14;
+  } else {
+    y += 14;
+  }
+
+  // ── Footer ───────────────────────────────────────────────
+  y += 10;
+  doc.setDrawColor(...LIGHT);
+  doc.setLineWidth(0.4);
+  doc.line(margin, y, col2, y);
+  y += 5;
+  doc.setFontSize(7.5);
+  doc.setFont("helvetica", "italic");
+  doc.setTextColor(...MUTED);
+  doc.text("Generado por Mis Productos · enicogon.github.io/mis-productos", margin, y);
+  doc.text(fechaStr, col2, y, { align: "right" });
+
+  // ── Guardar / compartir ───────────────────────────────────
+  const filename = `compra_${lastCalcData.date.toISOString().slice(0,10)}.pdf`;
+  doc.save(filename);
+  toast("PDF generado ✓");
+}
 // ─────────────────────────────────────────────────────────
 //  PWA MANIFEST injection
 // ─────────────────────────────────────────────────────────
