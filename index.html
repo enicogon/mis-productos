@@ -1273,20 +1273,22 @@ function exportPDF() {
   doc.setFillColor(...NAVY);
   doc.rect(0, 0, W, 38, "F");
 
+  // Ícono: cuadrado redondeado azul con "MP" (sin emojis — jsPDF no los soporta)
   doc.setFillColor(...BRIGHT);
-  doc.roundedRect(margin, 8, 14, 14, 3, 3, "F");
+  doc.roundedRect(margin, 7, 16, 16, 3, 3, "F");
   doc.setTextColor(...WHITE);
-  doc.setFontSize(16);
-  doc.text("📦", margin + 2.5, 18);
+  doc.setFontSize(9);
+  doc.setFont("helvetica", "bold");
+  doc.text("MP", margin + 3.2, 17.5);
 
   doc.setTextColor(...WHITE);
   doc.setFontSize(16);
   doc.setFont("helvetica", "bold");
-  doc.text("Mis Productos", margin + 18, 16);
+  doc.text("Mis Productos", margin + 20, 16);
   doc.setFontSize(8);
   doc.setFont("helvetica", "normal");
   doc.setTextColor(...SKY);
-  doc.text("GESTIÓN DE STOCK", margin + 18, 21);
+  doc.text("GESTION DE STOCK", margin + 20, 22);
 
   // Fecha arriba a la derecha
   const fechaStr = lastCalcData.date.toLocaleDateString("es-AR", {
