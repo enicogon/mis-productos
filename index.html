@@ -243,6 +243,159 @@
     .stock-badge-ok    { background: rgba(34,197,94,0.15);  color: var(--success); border: 1px solid rgba(34,197,94,0.3); }
     .stock-badge-low   { background: rgba(251,191,36,0.15); color: #fbbf24; border: 1px solid rgba(251,191,36,0.3); }
     .stock-badge-empty { background: rgba(239,68,68,0.15);  color: var(--danger); border: 1px solid rgba(239,68,68,0.3); }
+
+    /* ── Botón Cálculo de compra ── */
+    .btn-calc {
+      width: 100%; background: rgba(56,189,248,0.12);
+      border: 1px solid rgba(56,189,248,0.35);
+      border-radius: 10px; padding: 11px 16px;
+      color: var(--sky); font-family: var(--font); font-size: 14px; font-weight: 600;
+      cursor: pointer; display: flex; align-items: center; justify-content: center; gap: 8px;
+      transition: background var(--transition), border-color var(--transition);
+      margin: 0 18px 12px; width: calc(100% - 36px);
+    }
+    .btn-calc:active { background: rgba(56,189,248,0.22); }
+
+    /* ── Panel Cálculo de compra ── */
+    #calc-panel {
+      position: fixed; inset: 0; z-index: 150;
+      background: var(--navy);
+      display: flex; flex-direction: column;
+      transform: translateX(100%);
+      transition: transform .32s cubic-bezier(.33,1,.68,1);
+    }
+    #calc-panel.open { transform: translateX(0); }
+
+    .calc-header {
+      background: rgba(10,22,40,0.95);
+      backdrop-filter: blur(18px);
+      -webkit-backdrop-filter: blur(18px);
+      border-bottom: 1px solid var(--card-border);
+      padding: env(safe-area-inset-top, 0) 0 0;
+      position: sticky; top: 0; z-index: 10; flex-shrink: 0;
+    }
+    .calc-header-inner {
+      display: flex; align-items: center; gap: 12px;
+      padding: 14px 18px;
+    }
+    .calc-back {
+      width: 40px; height: 40px; border-radius: 10px; flex-shrink: 0;
+      background: rgba(255,255,255,0.07); border: 1px solid var(--card-border);
+      color: var(--ice); font-size: 20px; cursor: pointer;
+      display: flex; align-items: center; justify-content: center;
+    }
+    .calc-title-wrap { flex: 1; }
+    .calc-title { font-size: 17px; font-weight: 700; }
+    .calc-sub { font-size: 11px; color: var(--sky); text-transform: uppercase; letter-spacing: .5px; margin-top: 1px; }
+
+    .btn-reset-calc {
+      background: none; border: 1px solid var(--card-border);
+      border-radius: 8px; padding: 6px 12px;
+      color: var(--muted); font-size: 12px; font-family: var(--font);
+      cursor: pointer;
+    }
+
+    /* Lista de productos en el calculador */
+    #calc-list {
+      flex: 1; overflow-y: auto;
+      padding: 14px 16px 120px;
+      display: flex; flex-direction: column; gap: 10px;
+    }
+
+    .calc-item {
+      background: var(--card-bg);
+      border: 1px solid var(--card-border);
+      border-radius: var(--radius);
+      backdrop-filter: blur(14px);
+      -webkit-backdrop-filter: blur(14px);
+      padding: 14px;
+      display: flex; align-items: center; gap: 12px;
+      animation: fadeUp .25s ease forwards; opacity: 0;
+    }
+    .calc-item-img {
+      width: 52px; height: 52px; border-radius: 8px;
+      object-fit: cover; flex-shrink: 0;
+      background: var(--mid); border: 1px solid var(--card-border);
+    }
+    .calc-item-img-ph {
+      width: 52px; height: 52px; border-radius: 8px; flex-shrink: 0;
+      background: var(--mid); border: 1px solid var(--card-border);
+      display: flex; align-items: center; justify-content: center; font-size: 22px;
+    }
+    .calc-item-info { flex: 1; min-width: 0; }
+    .calc-item-name { font-size: 15px; font-weight: 600; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+    .calc-item-price {
+      font-family: var(--mono); font-size: 13px; color: var(--sky);
+      font-weight: 600; margin-top: 3px;
+    }
+    .calc-item-subtotal {
+      font-size: 11px; color: var(--muted); margin-top: 2px;
+      font-family: var(--mono);
+    }
+
+    /* Control de cantidad */
+    .calc-qty-ctrl { display: flex; align-items: center; gap: 6px; flex-shrink: 0; }
+    .calc-qty-btn {
+      width: 34px; height: 34px; border-radius: 8px;
+      background: rgba(37,99,235,0.2); border: 1px solid rgba(37,99,235,0.4);
+      color: var(--white); font-size: 18px; font-weight: 700;
+      cursor: pointer; display: flex; align-items: center; justify-content: center;
+      transition: background var(--transition);
+    }
+    .calc-qty-btn:active { background: rgba(37,99,235,0.5); }
+    .calc-qty-val {
+      font-family: var(--mono); font-size: 17px; font-weight: 700;
+      min-width: 30px; text-align: center; color: var(--white);
+    }
+    .calc-qty-val.has-qty { color: var(--sky); }
+
+    /* Barra de total fija abajo */
+    .calc-footer {
+      position: fixed; bottom: 0; left: 0; right: 0;
+      background: rgba(10,22,40,0.97);
+      backdrop-filter: blur(20px);
+      -webkit-backdrop-filter: blur(20px);
+      border-top: 1px solid var(--card-border);
+      padding: 14px 18px env(safe-area-inset-bottom, 14px);
+      z-index: 20;
+    }
+    .calc-total-row {
+      display: flex; align-items: center; justify-content: space-between;
+      margin-bottom: 12px;
+    }
+    .calc-total-label { font-size: 13px; color: var(--muted); font-weight: 600; text-transform: uppercase; letter-spacing: .5px; }
+    .calc-total-usd { font-family: var(--mono); font-size: 22px; font-weight: 700; color: var(--sky); }
+    .calc-total-ars { font-family: var(--mono); font-size: 14px; color: var(--ice); margin-top: 2px; }
+    .calc-items-count { font-size: 12px; color: var(--muted); margin-top: 2px; }
+
+    .btn-calc-total {
+      width: 100%; background: linear-gradient(135deg, var(--bright), #1d4ed8);
+      border: none; border-radius: var(--radius-sm); padding: 15px;
+      color: #fff; font-family: var(--font); font-size: 16px; font-weight: 700;
+      cursor: pointer; display: flex; align-items: center; justify-content: center; gap: 8px;
+      box-shadow: 0 4px 20px rgba(37,99,235,0.5);
+      transition: opacity var(--transition), transform var(--transition);
+    }
+    .btn-calc-total:active { opacity: .85; transform: scale(.98); }
+    .btn-calc-total.has-items { background: linear-gradient(135deg, #16a34a, #15803d); box-shadow: 0 4px 20px rgba(22,163,74,0.4); }
+
+    /* Resultado del cálculo */
+    .calc-result-block {
+      background: linear-gradient(135deg, rgba(37,99,235,0.15), rgba(56,189,248,0.08));
+      border: 1px solid rgba(56,189,248,0.3);
+      border-radius: var(--radius); padding: 16px 18px; margin-top: 10px;
+      display: none;
+    }
+    .calc-result-block.show { display: block; }
+    .calc-result-title { font-size: 11px; font-weight: 700; text-transform: uppercase; letter-spacing: .7px; color: var(--sky); margin-bottom: 12px; }
+    .calc-result-row { display: flex; justify-content: space-between; align-items: center; padding: 6px 0; border-bottom: 1px solid rgba(56,189,248,0.1); }
+    .calc-result-row:last-child { border-bottom: none; padding-bottom: 0; }
+    .calc-result-row.total-row { padding-top: 10px; margin-top: 4px; border-top: 1px solid rgba(56,189,248,0.25); border-bottom: none; }
+    .calc-result-key { font-size: 13px; color: var(--muted); }
+    .calc-result-key.bold { font-weight: 700; color: var(--white); font-size: 14px; }
+    .calc-result-val { font-family: var(--mono); font-size: 13px; font-weight: 600; color: var(--ice); }
+    .calc-result-val.total-val { font-size: 20px; color: var(--sky); }
+    .calc-result-val.ars-val { font-size: 15px; color: var(--white); }
     ::-webkit-scrollbar { width: 4px; }
     ::-webkit-scrollbar-track { background: transparent; }
     ::-webkit-scrollbar-thumb { background: var(--steel); border-radius: 99px; }
@@ -276,6 +429,9 @@
       </div>
       <button class="btn-add" onclick="openModal()">＋ Nuevo</button>
     </div>
+
+    <!-- Botón Cálculo de compra -->
+    <button class="btn-calc" onclick="openCalc()">🛒 Cálculo de compra</button>
 
     <!-- Barra de cotización -->
     <div class="rate-bar">
@@ -393,6 +549,43 @@
       <button class="btn btn-danger" id="btn-delete" onclick="deleteFromModal()" style="display:none">🗑 Eliminar</button>
       <button class="btn btn-primary" id="btn-save" onclick="saveProduct()">💾 Guardar</button>
     </div>
+  </div>
+</div>
+
+
+<!-- PANEL CÁLCULO DE COMPRA -->
+<div id="calc-panel">
+  <div class="calc-header">
+    <div class="calc-header-inner">
+      <button class="calc-back" onclick="closeCalc()">←</button>
+      <div class="calc-title-wrap">
+        <div class="calc-title">Cálculo de compra</div>
+        <div class="calc-sub">Seleccioná cantidades</div>
+      </div>
+      <button class="btn-reset-calc" onclick="resetCalc()">↺ Limpiar</button>
+    </div>
+  </div>
+
+  <div id="calc-list"></div>
+
+  <div class="calc-footer">
+    <div id="calc-result-block" class="calc-result-block">
+      <div class="calc-result-title">📊 Resumen de compra</div>
+      <div id="calc-result-rows"></div>
+    </div>
+    <div class="calc-total-row">
+      <div>
+        <div class="calc-total-label">Total estimado</div>
+        <div class="calc-items-count" id="calc-items-count">Sin productos seleccionados</div>
+      </div>
+      <div style="text-align:right">
+        <div class="calc-total-usd" id="calc-total-usd">USD 0.00</div>
+        <div class="calc-total-ars" id="calc-total-ars">ARS $ 0</div>
+      </div>
+    </div>
+    <button class="btn-calc-total" id="btn-calc-action" onclick="calcularTotal()">
+      🧮 Calcular total
+    </button>
   </div>
 </div>
 
@@ -857,6 +1050,152 @@ function esc(s) {
 }
 function fmt(n)    { return (parseFloat(n)||0).toFixed(2); }
 function fmtARS(n) { return (parseFloat(n)||0).toLocaleString("es-AR"); }
+
+
+// ─────────────────────────────────────────────────────────
+//  CÁLCULO DE COMPRA
+// ─────────────────────────────────────────────────────────
+let calcQtys = {}; // { productId: cantidad }
+
+function openCalc() {
+  calcQtys = {};
+  renderCalcList();
+  document.getElementById("calc-panel").classList.add("open");
+  // Resetear footer
+  updateCalcFooter();
+  document.getElementById("calc-result-block").classList.remove("show");
+  document.getElementById("btn-calc-action").classList.remove("has-items");
+  document.getElementById("btn-calc-action").textContent = "🧮 Calcular total";
+}
+
+function closeCalc() {
+  document.getElementById("calc-panel").classList.remove("open");
+}
+
+function resetCalc() {
+  calcQtys = {};
+  renderCalcList();
+  updateCalcFooter();
+  document.getElementById("calc-result-block").classList.remove("show");
+  document.getElementById("btn-calc-action").classList.remove("has-items");
+}
+
+function renderCalcList() {
+  const el = document.getElementById("calc-list");
+  if (!products.length) {
+    el.innerHTML = `<div class="state-msg"><span class="emoji">📦</span><p>No hay productos cargados.</p></div>`;
+    return;
+  }
+  el.innerHTML = products.map((p, i) => calcItem(p, i)).join("");
+}
+
+function calcItem(p, idx) {
+  const qty = calcQtys[p.id] || 0;
+  const subtotal = qty * p.valorCompraUSD;
+  const img = p.fotoURL
+    ? `<img class="calc-item-img" src="${esc(normalizeFotoUrl(p.fotoURL))}" loading="lazy" onerror="this.className='calc-item-img-ph';this.textContent='📦'">`
+    : `<div class="calc-item-img-ph">📦</div>`;
+  const delay = `animation-delay:${idx * 0.04}s`;
+  const qtyClass = qty > 0 ? "has-qty" : "";
+
+  return `
+  <div class="calc-item" style="${delay}">
+    ${img}
+    <div class="calc-item-info">
+      <div class="calc-item-name">${esc(p.nombre)}</div>
+      <div class="calc-item-price">Costo: USD ${fmt(p.valorCompraUSD)}</div>
+      ${qty > 0 ? `<div class="calc-item-subtotal">Subtotal: USD ${fmt(subtotal)}</div>` : ''}
+    </div>
+    <div class="calc-qty-ctrl">
+      <button class="calc-qty-btn" onclick="changeCalcQty('${p.id}', -1)">−</button>
+      <span class="calc-qty-val ${qtyClass}" id="cqty-${p.id}">${qty}</span>
+      <button class="calc-qty-btn" onclick="changeCalcQty('${p.id}', +1)">＋</button>
+    </div>
+  </div>`;
+}
+
+function changeCalcQty(id, delta) {
+  const cur = calcQtys[id] || 0;
+  const newVal = Math.max(0, cur + delta);
+  if (newVal === 0) delete calcQtys[id];
+  else calcQtys[id] = newVal;
+  // Re-render solo el item afectado para no perder scroll
+  const p = products.find(x => x.id === id);
+  const el = document.querySelector(`.calc-item [id="cqty-${id}"]`);
+  if (el) {
+    const item = el.closest(".calc-item");
+    const idx = products.indexOf(p);
+    item.outerHTML = calcItem(p, idx);
+  }
+  updateCalcFooter();
+  // Ocultar resultado previo si cambian cantidades
+  document.getElementById("calc-result-block").classList.remove("show");
+  document.getElementById("btn-calc-action").classList.remove("has-items");
+}
+
+function updateCalcFooter() {
+  const totalUSD = Object.entries(calcQtys).reduce((acc, [id, qty]) => {
+    const p = products.find(x => x.id === id);
+    return acc + (p ? p.valorCompraUSD * qty : 0);
+  }, 0);
+  const totalARS = usdRate > 0 ? Math.round(totalUSD * usdRate) : 0;
+  const totalItems = Object.values(calcQtys).reduce((a, b) => a + b, 0);
+
+  document.getElementById("calc-total-usd").textContent = `USD ${fmt(totalUSD)}`;
+  document.getElementById("calc-total-ars").textContent = totalARS > 0 ? `ARS $ ${fmtARS(totalARS)}` : "";
+  document.getElementById("calc-items-count").textContent = totalItems > 0
+    ? `${totalItems} unidad${totalItems !== 1 ? "es" : ""} · ${Object.keys(calcQtys).length} producto${Object.keys(calcQtys).length !== 1 ? "s" : ""}`
+    : "Sin productos seleccionados";
+}
+
+function calcularTotal() {
+  const selected = Object.entries(calcQtys).filter(([,q]) => q > 0);
+  if (!selected.length) { toast("Seleccioná al menos un producto", true); return; }
+
+  const totalUSD = selected.reduce((acc, [id, qty]) => {
+    const p = products.find(x => x.id === id);
+    return acc + (p ? p.valorCompraUSD * qty : 0);
+  }, 0);
+  const totalARS = usdRate > 0 ? Math.round(totalUSD * usdRate) : 0;
+  const totalItems = selected.reduce((acc, [,q]) => acc + q, 0);
+
+  // Construir filas del resumen
+  let rowsHtml = selected.map(([id, qty]) => {
+    const p = products.find(x => x.id === id);
+    if (!p) return "";
+    const sub = p.valorCompraUSD * qty;
+    return `
+    <div class="calc-result-row">
+      <span class="calc-result-key">${esc(p.nombre)} × ${qty}</span>
+      <span class="calc-result-val">USD ${fmt(sub)}</span>
+    </div>`;
+  }).join("");
+
+  if (usdRate > 0) {
+    rowsHtml += `
+    <div class="calc-result-row total-row">
+      <span class="calc-result-key bold">TOTAL (${totalItems} u.)</span>
+      <div style="text-align:right">
+        <div class="calc-result-val total-val">USD ${fmt(totalUSD)}</div>
+        <div class="calc-result-val ars-val">ARS $ ${fmtARS(totalARS)}</div>
+      </div>
+    </div>`;
+  } else {
+    rowsHtml += `
+    <div class="calc-result-row total-row">
+      <span class="calc-result-key bold">TOTAL (${totalItems} u.)</span>
+      <div class="calc-result-val total-val">USD ${fmt(totalUSD)}</div>
+    </div>`;
+  }
+
+  document.getElementById("calc-result-rows").innerHTML = rowsHtml;
+  document.getElementById("calc-result-block").classList.add("show");
+  document.getElementById("btn-calc-action").classList.add("has-items");
+  document.getElementById("btn-calc-action").innerHTML = `✅ Total: USD ${fmt(totalUSD)}`;
+
+  // Scroll al resultado
+  document.getElementById("calc-result-block").scrollIntoView({ behavior: "smooth", block: "nearest" });
+}
 
 // ─────────────────────────────────────────────────────────
 //  PWA MANIFEST injection
