@@ -298,7 +298,7 @@
     /* Lista de productos en el calculador */
     #calc-list {
       flex: 1; overflow-y: auto;
-      padding: 14px 16px 120px;
+      padding: 14px 16px 10px;
       display: flex; flex-direction: column; gap: 10px;
     }
 
@@ -356,7 +356,7 @@
       backdrop-filter: blur(20px);
       -webkit-backdrop-filter: blur(20px);
       border-top: 1px solid var(--card-border);
-      padding: 14px 18px env(safe-area-inset-bottom, 14px);
+      padding: 12px 18px env(safe-area-inset-bottom, 12px);
       z-index: 20;
     }
     .calc-total-row {
@@ -566,13 +566,18 @@
     </div>
   </div>
 
-  <div id="calc-list"></div>
+  <div id="calc-list">
+    <!-- el bloque de resultado se inyecta al final de la lista via JS -->
+  </div>
+  <!-- Resultado: fuera del footer, en la zona scrolleable (padding-bottom cubre footer) -->
+  <div id="calc-result-block" class="calc-result-block" style="margin:0 16px 16px;">
+    <div class="calc-result-title">📊 Resumen de compra</div>
+    <div id="calc-result-rows"></div>
+  </div>
+  <!-- Espaciador para que el último contenido no quede bajo el footer fijo -->
+  <div style="height:130px;flex-shrink:0"></div>
 
   <div class="calc-footer">
-    <div id="calc-result-block" class="calc-result-block">
-      <div class="calc-result-title">📊 Resumen de compra</div>
-      <div id="calc-result-rows"></div>
-    </div>
     <div class="calc-total-row">
       <div>
         <div class="calc-total-label">Total estimado</div>
@@ -1193,8 +1198,11 @@ function calcularTotal() {
   document.getElementById("btn-calc-action").classList.add("has-items");
   document.getElementById("btn-calc-action").innerHTML = `✅ Total: USD ${fmt(totalUSD)}`;
 
-  // Scroll al resultado
-  document.getElementById("calc-result-block").scrollIntoView({ behavior: "smooth", block: "nearest" });
+  // Scroll al resultado (está en calc-panel, no en footer)
+  setTimeout(() => {
+    const rb = document.getElementById("calc-result-block");
+    rb.scrollIntoView({ behavior: "smooth", block: "start" });
+  }, 80);
 }
 
 // ─────────────────────────────────────────────────────────
