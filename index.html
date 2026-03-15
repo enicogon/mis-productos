@@ -311,44 +311,55 @@
       border-radius: var(--radius);
       backdrop-filter: blur(14px);
       -webkit-backdrop-filter: blur(14px);
-      padding: 11px 12px;
-      display: flex; align-items: center; gap: 10px;
+      padding: 12px 14px;
+      display: flex; flex-direction: column; gap: 10px;
       animation: fadeUp .25s ease forwards; opacity: 0;
     }
+    /* Fila superior: imagen + nombre */
+    .calc-item-top { display: flex; align-items: center; gap: 10px; }
     .calc-item-img {
-      width: 38px; height: 38px; border-radius: 7px;
+      width: 42px; height: 42px; border-radius: 8px;
       object-fit: cover; flex-shrink: 0;
       background: var(--mid); border: 1px solid var(--card-border);
     }
     .calc-item-img-ph {
-      width: 38px; height: 38px; border-radius: 7px; flex-shrink: 0;
+      width: 42px; height: 42px; border-radius: 8px; flex-shrink: 0;
       background: var(--mid); border: 1px solid var(--card-border);
-      display: flex; align-items: center; justify-content: center; font-size: 17px;
+      display: flex; align-items: center; justify-content: center; font-size: 20px;
     }
-    .calc-item-info { flex: 1; min-width: 0; }
-    .calc-item-name { font-size: 14px; font-weight: 600; white-space: normal; line-height: 1.3; display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden; }
+    .calc-item-name {
+      font-size: 15px; font-weight: 600;
+      white-space: normal; line-height: 1.35;
+      word-break: break-word;
+      flex: 1;
+    }
+    /* Fila inferior: precio + controles */
+    .calc-item-bottom {
+      display: flex; align-items: center; justify-content: space-between;
+      border-top: 1px solid var(--card-border); padding-top: 9px;
+    }
+    .calc-item-info { display: flex; flex-direction: column; gap: 2px; }
     .calc-item-price {
       font-family: var(--mono); font-size: 13px; color: var(--sky);
-      font-weight: 600; margin-top: 3px;
+      font-weight: 600;
     }
     .calc-item-subtotal {
-      font-size: 11px; color: var(--muted); margin-top: 2px;
+      font-size: 11px; color: var(--muted);
       font-family: var(--mono);
     }
-
     /* Control de cantidad */
-    .calc-qty-ctrl { display: flex; align-items: center; gap: 6px; flex-shrink: 0; }
+    .calc-qty-ctrl { display: flex; align-items: center; gap: 8px; flex-shrink: 0; }
     .calc-qty-btn {
-      width: 34px; height: 34px; border-radius: 8px;
+      width: 36px; height: 36px; border-radius: 9px;
       background: rgba(37,99,235,0.2); border: 1px solid rgba(37,99,235,0.4);
-      color: var(--white); font-size: 18px; font-weight: 700;
+      color: var(--white); font-size: 20px; font-weight: 700;
       cursor: pointer; display: flex; align-items: center; justify-content: center;
       transition: background var(--transition);
     }
     .calc-qty-btn:active { background: rgba(37,99,235,0.5); }
     .calc-qty-val {
-      font-family: var(--mono); font-size: 17px; font-weight: 700;
-      min-width: 30px; text-align: center; color: var(--white);
+      font-family: var(--mono); font-size: 18px; font-weight: 700;
+      min-width: 32px; text-align: center; color: var(--white);
     }
     .calc-qty-val.has-qty { color: var(--sky); }
 
@@ -1108,16 +1119,20 @@ function calcItem(p, idx) {
 
   return `
   <div class="calc-item" style="${delay}">
-    ${img}
-    <div class="calc-item-info">
+    <div class="calc-item-top">
+      ${img}
       <div class="calc-item-name">${esc(p.nombre)}</div>
-      <div class="calc-item-price">Costo: USD ${fmt(p.valorCompraUSD)}</div>
-      ${qty > 0 ? `<div class="calc-item-subtotal">Subtotal: USD ${fmt(subtotal)}</div>` : ''}
     </div>
-    <div class="calc-qty-ctrl">
-      <button class="calc-qty-btn" onclick="changeCalcQty('${p.id}', -1)">−</button>
-      <span class="calc-qty-val ${qtyClass}" id="cqty-${p.id}">${qty}</span>
-      <button class="calc-qty-btn" onclick="changeCalcQty('${p.id}', +1)">＋</button>
+    <div class="calc-item-bottom">
+      <div class="calc-item-info">
+        <div class="calc-item-price">Costo: USD ${fmt(p.valorCompraUSD)}</div>
+        ${qty > 0 ? `<div class="calc-item-subtotal">Subtotal: USD ${fmt(subtotal)}</div>` : ''}
+      </div>
+      <div class="calc-qty-ctrl">
+        <button class="calc-qty-btn" onclick="changeCalcQty('${p.id}', -1)">−</button>
+        <span class="calc-qty-val ${qtyClass}" id="cqty-${p.id}">${qty}</span>
+        <button class="calc-qty-btn" onclick="changeCalcQty('${p.id}', +1)">＋</button>
+      </div>
     </div>
   </div>`;
 }
