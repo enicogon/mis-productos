@@ -1454,8 +1454,11 @@ async function fetchEvents() {
 // Determinar estado del evento
 function eventStatus(ev) {
   const today = new Date(); today.setHours(0,0,0,0);
-  const from  = ev.fechaDesde ? new Date(ev.fechaDesde + "T00:00:00") : null;
-  const to    = ev.fechaHasta ? new Date(ev.fechaHasta + "T23:59:59") : from;
+  // Limpiar posibles timestamps ISO antes de parsear
+  const fromStr = ev.fechaDesde ? String(ev.fechaDesde).substring(0, 10) : null;
+  const toStr   = ev.fechaHasta ? String(ev.fechaHasta).substring(0, 10) : fromStr;
+  const from    = fromStr ? new Date(fromStr + "T00:00:00") : null;
+  const to      = toStr   ? new Date(toStr   + "T23:59:59") : from;
   if (!from) return "upcoming";
   if (today < from) return "upcoming";
   if (today > to)   return "past";
@@ -1475,7 +1478,10 @@ function sortedEvents() {
 // Formatear fecha "YYYY-MM-DD" → "DD/MM/YYYY"
 function fmtDate(d) {
   if (!d) return "";
-  const [y, m, day] = d.split("-");
+  // Tomar solo los primeros 10 chars por si viene con timestamp ISO
+  const clean = String(d).substring(0, 10);
+  const [y, m, day] = clean.split("-");
+  if (!y || !m || !day) return d;
   return `${day}/${m}/${y}`;
 }
 
