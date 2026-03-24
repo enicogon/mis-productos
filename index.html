@@ -1476,7 +1476,6 @@ function fmtARS(n) { return (parseFloat(n)||0).toLocaleString("es-AR"); }
 //  INGRESAR UNA COMPRA
 // ─────────────────────────────────────────────────────────
 
-// Estado: { productId: { qty, facturas: [val,...], pesoKg } }
 let purchaseState = {};
 
 function openPurchase() {
@@ -1491,127 +1490,137 @@ function closePurchase() {
 }
 
 function renderPurchaseList() {
-  const el = document.getElementById("purchase-scroll");
+  var el = document.getElementById("purchase-scroll");
   if (!products.length) {
-    el.innerHTML = `<div class="state-msg"><span class="emoji">📦</span><p>No hay productos cargados.</p></div>`;
+    el.innerHTML = '<div class="state-msg"><span class="emoji">&#128230;</span><p>No hay productos cargados.</p></div>';
     return;
   }
-  el.innerHTML = products.map(p => purCard(p)).join("");
-}
-
-function purCard(p) {
-  if (!purchaseState[p.id]) purchaseState[p.id] = { qty: 0, facturas: [0], pesoKg: 0 };
-  const st  = purchaseState[p.id];
-  const pid = p.id;
-
-  const imgHTML = p.fotoURL
-    ? '<img class="pur-card-img" src="' + esc(normalizeFotoUrl(p.fotoURL)) + '" loading="lazy" onerror="purImgError(this)">'
-    : '<div class="pur-card-img-ph">&#128230;</div>';
-
-  const factRows = st.facturas.map((v, i) => purFacturaRow(pid, i, v)).join("");
-
-  // Usamos data-pid para pasar el ID sin problemas de comillas anidadas
-  return (
-    '<div class="pur-card" id="purc-' + pid + '" data-pid="' + pid + '">' +
-      '<div class="pur-card-header" data-pid="' + pid + '" onclick="togglePurCard(this.dataset.pid)">' +
-        imgHTML +
-        '<div class="pur-card-name">' + esc(p.nombre) + '</div>' +
-        '<span class="pur-toggle-icon">&#9662;</span>' +
-      '</div>' +
-      '<div class="pur-card-body">' +
-
-        '<div class="pur-qty-row">' +
-          '<span class="pur-qty-label">Unidades a ingresar</span>' +
-          '<div class="pur-qty-ctrl">' +
-            '<button class="pur-qty-btn" data-pid="' + pid + '" data-delta="-1" onclick="changePurQty(this.dataset.pid, parseInt(this.dataset.delta))">&#8722;</button>' +
-            '<span class="pur-qty-val" id="purqty-' + pid + '">' + st.qty + '</span>' +
-            '<button class="pur-qty-btn" data-pid="' + pid + '" data-delta="1" onclick="changePurQty(this.dataset.pid, parseInt(this.dataset.delta))">&#65291;</button>' +
-          '</div>' +
-        '</div>' +
-
-        '<div class="pur-section-title">Valores de facturación (USD)</div>' +
-        '<div id="purfact-' + pid + '">' + factRows + '</div>' +
-        '<button class="btn-add-factura" data-pid="' + pid + '" onclick="addFactura(this.dataset.pid)">&#65291; Agregar valor de factura</button>' +
-
-        '<div class="pur-section-title" style="margin-top:14px">Peso del producto</div>' +
-        '<div class="pur-peso-row">' +
-          '<span class="pur-peso-label">Peso</span>' +
-          '<input class="pur-peso-input" type="number" min="0" step="0.01"' +
-          ' id="purpeso-' + pid + '" value="' + (st.pesoKg || '') + '"' +
-          ' placeholder="0.00" data-pid="' + pid + '" oninput="onPurInput(this.dataset.pid)" />' +
-          '<span class="pur-peso-unit">kg</span>' +
-        '</div>' +
-        '<div style="font-size:11px;color:var(--muted);margin-top:3px">USD 80 por kg de envio</div>' +
-
-        '<div class="pur-breakdown" id="purbreak-' + pid + '">' +
-          purBreakdownHTML(pid) +
-        '</div>' +
-      '</div>' +
-    '</div>'
-  );
+  var html = "";
+  for (var i = 0; i < products.length; i++) {
+    html += purCard(products[i]);
+  }
+  el.innerHTML = html;
 }
 
 function purImgError(img) {
-  img.outerHTML = '<div class="pur-card-img-ph">&#128230;</div>';
+  var d = document.createElement("div");
+  d.className = "pur-card-img-ph";
+  d.textContent = "📦";
+  img.parentNode.replaceChild(d, img);
+}
+
+function purCard(p) {
+  var pid = p.id;
+  if (!purchaseState[pid]) {
+    purchaseState[pid] = { qty: 0, facturas: [0], pesoKg: 0 };
+  }
+  var st = purchaseState[pid];
+
+  var imgHTML = p.fotoURL
+    ? '<img class="pur-card-img" src="' + esc(normalizeFotoUrl(p.fotoURL)) + '" loading="lazy" onerror="purImgError(this)">'
+    : '<div class="pur-card-img-ph">&#128230;</div>';
+
+  var factHTML = "";
+  for (var i = 0; i < st.facturas.length; i++) {
+    factHTML += purFacturaRow(pid, i, st.facturas[i]);
+  }
+
+  var html = '<div class="pur-card" id="purc-' + pid + '" data-pid="' + pid + '">';
+  html += '<div class="pur-card-header" data-pid="' + pid + '" onclick="togglePurCard(this.dataset.pid)">';
+  html += imgHTML;
+  html += '<div class="pur-card-name">' + esc(p.nombre) + '</div>';
+  html += '<span class="pur-toggle-icon">&#9662;</span>';
+  html += '</div>';
+  html += '<div class="pur-card-body">';
+
+  // Cantidad
+  html += '<div class="pur-qty-row">';
+  html += '<span class="pur-qty-label">Unidades a ingresar</span>';
+  html += '<div class="pur-qty-ctrl">';
+  html += '<button class="pur-qty-btn" data-pid="' + pid + '" data-delta="-1" onclick="changePurQty(this.dataset.pid,parseInt(this.dataset.delta))">&#8722;</button>';
+  html += '<span class="pur-qty-val" id="purqty-' + pid + '">' + st.qty + '</span>';
+  html += '<button class="pur-qty-btn" data-pid="' + pid + '" data-delta="1" onclick="changePurQty(this.dataset.pid,parseInt(this.dataset.delta))">&#65291;</button>';
+  html += '</div></div>';
+
+  // Facturación
+  html += '<div class="pur-section-title">Valores de facturación (USD)</div>';
+  html += '<div id="purfact-' + pid + '">' + factHTML + '</div>';
+  html += '<button class="btn-add-factura" data-pid="' + pid + '" onclick="addFactura(this.dataset.pid)">&#65291; Agregar valor de factura</button>';
+
+  // Peso
+  html += '<div class="pur-section-title" style="margin-top:14px">Peso del producto</div>';
+  html += '<div class="pur-peso-row">';
+  html += '<span class="pur-peso-label">Peso</span>';
+  html += '<input class="pur-peso-input" type="number" min="0" step="0.01"';
+  html += ' id="purpeso-' + pid + '" value="' + (st.pesoKg || "") + '"';
+  html += ' placeholder="0.00" data-pid="' + pid + '" oninput="onPurInput(this.dataset.pid)">';
+  html += '<span class="pur-peso-unit">kg</span>';
+  html += '</div>';
+  html += '<div style="font-size:11px;color:var(--muted);margin-top:3px">USD 80 por kg de envio</div>';
+
+  // Breakdown
+  html += '<div class="pur-breakdown" id="purbreak-' + pid + '">' + purBreakdownHTML(pid) + '</div>';
+
+  html += '</div></div>';
+  return html;
 }
 
 function purFacturaRow(pid, idx, val) {
-  const delBtn = idx > 0
-    ? '<button class="pur-factura-del" data-pid="' + pid + '" data-idx="' + idx + '" onclick="removeFactura(this.dataset.pid, parseInt(this.dataset.idx))">&#10005;</button>'
+  var delBtn = idx > 0
+    ? '<button class="pur-factura-del" data-pid="' + pid + '" data-idx="' + idx + '" onclick="removeFactura(this.dataset.pid,parseInt(this.dataset.idx))">&#10005;</button>'
     : '<span style="width:28px"></span>';
-  return (
-    '<div class="pur-factura-row" id="purfrow-' + pid + '-' + idx + '">' +
-      '<span class="pur-factura-label">' + (idx + 1) + '</span>' +
-      '<input class="pur-factura-input" type="number" min="0" step="0.01"' +
-      ' placeholder="0.00" value="' + (val || '') + '"' +
-      ' data-pid="' + pid + '" data-idx="' + idx + '"' +
-      ' oninput="onPurFactInput(this.dataset.pid, parseInt(this.dataset.idx), this.value)" />' +
-      delBtn +
-    '</div>'
-  );
+  var row = '<div class="pur-factura-row" id="purfrow-' + pid + '-' + idx + '">';
+  row += '<span class="pur-factura-label">' + (idx + 1) + '</span>';
+  row += '<input class="pur-factura-input" type="number" min="0" step="0.01"';
+  row += ' placeholder="0.00" value="' + (val || "") + '"';
+  row += ' data-pid="' + pid + '" data-idx="' + idx + '"';
+  row += ' oninput="onPurFactInput(this.dataset.pid,parseInt(this.dataset.idx),this.value)">';
+  row += delBtn;
+  row += '</div>';
+  return row;
 }
 
 function purBreakdownHTML(pid) {
-  const st     = purchaseState[pid] || { facturas:[0], pesoKg:0 };
-  const facTotal = st.facturas.reduce((a, v) => a + (parseFloat(v)||0), 0);
-  const traslado = facTotal * 0.20;
-  const pesoVal  = (parseFloat(st.pesoKg)||0) * 80;
-  const total    = facTotal + traslado + pesoVal;
+  var st = purchaseState[pid] || { facturas: [0], pesoKg: 0 };
+  var facTotal = 0;
+  for (var i = 0; i < st.facturas.length; i++) {
+    facTotal += parseFloat(st.facturas[i]) || 0;
+  }
+  var traslado = facTotal * 0.20;
+  var pesoKg   = parseFloat(st.pesoKg) || 0;
+  var pesoVal  = pesoKg * 80;
+  var total    = facTotal + traslado + pesoVal;
 
-  return `
-  <div class="pur-breakdown-row">
-    <span class="pur-breakdown-key">Facturación total</span>
-    <span class="pur-breakdown-val">USD ${fmt(facTotal)}</span>
-  </div>
-  <div class="pur-breakdown-row">
-    <span class="pur-breakdown-key">Traslado (20%)</span>
-    <span class="pur-breakdown-val">USD ${fmt(traslado)}</span>
-  </div>
-  <div class="pur-breakdown-row">
-    <span class="pur-breakdown-key">Peso (${fmt(parseFloat(st.pesoKg)||0)} kg × $80)</span>
-    <span class="pur-breakdown-val">USD ${fmt(pesoVal)}</span>
-  </div>
-  <div class="pur-breakdown-total">
-    <span class="pur-breakdown-total-key">Valor final del producto</span>
-    <span class="pur-breakdown-total-val">USD ${fmt(total)}</span>
-  </div>`;
+  var html = '<div class="pur-breakdown-row">';
+  html += '<span class="pur-breakdown-key">Facturación total</span>';
+  html += '<span class="pur-breakdown-val">USD ' + fmt(facTotal) + '</span>';
+  html += '</div>';
+  html += '<div class="pur-breakdown-row">';
+  html += '<span class="pur-breakdown-key">Traslado (20%)</span>';
+  html += '<span class="pur-breakdown-val">USD ' + fmt(traslado) + '</span>';
+  html += '</div>';
+  html += '<div class="pur-breakdown-row">';
+  html += '<span class="pur-breakdown-key">Peso (' + fmt(pesoKg) + ' kg x $80)</span>';
+  html += '<span class="pur-breakdown-val">USD ' + fmt(pesoVal) + '</span>';
+  html += '</div>';
+  html += '<div class="pur-breakdown-total">';
+  html += '<span class="pur-breakdown-total-key">Valor final del producto</span>';
+  html += '<span class="pur-breakdown-total-val">USD ' + fmt(total) + '</span>';
+  html += '</div>';
+  return html;
 }
 
-// ── Interacciones ────────────────────────────────────────
-
 function togglePurCard(pid) {
-  const card = document.getElementById(`purc-${pid}`);
+  var card = document.getElementById("purc-" + pid);
+  if (!card) return;
   card.classList.toggle("expanded");
-  if (card.classList.contains("expanded") && !purchaseState[pid]) {
-    purchaseState[pid] = { qty: 0, facturas: [0], pesoKg: 0 };
-  }
 }
 
 function changePurQty(pid, delta) {
   if (!purchaseState[pid]) purchaseState[pid] = { qty: 0, facturas: [0], pesoKg: 0 };
-  const st = purchaseState[pid];
+  var st = purchaseState[pid];
   st.qty = Math.max(0, st.qty + delta);
-  const el = document.getElementById(`purqty-${pid}`);
+  var el = document.getElementById("purqty-" + pid);
   if (el) el.textContent = st.qty;
   updatePurchaseSummary();
 }
@@ -1625,86 +1634,97 @@ function onPurFactInput(pid, idx, val) {
 
 function onPurInput(pid) {
   if (!purchaseState[pid]) purchaseState[pid] = { qty: 0, facturas: [0], pesoKg: 0 };
-  const pesoEl = document.getElementById(`purpeso-${pid}`);
-  purchaseState[pid].pesoKg = parseFloat(pesoEl?.value) || 0;
+  var pesoEl = document.getElementById("purpeso-" + pid);
+  purchaseState[pid].pesoKg = parseFloat(pesoEl ? pesoEl.value : 0) || 0;
   refreshBreakdown(pid);
   updatePurchaseSummary();
 }
 
 function addFactura(pid) {
   if (!purchaseState[pid]) purchaseState[pid] = { qty: 0, facturas: [0], pesoKg: 0 };
-  const st  = purchaseState[pid];
-  const idx = st.facturas.length;
+  var st  = purchaseState[pid];
+  var idx = st.facturas.length;
   st.facturas.push(0);
-  const container = document.getElementById(`purfact-${pid}`);
+  var container = document.getElementById("purfact-" + pid);
   if (container) {
-    const div = document.createElement("div");
-    div.innerHTML = purFacturaRow(pid, idx, 0);
-    container.appendChild(div.firstElementChild);
+    var tmp = document.createElement("div");
+    tmp.innerHTML = purFacturaRow(pid, idx, 0);
+    container.appendChild(tmp.firstElementChild);
   }
 }
 
 function removeFactura(pid, idx) {
   if (!purchaseState[pid]) return;
-  const st = purchaseState[pid];
-  st.facturas.splice(idx, 1);
-  // Re-render el bloque de facturas
-  const container = document.getElementById(`purfact-${pid}`);
-  if (container)
-    container.innerHTML = st.facturas.map((v, i) => purFacturaRow(pid, i, v)).join("");
+  purchaseState[pid].facturas.splice(idx, 1);
+  var container = document.getElementById("purfact-" + pid);
+  if (container) {
+    var html = "";
+    for (var i = 0; i < purchaseState[pid].facturas.length; i++) {
+      html += purFacturaRow(pid, i, purchaseState[pid].facturas[i]);
+    }
+    container.innerHTML = html;
+  }
   refreshBreakdown(pid);
   updatePurchaseSummary();
 }
 
 function refreshBreakdown(pid) {
-  const el = document.getElementById(`purbreak-${pid}`);
+  var el = document.getElementById("purbreak-" + pid);
   if (el) el.innerHTML = purBreakdownHTML(pid);
 }
 
-// ── Totales del footer ────────────────────────────────────
 function purProductTotal(pid) {
-  const st = purchaseState[pid];
+  var st = purchaseState[pid];
   if (!st) return 0;
-  const facTotal = st.facturas.reduce((a, v) => a + (parseFloat(v)||0), 0);
-  return facTotal + facTotal * 0.20 + (parseFloat(st.pesoKg)||0) * 80;
+  var facTotal = 0;
+  for (var i = 0; i < st.facturas.length; i++) {
+    facTotal += parseFloat(st.facturas[i]) || 0;
+  }
+  return facTotal + facTotal * 0.20 + (parseFloat(st.pesoKg) || 0) * 80;
 }
 
 function updatePurchaseSummary() {
-  const items = Object.entries(purchaseState).filter(([,st]) => st.qty > 0);
-  const total = Object.keys(purchaseState).reduce((acc, pid) => acc + purProductTotal(pid), 0);
-  const totalUnits = items.reduce((a, [,st]) => a + st.qty, 0);
-
-  document.getElementById("pur-summary-total").textContent = `USD ${fmt(total)}`;
+  var total = 0;
+  var totalUnits = 0;
+  var itemCount = 0;
+  for (var pid in purchaseState) {
+    var st = purchaseState[pid];
+    total += purProductTotal(pid);
+    if (st.qty > 0) { totalUnits += st.qty; itemCount++; }
+  }
+  document.getElementById("pur-summary-total").textContent = "USD " + fmt(total);
   document.getElementById("pur-summary-items").textContent = totalUnits > 0
-    ? `${totalUnits} unidad${totalUnits !== 1 ? "es" : ""} · ${items.length} producto${items.length !== 1 ? "s" : ""}`
+    ? totalUnits + " unidad" + (totalUnits !== 1 ? "es" : "") + " · " + itemCount + " producto" + (itemCount !== 1 ? "s" : "")
     : "Sin productos ingresados";
 }
 
-// ── Confirmar compra ──────────────────────────────────────
 async function confirmPurchase() {
-  const items = Object.entries(purchaseState).filter(([,st]) => st.qty > 0);
+  var items = [];
+  for (var pid in purchaseState) {
+    if (purchaseState[pid].qty > 0) items.push(pid);
+  }
   if (!items.length) { toast("Seleccioná al menos un producto con cantidad > 0", true); return; }
 
-  const btn = document.querySelector(".btn-confirm-purchase");
+  var btn = document.querySelector(".btn-confirm-purchase");
   btn.textContent = "⏳ Procesando…"; btn.disabled = true;
 
-  let ok = 0, errors = 0;
-  for (const [pid, st] of items) {
-    const p = products.find(x => x.id === pid);
+  var ok = 0, errors = 0;
+  for (var i = 0; i < items.length; i++) {
+    var pid = items[i];
+    var st  = purchaseState[pid];
+    var p   = products.find(function(x) { return x.id === pid; });
     if (!p) continue;
-    const newValorCompra = purProductTotal(pid);
-    const updated = {
-      ...p,
-      stock:          p.stock + st.qty,
-      valorCompraUSD: newValorCompra > 0 ? newValorCompra : p.valorCompraUSD
-    };
+    var newCosto = purProductTotal(pid);
+    var updated  = Object.assign({}, p, {
+      stock: p.stock + st.qty,
+      valorCompraUSD: newCosto > 0 ? newCosto : p.valorCompraUSD
+    });
     try {
-      const res = await apiPost("update", updated);
+      var res = await apiPost("update", updated);
       if (res.error) throw new Error(res.error);
       ok++;
-    } catch (e) {
+    } catch(e) {
       errors++;
-      console.error("Error actualizando", p.nombre, e);
     }
   }
 
@@ -1712,11 +1732,11 @@ async function confirmPurchase() {
   btn.disabled = false;
 
   if (errors === 0) {
-    toast(`Compra ingresada ✓ · ${ok} producto${ok !== 1 ? "s" : ""} actualizado${ok !== 1 ? "s" : ""}`);
+    toast("Compra ingresada ✓ · " + ok + " producto" + (ok !== 1 ? "s" : "") + " actualizado" + (ok !== 1 ? "s" : ""));
     closePurchase();
     fetchProducts();
   } else {
-    toast(`${ok} actualizados, ${errors} con error`, true);
+    toast(ok + " actualizados, " + errors + " con error", true);
   }
 }
 
