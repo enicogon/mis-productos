@@ -245,6 +245,53 @@
     .stock-badge-low   { background: rgba(251,191,36,0.15); color: #fbbf24; border: 1px solid rgba(251,191,36,0.3); }
     .stock-badge-empty { background: rgba(239,68,68,0.15);  color: var(--danger); border: 1px solid rgba(239,68,68,0.3); }
 
+
+    /* ── Menú Compra de productos ── */
+    .btn-compras-main {
+      width: calc(100% - 36px); margin: 0 18px 0;
+      background: rgba(37,99,235,0.12);
+      border: 1px solid rgba(37,99,235,0.35);
+      border-radius: 10px; padding: 11px 16px;
+      color: var(--sky); font-family: var(--font); font-size: 14px; font-weight: 600;
+      cursor: pointer; display: flex; align-items: center; justify-content: space-between;
+      transition: background var(--transition);
+    }
+    .btn-compras-main:active { background: rgba(37,99,235,0.22); }
+    .btn-compras-main .arrow { transition: transform .22s; font-size: 12px; }
+    .btn-compras-main.open .arrow { transform: rotate(180deg); }
+
+    .compras-submenu {
+      display: none;
+      flex-direction: column; gap: 6px;
+      margin: 4px 18px 0;
+      padding: 8px 12px;
+      background: rgba(37,99,235,0.06);
+      border: 1px solid rgba(37,99,235,0.2);
+      border-radius: 10px;
+    }
+    .compras-submenu.open { display: flex; }
+    .btn-submenu {
+      background: none; border: 1px solid var(--card-border);
+      border-radius: 8px; padding: 10px 14px;
+      color: var(--ice); font-family: var(--font); font-size: 13px; font-weight: 600;
+      cursor: pointer; text-align: left;
+      display: flex; align-items: center; gap: 8px;
+      transition: background var(--transition);
+    }
+    .btn-submenu:active { background: rgba(37,99,235,0.2); }
+
+    /* ── Botón Ventas ── */
+    .btn-ventas {
+      width: calc(100% - 36px); margin: 4px 18px 0;
+      background: rgba(168,85,247,0.1);
+      border: 1px solid rgba(168,85,247,0.35);
+      border-radius: 10px; padding: 11px 16px;
+      color: #c084fc; font-family: var(--font); font-size: 14px; font-weight: 600;
+      cursor: pointer; display: flex; align-items: center; justify-content: center; gap: 8px;
+      transition: background var(--transition);
+    }
+    .btn-ventas:active { background: rgba(168,85,247,0.2); }
+
     /* ── Botón Cálculo de compra ── */
     .btn-calc {
       width: 100%; background: rgba(56,189,248,0.12);
@@ -467,9 +514,11 @@
 
     /* Scroll area */
     #events-scroll {
-      flex: 1; overflow-y: auto; -webkit-overflow-scrolling: touch;
+      flex: 1;
+      overflow-y: scroll;
+      -webkit-overflow-scrolling: touch;
       padding: 16px 16px 32px;
-      display: flex; flex-direction: column; gap: 12px;
+      display: flex; flex-direction: column; gap: 14px;
     }
 
     /* Tarjeta de evento */
@@ -479,8 +528,8 @@
       border-radius: var(--radius);
       backdrop-filter: blur(14px); -webkit-backdrop-filter: blur(14px);
       overflow: hidden;
-      animation: fadeUp .3s ease forwards; opacity: 0;
       position: relative;
+      opacity: 1;
     }
     /* Barra de color lateral según estado */
     .event-card::before {
@@ -491,7 +540,7 @@
     .event-card.ongoing::before  { background: #facc15; }
     .event-card.past::before     { background: var(--steel); }
 
-    .event-card-body { padding: 14px 14px 12px 18px; }
+    .event-card-body { padding: 16px 16px 14px 20px; }
     .event-status-row { display: flex; align-items: center; justify-content: space-between; margin-bottom: 6px; }
     .event-status-badge {
       font-size: 10px; font-weight: 700; text-transform: uppercase;
@@ -501,11 +550,11 @@
     .badge-ongoing  { background: rgba(250,204,21,0.15); color: #facc15; border: 1px solid rgba(250,204,21,0.3); }
     .badge-past     { background: rgba(100,116,139,0.15); color: var(--muted); border: 1px solid rgba(100,116,139,0.25); }
 
-    .event-title { font-size: 16px; font-weight: 700; margin-bottom: 8px; line-height: 1.35; white-space: normal; word-break: break-word; }
+    .event-title { font-size: 17px; font-weight: 700; margin-bottom: 10px; line-height: 1.4; white-space: normal; word-break: break-word; color: var(--white); }
     .event-meta { display: flex; flex-direction: column; gap: 5px; }
-    .event-meta-row { display: flex; align-items: flex-start; gap: 8px; font-size: 13px; }
+    .event-meta-row { display: flex; align-items: flex-start; gap: 8px; font-size: 14px; }
     .event-meta-icon { font-size: 14px; flex-shrink: 0; margin-top: 1px; }
-    .event-meta-text { color: var(--muted); line-height: 1.4; }
+    .event-meta-text { color: var(--muted); line-height: 1.5; word-break: break-word; }
     .event-meta-text strong { color: var(--white); font-weight: 600; }
 
     .event-card-footer {
@@ -815,14 +864,21 @@
       <button class="btn-add" onclick="openModal()">＋ Nuevo</button>
     </div>
 
-    <!-- Botón Cálculo de compra -->
-    <button class="btn-calc" onclick="openCalc()">🛒 Cálculo de compra</button>
+    <!-- Menú Compra de productos -->
+    <button class="btn-compras-main" id="btn-compras-main" onclick="toggleComprasMenu()">
+      <span>🛒 Compra de productos</span>
+      <span class="arrow">▾</span>
+    </button>
+    <div class="compras-submenu" id="compras-submenu">
+      <button class="btn-submenu" onclick="openCalc();toggleComprasMenu(true)">📊 Cálculo de compra</button>
+      <button class="btn-submenu" onclick="openPurchase();toggleComprasMenu(true)">📥 Ingresar una compra</button>
+    </div>
 
     <!-- Botón Calendario de eventos -->
-    <button class="btn-calc btn-events" onclick="openEvents()">📅 Calendario de eventos</button>
+    <button class="btn-calc btn-events" onclick="openEvents()" style="margin-top:4px">📅 Calendario de eventos</button>
 
-    <!-- Botón Ingresar una compra -->
-    <button class="btn-calc btn-purchase" onclick="openPurchase()">📥 Ingresar una compra</button>
+    <!-- Botón Ventas (próximamente) -->
+    <button class="btn-ventas" onclick="toast('Sección Ventas próximamente...')">💰 Ventas</button>
 
     <!-- Barra de cotización -->
     <div class="rate-bar">
@@ -1238,7 +1294,7 @@ function productCard(p, idx) {
     ? `<img class="product-img" src="${esc(normalizeFotoUrl(p.fotoURL))}" alt="${esc(p.nombre)}" loading="lazy" onerror="this.replaceWith(makePlaceholder())">`
     : `<div class="product-img-placeholder">📦</div>`;
 
-  const delay = `animation-delay:${idx * 0.05}s`;
+  const delay = ``;
 
   return `
   <div class="product-card" style="${delay}" data-id="${p.id}">
@@ -1549,6 +1605,21 @@ function fmt(n)    { return (parseFloat(n)||0).toFixed(2); }
 function fmtARS(n) { return (parseFloat(n)||0).toLocaleString("es-AR"); }
 
 
+
+
+// ── Toggle menú Compras ─────────────────────────────────────
+function toggleComprasMenu(forceClose) {
+  var btn  = document.getElementById("btn-compras-main");
+  var menu = document.getElementById("compras-submenu");
+  if (!btn || !menu) return;
+  if (forceClose || btn.classList.contains("open")) {
+    btn.classList.remove("open");
+    menu.classList.remove("open");
+  } else {
+    btn.classList.add("open");
+    menu.classList.add("open");
+  }
+}
 
 // ─────────────────────────────────────────────────────────
 //  INGRESAR UNA COMPRA
@@ -2145,7 +2216,7 @@ function eventCard(ev, idx) {
   const status = eventStatus(ev);
   const badgeClass = { upcoming:"badge-upcoming", ongoing:"badge-ongoing", past:"badge-past" }[status];
   const badgeLabel = { upcoming:"Próximo", ongoing:"En curso", past:"Finalizado" }[status];
-  const delay = `animation-delay:${idx * 0.05}s`;
+  const delay = ``;
 
   // Rango de fechas
   let fechaStr = "";
