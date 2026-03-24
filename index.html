@@ -1504,45 +1504,45 @@ function purCard(p) {
   const st  = purchaseState[p.id];
   const pid = p.id;
 
-  // Imagen — sin emojis en atributos para evitar conflictos
-  let imgHTML;
-  if (p.fotoURL) {
-    imgHTML = '<img class="pur-card-img" src="' + esc(normalizeFotoUrl(p.fotoURL)) + '" loading="lazy" onerror="purImgError(this)">';
-  } else {
-    imgHTML = '<div class="pur-card-img-ph">&#128230;</div>';
-  }
+  const imgHTML = p.fotoURL
+    ? '<img class="pur-card-img" src="' + esc(normalizeFotoUrl(p.fotoURL)) + '" loading="lazy" onerror="purImgError(this)">'
+    : '<div class="pur-card-img-ph">&#128230;</div>';
 
-  // Facturas
   const factRows = st.facturas.map((v, i) => purFacturaRow(pid, i, v)).join("");
 
+  // Usamos data-pid para pasar el ID sin problemas de comillas anidadas
   return (
-    '<div class="pur-card" id="purc-' + pid + '">' +
-      '<div class="pur-card-header" onclick="togglePurCard('' + pid + '')">' +
+    '<div class="pur-card" id="purc-' + pid + '" data-pid="' + pid + '">' +
+      '<div class="pur-card-header" data-pid="' + pid + '" onclick="togglePurCard(this.dataset.pid)">' +
         imgHTML +
         '<div class="pur-card-name">' + esc(p.nombre) + '</div>' +
         '<span class="pur-toggle-icon">&#9662;</span>' +
       '</div>' +
       '<div class="pur-card-body">' +
+
         '<div class="pur-qty-row">' +
           '<span class="pur-qty-label">Unidades a ingresar</span>' +
           '<div class="pur-qty-ctrl">' +
-            '<button class="pur-qty-btn" onclick="changePurQty('' + pid + '',-1)">&#8722;</button>' +
+            '<button class="pur-qty-btn" data-pid="' + pid + '" data-delta="-1" onclick="changePurQty(this.dataset.pid, parseInt(this.dataset.delta))">&#8722;</button>' +
             '<span class="pur-qty-val" id="purqty-' + pid + '">' + st.qty + '</span>' +
-            '<button class="pur-qty-btn" onclick="changePurQty('' + pid + '',+1)">&#65291;</button>' +
+            '<button class="pur-qty-btn" data-pid="' + pid + '" data-delta="1" onclick="changePurQty(this.dataset.pid, parseInt(this.dataset.delta))">&#65291;</button>' +
           '</div>' +
         '</div>' +
+
         '<div class="pur-section-title">Valores de facturación (USD)</div>' +
         '<div id="purfact-' + pid + '">' + factRows + '</div>' +
-        '<button class="btn-add-factura" onclick="addFactura('' + pid + '')">&#65291; Agregar valor de factura</button>' +
+        '<button class="btn-add-factura" data-pid="' + pid + '" onclick="addFactura(this.dataset.pid)">&#65291; Agregar valor de factura</button>' +
+
         '<div class="pur-section-title" style="margin-top:14px">Peso del producto</div>' +
         '<div class="pur-peso-row">' +
           '<span class="pur-peso-label">Peso</span>' +
           '<input class="pur-peso-input" type="number" min="0" step="0.01"' +
           ' id="purpeso-' + pid + '" value="' + (st.pesoKg || '') + '"' +
-          ' placeholder="0.00" oninput="onPurInput('' + pid + '')" />' +
+          ' placeholder="0.00" data-pid="' + pid + '" oninput="onPurInput(this.dataset.pid)" />' +
           '<span class="pur-peso-unit">kg</span>' +
         '</div>' +
         '<div style="font-size:11px;color:var(--muted);margin-top:3px">USD 80 por kg de envio</div>' +
+
         '<div class="pur-breakdown" id="purbreak-' + pid + '">' +
           purBreakdownHTML(pid) +
         '</div>' +
@@ -1557,14 +1557,15 @@ function purImgError(img) {
 
 function purFacturaRow(pid, idx, val) {
   const delBtn = idx > 0
-    ? '<button class="pur-factura-del" onclick="removeFactura(\'' + pid + '\',' + idx + ')">&#10005;</button>'
+    ? '<button class="pur-factura-del" data-pid="' + pid + '" data-idx="' + idx + '" onclick="removeFactura(this.dataset.pid, parseInt(this.dataset.idx))">&#10005;</button>'
     : '<span style="width:28px"></span>';
   return (
     '<div class="pur-factura-row" id="purfrow-' + pid + '-' + idx + '">' +
       '<span class="pur-factura-label">' + (idx + 1) + '</span>' +
       '<input class="pur-factura-input" type="number" min="0" step="0.01"' +
       ' placeholder="0.00" value="' + (val || '') + '"' +
-      ' oninput="onPurFactInput(\'' + pid + '\',' + idx + ',this.value)" />' +
+      ' data-pid="' + pid + '" data-idx="' + idx + '"' +
+      ' oninput="onPurFactInput(this.dataset.pid, parseInt(this.dataset.idx), this.value)" />' +
       delBtn +
     '</div>'
   );
