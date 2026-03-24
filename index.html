@@ -523,6 +523,186 @@
     }
     #event-modal-overlay.open { opacity: 1; pointer-events: all; }
     #event-modal-overlay.open .modal-sheet { transform: translateY(0); transition: transform .32s cubic-bezier(.33,1,.68,1); }
+
+    .btn-purchase {
+      background: rgba(251,191,36,0.1) !important;
+      border-color: rgba(251,191,36,0.35) !important;
+      color: #fbbf24 !important;
+    }
+    .btn-purchase:active { background: rgba(251,191,36,0.2) !important; }
+
+    /* ── Panel Ingresar compra ── */
+    #purchase-panel {
+      position: fixed; inset: 0; z-index: 150;
+      background: var(--navy);
+      display: flex; flex-direction: column;
+      transform: translateX(100%);
+      transition: transform .32s cubic-bezier(.33,1,.68,1);
+    }
+    #purchase-panel.open { transform: translateX(0); }
+
+    .purchase-header {
+      background: rgba(10,22,40,0.95);
+      backdrop-filter: blur(18px); -webkit-backdrop-filter: blur(18px);
+      border-bottom: 1px solid var(--card-border);
+      padding: env(safe-area-inset-top,0) 0 0;
+      flex-shrink: 0;
+    }
+    .purchase-header-inner {
+      display: flex; align-items: center; gap: 12px; padding: 14px 18px;
+    }
+    .purchase-back {
+      width: 40px; height: 40px; border-radius: 10px; flex-shrink: 0;
+      background: rgba(255,255,255,0.07); border: 1px solid var(--card-border);
+      color: var(--ice); font-size: 20px; cursor: pointer;
+      display: flex; align-items: center; justify-content: center;
+    }
+    .purchase-title-wrap { flex: 1; }
+    .purchase-title { font-size: 17px; font-weight: 700; }
+    .purchase-sub { font-size: 11px; color: #fbbf24; text-transform: uppercase; letter-spacing: .5px; margin-top: 1px; }
+
+    /* Zona scrolleable */
+    #purchase-scroll {
+      flex: 1; overflow-y: auto; -webkit-overflow-scrolling: touch;
+      padding: 14px 16px 200px;
+      display: flex; flex-direction: column; gap: 12px;
+    }
+
+    /* Tarjeta de producto en compra */
+    .pur-card {
+      background: var(--card-bg);
+      border: 1px solid var(--card-border);
+      border-radius: var(--radius);
+      backdrop-filter: blur(14px);
+      overflow: hidden;
+    }
+    .pur-card-header {
+      display: flex; align-items: center; gap: 12px;
+      padding: 12px 14px; cursor: pointer;
+    }
+    .pur-card-img {
+      width: 48px; height: 48px; border-radius: 8px;
+      object-fit: cover; flex-shrink: 0;
+      background: var(--mid); border: 1px solid var(--card-border);
+    }
+    .pur-card-img-ph {
+      width: 48px; height: 48px; border-radius: 8px; flex-shrink: 0;
+      background: var(--mid); border: 1px solid var(--card-border);
+      display: flex; align-items: center; justify-content: center; font-size: 20px;
+    }
+    .pur-card-name { flex: 1; font-size: 15px; font-weight: 600; line-height: 1.3; }
+    .pur-toggle-icon { font-size: 18px; color: var(--muted); transition: transform .2s; flex-shrink: 0; }
+    .pur-card.expanded .pur-toggle-icon { transform: rotate(180deg); }
+
+    /* Formulario expandido */
+    .pur-card-body {
+      display: none; padding: 0 14px 14px; border-top: 1px solid var(--card-border);
+    }
+    .pur-card.expanded .pur-card-body { display: block; }
+
+    /* Cantidades */
+    .pur-qty-row {
+      display: flex; align-items: center; gap: 10px;
+      padding: 12px 0 10px;
+    }
+    .pur-qty-label { font-size: 12px; font-weight: 700; text-transform: uppercase; letter-spacing: .5px; color: var(--sky); flex: 1; }
+    .pur-qty-ctrl { display: flex; align-items: center; gap: 8px; }
+    .pur-qty-btn {
+      width: 32px; height: 32px; border-radius: 8px;
+      background: rgba(37,99,235,0.2); border: 1px solid rgba(37,99,235,0.4);
+      color: var(--white); font-size: 18px; font-weight: 700;
+      cursor: pointer; display: flex; align-items: center; justify-content: center;
+    }
+    .pur-qty-val { font-family: var(--mono); font-size: 17px; font-weight: 700; min-width: 28px; text-align: center; }
+
+    /* Sección facturación */
+    .pur-section-title {
+      font-size: 11px; font-weight: 700; text-transform: uppercase;
+      letter-spacing: .6px; color: var(--sky);
+      display: flex; align-items: center; gap: 8px; margin: 10px 0 8px;
+    }
+    .pur-section-title::after { content:''; flex:1; height:1px; background: var(--card-border); }
+
+    .pur-factura-row {
+      display: flex; align-items: center; gap: 8px; margin-bottom: 6px;
+    }
+    .pur-factura-input {
+      flex: 1; background: rgba(255,255,255,0.06); border: 1px solid var(--card-border);
+      border-radius: var(--radius-sm); padding: 9px 12px;
+      color: var(--white); font-family: var(--mono); font-size: 14px; outline: none;
+      transition: border-color var(--transition);
+    }
+    .pur-factura-input:focus { border-color: var(--bright); }
+    .pur-factura-label { font-size: 11px; color: var(--muted); min-width: 20px; text-align: center; }
+    .pur-factura-del {
+      width: 28px; height: 28px; border-radius: 7px; flex-shrink: 0;
+      background: rgba(239,68,68,0.12); border: 1px solid rgba(239,68,68,0.3);
+      color: #fca5a5; font-size: 16px; cursor: pointer;
+      display: flex; align-items: center; justify-content: center;
+    }
+    .btn-add-factura {
+      width: 100%; background: rgba(37,99,235,0.1); border: 1px dashed rgba(37,99,235,0.4);
+      border-radius: var(--radius-sm); padding: 8px;
+      color: var(--sky); font-size: 13px; font-family: var(--font); font-weight: 600;
+      cursor: pointer; display: flex; align-items: center; justify-content: center; gap: 6px;
+      margin-top: 4px;
+    }
+
+    /* Campo peso */
+    .pur-peso-row {
+      display: flex; align-items: center; gap: 10px; margin-top: 10px;
+    }
+    .pur-peso-label { font-size: 12px; font-weight: 700; text-transform: uppercase; letter-spacing: .5px; color: #fbbf24; flex: 1; }
+    .pur-peso-input {
+      width: 100px; background: rgba(255,255,255,0.06); border: 1px solid rgba(251,191,36,0.3);
+      border-radius: var(--radius-sm); padding: 9px 12px;
+      color: var(--white); font-family: var(--mono); font-size: 14px; outline: none;
+      text-align: right;
+    }
+    .pur-peso-unit { font-size: 12px; color: var(--muted); }
+
+    /* Breakdown del producto */
+    .pur-breakdown {
+      background: rgba(37,99,235,0.08); border: 1px solid var(--card-border);
+      border-radius: var(--radius-sm); padding: 12px; margin-top: 12px;
+    }
+    .pur-breakdown-row {
+      display: flex; justify-content: space-between; align-items: center;
+      padding: 4px 0; font-size: 12px;
+    }
+    .pur-breakdown-key { color: var(--muted); }
+    .pur-breakdown-val { font-family: var(--mono); font-weight: 600; color: var(--ice); }
+    .pur-breakdown-total {
+      display: flex; justify-content: space-between; align-items: center;
+      padding: 8px 0 0; margin-top: 6px; border-top: 1px solid var(--card-border);
+    }
+    .pur-breakdown-total-key { font-size: 13px; font-weight: 700; color: var(--white); }
+    .pur-breakdown-total-val { font-family: var(--mono); font-size: 16px; font-weight: 700; color: var(--sky); }
+
+    /* Footer fijo */
+    .purchase-footer {
+      position: fixed; bottom: 0; left: 0; right: 0;
+      background: rgba(10,22,40,0.97);
+      backdrop-filter: blur(20px); -webkit-backdrop-filter: blur(20px);
+      border-top: 1px solid var(--card-border);
+      padding: 12px 18px env(safe-area-inset-bottom, 12px);
+      z-index: 20;
+    }
+    .purchase-summary-row {
+      display: flex; align-items: center; justify-content: space-between;
+      margin-bottom: 10px;
+    }
+    .purchase-summary-label { font-size: 12px; color: var(--muted); font-weight: 600; text-transform: uppercase; letter-spacing: .4px; }
+    .purchase-summary-val { font-family: var(--mono); font-size: 20px; font-weight: 700; color: #fbbf24; }
+    .purchase-summary-items { font-size: 11px; color: var(--muted); margin-top: 1px; }
+    .btn-confirm-purchase {
+      width: 100%; background: linear-gradient(135deg, #d97706, #b45309);
+      border: none; border-radius: var(--radius-sm); padding: 15px;
+      color: #fff; font-family: var(--font); font-size: 16px; font-weight: 700;
+      cursor: pointer; display: flex; align-items: center; justify-content: center; gap: 8px;
+      box-shadow: 0 4px 20px rgba(217,119,6,0.4);
+    }
+    .btn-confirm-purchase:active { opacity: .85; transform: scale(.98); }
     ::-webkit-scrollbar { width: 4px; }
     ::-webkit-scrollbar-track { background: transparent; }
     ::-webkit-scrollbar-thumb { background: var(--steel); border-radius: 99px; }
@@ -562,6 +742,9 @@
 
     <!-- Botón Calendario de eventos -->
     <button class="btn-calc btn-events" onclick="openEvents()">📅 Calendario de eventos</button>
+
+    <!-- Botón Ingresar una compra -->
+    <button class="btn-calc btn-purchase" onclick="openPurchase()">📥 Ingresar una compra</button>
 
     <!-- Barra de cotización -->
     <div class="rate-bar">
@@ -752,6 +935,33 @@
       <button class="btn btn-danger" id="ev-btn-delete" onclick="deleteEventFromModal()" style="display:none">🗑 Eliminar</button>
       <button class="btn btn-primary" id="ev-btn-save" onclick="saveEvent()">💾 Guardar</button>
     </div>
+  </div>
+</div>
+
+
+<!-- PANEL INGRESAR COMPRA -->
+<div id="purchase-panel">
+  <div class="purchase-header">
+    <div class="purchase-header-inner">
+      <button class="purchase-back" onclick="closePurchase()">←</button>
+      <div class="purchase-title-wrap">
+        <div class="purchase-title">Ingresar una compra</div>
+        <div class="purchase-sub">Actualizá stock y costos</div>
+      </div>
+    </div>
+  </div>
+  <div id="purchase-scroll"></div>
+  <div class="purchase-footer">
+    <div class="purchase-summary-row">
+      <div>
+        <div class="purchase-summary-label">Total compra</div>
+        <div class="purchase-summary-items" id="pur-summary-items">Sin productos ingresados</div>
+      </div>
+      <div class="purchase-summary-val" id="pur-summary-total">USD 0.00</div>
+    </div>
+    <button class="btn-confirm-purchase" onclick="confirmPurchase()">
+      📥 Confirmar compra y actualizar stock
+    </button>
   </div>
 </div>
 
@@ -1260,6 +1470,245 @@ function esc(s) {
 function fmt(n)    { return (parseFloat(n)||0).toFixed(2); }
 function fmtARS(n) { return (parseFloat(n)||0).toLocaleString("es-AR"); }
 
+
+
+// ─────────────────────────────────────────────────────────
+//  INGRESAR UNA COMPRA
+// ─────────────────────────────────────────────────────────
+
+// Estado: { productId: { qty, facturas: [val,...], pesoKg } }
+let purchaseState = {};
+
+function openPurchase() {
+  purchaseState = {};
+  renderPurchaseList();
+  document.getElementById("purchase-panel").classList.add("open");
+  updatePurchaseSummary();
+}
+
+function closePurchase() {
+  document.getElementById("purchase-panel").classList.remove("open");
+}
+
+function renderPurchaseList() {
+  const el = document.getElementById("purchase-scroll");
+  if (!products.length) {
+    el.innerHTML = `<div class="state-msg"><span class="emoji">📦</span><p>No hay productos cargados.</p></div>`;
+    return;
+  }
+  el.innerHTML = products.map(p => purCard(p)).join("");
+}
+
+function purCard(p) {
+  const st  = purchaseState[p.id] || { qty: 0, facturas: [0], pesoKg: 0 };
+  const img = p.fotoURL
+    ? `<img class="pur-card-img" src="${esc(normalizeFotoUrl(p.fotoURL))}" loading="lazy" onerror="this.className='pur-card-img-ph';this.textContent='📦'">`
+    : `<div class="pur-card-img-ph">📦</div>`;
+
+  return `
+  <div class="pur-card" id="purc-${p.id}">
+    <div class="pur-card-header" onclick="togglePurCard('${p.id}')">
+      ${img}
+      <div class="pur-card-name">${esc(p.nombre)}</div>
+      <span class="pur-toggle-icon">▾</span>
+    </div>
+    <div class="pur-card-body">
+      <!-- Cantidad -->
+      <div class="pur-qty-row">
+        <span class="pur-qty-label">Unidades a ingresar</span>
+        <div class="pur-qty-ctrl">
+          <button class="pur-qty-btn" onclick="changePurQty('${p.id}',-1)">−</button>
+          <span class="pur-qty-val" id="purqty-${p.id}">${st.qty}</span>
+          <button class="pur-qty-btn" onclick="changePurQty('${p.id}',+1)">＋</button>
+        </div>
+      </div>
+
+      <!-- Facturación -->
+      <div class="pur-section-title">Valores de facturación (USD)</div>
+      <div id="purfact-${p.id}">
+        ${st.facturas.map((v, i) => purFacturaRow(p.id, i, v)).join("")}
+      </div>
+      <button class="btn-add-factura" onclick="addFactura('${p.id}')">＋ Agregar valor de factura</button>
+
+      <!-- Peso -->
+      <div class="pur-section-title" style="margin-top:14px">Peso del producto</div>
+      <div class="pur-peso-row">
+        <span class="pur-peso-label">💊 Peso</span>
+        <input class="pur-peso-input" type="number" min="0" step="0.01"
+          id="purpeso-${p.id}" value="${st.pesoKg || ''}"
+          placeholder="0.00"
+          oninput="onPurInput('${p.id}')" />
+        <span class="pur-peso-unit">kg</span>
+      </div>
+      <div style="font-size:11px;color:var(--muted);margin-top:3px">USD 80 por kg de envío</div>
+
+      <!-- Breakdown -->
+      <div class="pur-breakdown" id="purbreak-${p.id}">
+        ${purBreakdownHTML(p.id)}
+      </div>
+    </div>
+  </div>`;
+}
+
+function purFacturaRow(pid, idx, val) {
+  return `<div class="pur-factura-row" id="purfrow-${pid}-${idx}">
+    <span class="pur-factura-label">${idx + 1}</span>
+    <input class="pur-factura-input" type="number" min="0" step="0.01"
+      placeholder="0.00" value="${val || ''}"
+      oninput="onPurFactInput('${pid}',${idx},this.value)"
+    />
+    ${idx > 0 ? `<button class="pur-factura-del" onclick="removeFactura('${pid}',${idx})">✕</button>` : '<span style="width:28px"></span>'}
+  </div>`;
+}
+
+function purBreakdownHTML(pid) {
+  const st     = purchaseState[pid] || { facturas:[0], pesoKg:0 };
+  const facTotal = st.facturas.reduce((a, v) => a + (parseFloat(v)||0), 0);
+  const traslado = facTotal * 0.20;
+  const pesoVal  = (parseFloat(st.pesoKg)||0) * 80;
+  const total    = facTotal + traslado + pesoVal;
+
+  return `
+  <div class="pur-breakdown-row">
+    <span class="pur-breakdown-key">Facturación total</span>
+    <span class="pur-breakdown-val">USD ${fmt(facTotal)}</span>
+  </div>
+  <div class="pur-breakdown-row">
+    <span class="pur-breakdown-key">Traslado (20%)</span>
+    <span class="pur-breakdown-val">USD ${fmt(traslado)}</span>
+  </div>
+  <div class="pur-breakdown-row">
+    <span class="pur-breakdown-key">Peso (${fmt(parseFloat(st.pesoKg)||0)} kg × $80)</span>
+    <span class="pur-breakdown-val">USD ${fmt(pesoVal)}</span>
+  </div>
+  <div class="pur-breakdown-total">
+    <span class="pur-breakdown-total-key">Valor final del producto</span>
+    <span class="pur-breakdown-total-val">USD ${fmt(total)}</span>
+  </div>`;
+}
+
+// ── Interacciones ────────────────────────────────────────
+
+function togglePurCard(pid) {
+  const card = document.getElementById(`purc-${pid}`);
+  card.classList.toggle("expanded");
+  if (card.classList.contains("expanded") && !purchaseState[pid]) {
+    purchaseState[pid] = { qty: 0, facturas: [0], pesoKg: 0 };
+  }
+}
+
+function changePurQty(pid, delta) {
+  if (!purchaseState[pid]) purchaseState[pid] = { qty: 0, facturas: [0], pesoKg: 0 };
+  const st = purchaseState[pid];
+  st.qty = Math.max(0, st.qty + delta);
+  const el = document.getElementById(`purqty-${pid}`);
+  if (el) el.textContent = st.qty;
+  updatePurchaseSummary();
+}
+
+function onPurFactInput(pid, idx, val) {
+  if (!purchaseState[pid]) purchaseState[pid] = { qty: 0, facturas: [0], pesoKg: 0 };
+  purchaseState[pid].facturas[idx] = parseFloat(val) || 0;
+  refreshBreakdown(pid);
+  updatePurchaseSummary();
+}
+
+function onPurInput(pid) {
+  if (!purchaseState[pid]) purchaseState[pid] = { qty: 0, facturas: [0], pesoKg: 0 };
+  const pesoEl = document.getElementById(`purpeso-${pid}`);
+  purchaseState[pid].pesoKg = parseFloat(pesoEl?.value) || 0;
+  refreshBreakdown(pid);
+  updatePurchaseSummary();
+}
+
+function addFactura(pid) {
+  if (!purchaseState[pid]) purchaseState[pid] = { qty: 0, facturas: [0], pesoKg: 0 };
+  const st  = purchaseState[pid];
+  const idx = st.facturas.length;
+  st.facturas.push(0);
+  const container = document.getElementById(`purfact-${pid}`);
+  if (container) {
+    const div = document.createElement("div");
+    div.innerHTML = purFacturaRow(pid, idx, 0);
+    container.appendChild(div.firstElementChild);
+  }
+}
+
+function removeFactura(pid, idx) {
+  if (!purchaseState[pid]) return;
+  const st = purchaseState[pid];
+  st.facturas.splice(idx, 1);
+  // Re-render el bloque de facturas
+  const container = document.getElementById(`purfact-${pid}`);
+  if (container)
+    container.innerHTML = st.facturas.map((v, i) => purFacturaRow(pid, i, v)).join("");
+  refreshBreakdown(pid);
+  updatePurchaseSummary();
+}
+
+function refreshBreakdown(pid) {
+  const el = document.getElementById(`purbreak-${pid}`);
+  if (el) el.innerHTML = purBreakdownHTML(pid);
+}
+
+// ── Totales del footer ────────────────────────────────────
+function purProductTotal(pid) {
+  const st = purchaseState[pid];
+  if (!st) return 0;
+  const facTotal = st.facturas.reduce((a, v) => a + (parseFloat(v)||0), 0);
+  return facTotal + facTotal * 0.20 + (parseFloat(st.pesoKg)||0) * 80;
+}
+
+function updatePurchaseSummary() {
+  const items = Object.entries(purchaseState).filter(([,st]) => st.qty > 0);
+  const total = Object.keys(purchaseState).reduce((acc, pid) => acc + purProductTotal(pid), 0);
+  const totalUnits = items.reduce((a, [,st]) => a + st.qty, 0);
+
+  document.getElementById("pur-summary-total").textContent = `USD ${fmt(total)}`;
+  document.getElementById("pur-summary-items").textContent = totalUnits > 0
+    ? `${totalUnits} unidad${totalUnits !== 1 ? "es" : ""} · ${items.length} producto${items.length !== 1 ? "s" : ""}`
+    : "Sin productos ingresados";
+}
+
+// ── Confirmar compra ──────────────────────────────────────
+async function confirmPurchase() {
+  const items = Object.entries(purchaseState).filter(([,st]) => st.qty > 0);
+  if (!items.length) { toast("Seleccioná al menos un producto con cantidad > 0", true); return; }
+
+  const btn = document.querySelector(".btn-confirm-purchase");
+  btn.textContent = "⏳ Procesando…"; btn.disabled = true;
+
+  let ok = 0, errors = 0;
+  for (const [pid, st] of items) {
+    const p = products.find(x => x.id === pid);
+    if (!p) continue;
+    const newValorCompra = purProductTotal(pid);
+    const updated = {
+      ...p,
+      stock:          p.stock + st.qty,
+      valorCompraUSD: newValorCompra > 0 ? newValorCompra : p.valorCompraUSD
+    };
+    try {
+      const res = await apiPost("update", updated);
+      if (res.error) throw new Error(res.error);
+      ok++;
+    } catch (e) {
+      errors++;
+      console.error("Error actualizando", p.nombre, e);
+    }
+  }
+
+  btn.textContent = "📥 Confirmar compra y actualizar stock";
+  btn.disabled = false;
+
+  if (errors === 0) {
+    toast(`Compra ingresada ✓ · ${ok} producto${ok !== 1 ? "s" : ""} actualizado${ok !== 1 ? "s" : ""}`);
+    closePurchase();
+    fetchProducts();
+  } else {
+    toast(`${ok} actualizados, ${errors} con error`, true);
+  }
+}
 
 // ─────────────────────────────────────────────────────────
 //  CÁLCULO DE COMPRA
