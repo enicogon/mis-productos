@@ -248,7 +248,7 @@
 
     /* ── Menú Compra de productos ── */
     .btn-compras-main {
-      width: calc(100% - 36px); margin: 0 18px 0;
+      width: calc(100% - 36px); margin: 8px 18px 0;
       background: rgba(37,99,235,0.12);
       border: 1px solid rgba(37,99,235,0.35);
       border-radius: 10px; padding: 11px 16px;
@@ -282,7 +282,7 @@
 
     /* ── Botón Ventas ── */
     .btn-ventas {
-      width: calc(100% - 36px); margin: 4px 18px 0;
+      width: calc(100% - 36px); margin: 8px 18px 0;
       background: rgba(168,85,247,0.1);
       border: 1px solid rgba(168,85,247,0.35);
       border-radius: 10px; padding: 11px 16px;
@@ -734,6 +734,7 @@
       overflow: hidden;
       position: relative;
       opacity: 1;
+      flex-shrink: 0;
     }
     /* Barra de color lateral según estado */
     .event-card::before {
@@ -1083,9 +1084,6 @@
       <button class="btn-submenu" onclick="openPurchaseRecords();toggleComprasMenu(true)">📋 Registro de compras</button>
     </div>
 
-    <!-- Botón Calendario de eventos -->
-    <button class="btn-calc btn-events" onclick="openEvents()" style="margin-top:4px">📅 Calendario de eventos</button>
-
     <!-- Menú Ventas y presupuestos -->
     <button class="btn-ventas-main" id="btn-ventas-main" onclick="toggleVentasMenu()">
       <span>💰 Ventas y presupuestos</span>
@@ -1097,7 +1095,10 @@
       <button class="btn-submenu btn-submenu-purple" onclick="openSalesRecords();toggleVentasMenu(true)">📋 Registro de ventas y presupuestos</button>
     </div>
 
-    <!-- Barra de cotización -->
+    <!-- Botón Calendario de eventos -->
+    <button class="btn-calc btn-events" onclick="openEvents()" style="margin-top:4px">📅 Calendario de eventos</button>
+
+        <!-- Barra de cotización -->
     <div class="rate-bar">
       <span class="rate-val" id="rate-bar-txt">Cargando cotización…</span>
       <button class="rate-refresh" onclick="fetchUsdRate()" title="Actualizar cotización">↻</button>
