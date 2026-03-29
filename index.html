@@ -1436,6 +1436,12 @@
           <input class="cf-input" id="s-envio" type="text" placeholder="Dirección, localidad, provincia...">
         </div>
       </div>
+      <div class="cf-row">
+        <div>
+          <div class="cf-label">Forma de pago y destino</div>
+          <input class="cf-input" id="s-formapago" type="text" placeholder="ej. Transferencia / Envío a domicilio">
+        </div>
+      </div>
     </div>
     <div class="pct-row">
       <div class="pct-group">
@@ -2148,6 +2154,9 @@ async function saveQuote() {
     envio: document.getElementById("q-envio").value.trim(),
     items: items, totalUSD: totalUSD
   };
+  if (!API_URL) { toast("Configurá la URL de la API primero", true); return; }
+  var btnQ = document.querySelector(".btn-action-quote");
+  if (btnQ) { btnQ.textContent = "Guardando..."; btnQ.disabled = true; }
   try {
     var res = await fetch(API_URL, { method:"POST",
       body: JSON.stringify({ action:"createQuote", record: rec }),
@@ -2158,7 +2167,11 @@ async function saveQuote() {
     exportGenericPDF("Presupuesto", rec, null);
     toast("Presupuesto guardado y PDF generado ✓");
     closeQuote();
-  } catch(e) { toast("Error: " + e.message, true); }
+  } catch(e) {
+    toast("Error al guardar: " + e.message, true);
+  } finally {
+    if (btnQ) { btnQ.innerHTML = "&#128196; Guardar presupuesto y exportar PDF"; btnQ.disabled = false; }
+  }
 }
 
 // ─────────────────────────────────────────────────────────
@@ -2171,6 +2184,7 @@ function openSale() {
   document.getElementById("sale-panel").classList.add("open");
   document.getElementById("s-tarjeta").value = "";
   document.getElementById("s-descuento").value = "";
+  document.getElementById("s-formapago").value = "";
   buildSelProductList("sale-products", saleQtys, "s", "sale", updateSaleSummary);
   updateSaleSummary();
 }
@@ -2218,9 +2232,11 @@ async function confirmSale() {
   var totalFinal = base + tarjeta - descuento;
   var tel = buildPhone("s-tel-pais","s-tel-area","s-tel-num");
 
+  var formaPago = document.getElementById("s-formapago").value.trim();
   var rec = {
     fecha: new Date().toISOString(), doctor: doctor, telefono: tel,
     envio: document.getElementById("s-envio").value.trim(),
+    formaPago: formaPago,
     items: items, totalUSD: base,
     pctTarjeta: pctT, pctDescuento: pctD, totalFinal: totalFinal,
     totalNicolas: totalNicolas, totalClaudiaNicolas: totalClaudia
@@ -2311,9 +2327,10 @@ function renderSalesRecords() {
     var total    = isQuote ? rec.totalUSD : rec.totalFinal;
     var fechaStr = fmtDateFromISO(rec.fecha);
     var doctorTxt = rec.doctor ? "Dr./Dra. " + esc(rec.doctor) : "Sin nombre";
+    var formaPagoHtml = (!isQuote && rec.formaPago) ? "<div class='record-item' style='color:var(--sky)'>&#128179; " + esc(rec.formaPago) + "</div>" : "";
     var itemsHtml = (rec.items||[]).slice(0,3).map(function(it){
       return "<div class='record-item'>" + esc(it.nombre) + " x" + it.qty + "</div>";
-    }).join("") + ((rec.items||[]).length > 3 ? "<div class='record-item'>+ " + ((rec.items||[]).length-3) + " más...</div>" : "");
+    }).join("") + ((rec.items||[]).length > 3 ? "<div class='record-item'>+ " + ((rec.items||[]).length-3) + " más...</div>" : "") + formaPagoHtml;
 
     var pdfBtns = isQuote
       ? "<button class='btn-record-pdf' data-idx='" + i + "' onclick=\"exportGenericPDF('Presupuesto', quotesData[this.dataset.idx], null)\">&#128196; PDF</button>"
@@ -2427,8 +2444,17 @@ function exportGenericPDF(docTitle, rec, saleExtras) {
     doc.setTextColor.apply(doc, NAVY); doc.setFont("helvetica","normal"); doc.setFontSize(9);
     doc.text(rec.doctor, mg+4, y+13);
     if (rec.telefono) { doc.setTextColor.apply(doc, MUTED); doc.setFontSize(8); doc.setFont("helvetica","bold"); doc.text("Teléfono:", mg+90, y+7); doc.setTextColor.apply(doc, NAVY); doc.setFont("helvetica","normal"); doc.setFontSize(9); doc.text(rec.telefono, mg+90, y+13); }
-    if (rec.envio)    { doc.setTextColor.apply(doc, MUTED); doc.setFontSize(8); doc.setFont("helvetica","bold"); doc.text("Envío:", mg+4, y+21); doc.setTextColor.apply(doc, NAVY); doc.setFont("helvetica","normal"); doc.setFontSize(9); doc.text(rec.envio.substring(0,60), mg+18, y+21); }
-    y += 32;
+    if (rec.envio)    { doc.setTextColor.apply(doc, MUTED); doc.setFontSize(8); doc.setFont("helvetica","bold"); doc.text("Envio:", mg+4, y+21); doc.setTextColor.apply(doc, NAVY); doc.setFont("helvetica","normal"); doc.setFontSize(9); doc.text(rec.envio.substring(0,60), mg+18, y+21); }
+    var clientHeight = 26;
+    if (rec.formaPago) { clientHeight = 36; }
+    doc.rect(mg,y,W-mg*2,clientHeight); // redraw border with right size
+    if (rec.formaPago) {
+      doc.setTextColor.apply(doc, MUTED); doc.setFontSize(8); doc.setFont("helvetica","bold");
+      doc.text("Forma de pago:", mg+4, y+29);
+      doc.setTextColor.apply(doc, NAVY); doc.setFont("helvetica","normal"); doc.setFontSize(9);
+      doc.text(rec.formaPago.substring(0,70), mg+38, y+29);
+    }
+    y += (rec.formaPago ? 42 : 32);
   }
 
   // Table header
@@ -2871,6 +2897,9 @@ async function confirmPurchase() {
   btn.textContent = "Procesando..."; btn.disabled = true;
 
   var ok = 0, errors = 0;
+  var recItems = [];
+  var totalUSD = 0;
+
   for (var i = 0; i < toUpdate.length; i++) {
     var pid = toUpdate[i];
     var st  = purState[pid];
@@ -2882,20 +2911,49 @@ async function confirmPurchase() {
       id: p.id, nombre: p.nombre, descripcion: p.descripcion, fotoURL: p.fotoURL,
       stock: p.stock + st.qty,
       valorCompraUSD: newCosto > 0 ? newCosto : p.valorCompraUSD,
-      valorVentaUSD: p.valorVentaUSD, gananciaPct: p.gananciaPct, valorVentaARS: p.valorVentaARS
+      valorVentaUSD: p.valorVentaUSD, gananciaPct: p.gananciaPct, valorVentaARS: p.valorVentaARS,
+      categoria: purchaseBuyer
     };
     try {
       var res = await apiPost("update", updated);
       if (res && res.error) throw new Error(res.error);
       ok++;
+      recItems.push({
+        id: p.id, nombre: p.nombre, qty: st.qty,
+        subtotal: newCosto, precioUSD: newCosto,
+        facturas: st.facturas.slice(), pesoKg: st.pesoKg,
+        categoria: purchaseBuyer
+      });
+      totalUSD += newCosto;
     } catch(e) { errors++; }
+  }
+
+  // Guardar registro de compra en la hoja "RegistroCompras"
+  if (ok > 0 && API_URL) {
+    var totalARS = usdRate > 0 ? Math.round(totalUSD * usdRate) : 0;
+    try {
+      await fetch(API_URL, {
+        method: "POST",
+        body: JSON.stringify({
+          action: "createPurchaseRecord",
+          record: {
+            fecha: new Date().toISOString(),
+            comprador: purchaseBuyer,
+            items: recItems,
+            totalUSD: totalUSD,
+            totalARS: totalARS
+          }
+        }),
+        headers: { "Content-Type": "text/plain;charset=utf-8" }
+      });
+    } catch(e) { console.warn("Error guardando registro:", e); }
   }
 
   btn.innerHTML = "&#128229; Confirmar compra y actualizar stock";
   btn.disabled = false;
 
   if (errors === 0) {
-    toast("Compra ingresada - " + ok + " producto" + (ok !== 1 ? "s" : "") + " actualizado" + (ok !== 1 ? "s" : ""));
+    toast("Compra ingresada (" + purchaseBuyer + ") - " + ok + " producto" + (ok !== 1 ? "s" : "") + " actualizado" + (ok !== 1 ? "s" : ""));
     closePurchase();
     fetchProducts();
   } else {
