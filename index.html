@@ -2235,8 +2235,8 @@ function renderPurchaseRecords() {
         (rec.totalARS > 0 ? " / ARS $" + fmtARS(rec.totalARS) : "") + "</div>" +
       "<div class='record-actions'>" +
         "<button class='btn-record-pdf' data-idx='" + i + "' onclick='exportPurchaseRecordPDF(purchaseRecordsData[this.dataset.idx])'>&#128196; PDF</button>" +
-        "<button class='btn-record-edit' data-idx='" + i + "' onclick='openEditRecord("purchase", purchaseRecordsData[this.dataset.idx])'>&#9998; Editar</button>" +
-        "<button class='btn-record-del' data-id='" + esc(rec.id) + "' onclick='deleteRecord("purchase",this.dataset.id)'>&#128465;</button>" +
+        "<button class='btn-record-edit' data-idx='" + i + "' onclick='openEditRecord(\"purchase\", purchaseRecordsData[this.dataset.idx])'>&#9998; Editar</button>" +
+        "<button class='btn-record-del' data-id='" + esc(rec.id) + "' onclick='deleteRecord(\"purchase\",this.dataset.id)'>&#128465;</button>" +
       "</div>" +
     "</div>";
   });
