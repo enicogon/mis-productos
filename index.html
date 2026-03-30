@@ -488,13 +488,22 @@
     }
 
     /* ── Tabs ── */
-    .panel-tabs { display: flex; border-bottom: 1px solid var(--card-border); }
+    .panel-tabs { display: flex; border-bottom: 1px solid var(--card-border); background: rgba(10,22,40,0.7); }
     .panel-tab {
       flex: 1; padding: 11px; text-align: center; font-size: 13px; font-weight: 600;
-      color: var(--muted); cursor: pointer; border-bottom: 2px solid transparent;
-      transition: color .2s, border-color .2s;
+      color: rgba(186,230,253,0.6); cursor: pointer;
+      border-bottom: 2px solid transparent;
+      background: transparent;
+      border-top: none; border-left: none; border-right: none;
+      font-family: var(--font);
+      transition: color .2s, border-color .2s, background .2s;
     }
-    .panel-tab.active { color: var(--sky); border-bottom-color: var(--sky); }
+    .panel-tab:hover { color: var(--ice); background: rgba(37,99,235,0.1); }
+    .panel-tab.active {
+      color: var(--sky); border-bottom-color: var(--sky);
+      background: rgba(37,99,235,0.12);
+      font-weight: 700;
+    }
 
     /* ── Botón Cálculo de compra ── */
     .btn-calc {
@@ -1039,6 +1048,95 @@
     /* ── Categorías de producto ── */
     .product-card.cat-nicolas { border-left: 5px solid #38bdf8; }
     .product-card.cat-claudia { border-left: 5px solid #c084fc; }
+
+    .btn-balance-main {
+      width: calc(100% - 36px); margin: 4px 18px 0;
+      background: rgba(34,197,94,0.1);
+      border: 1px solid rgba(34,197,94,0.35);
+      border-radius: 10px; padding: 11px 16px;
+      color: #4ade80; font-family: var(--font); font-size: 14px; font-weight: 600;
+      cursor: pointer; display: flex; align-items: center; justify-content: center; gap: 8px;
+      transition: background var(--transition);
+    }
+    .btn-balance-main:active { background: rgba(34,197,94,0.2); }
+    .btn-estadisticas-main {
+      width: calc(100% - 36px); margin: 4px 18px 0;
+      background: rgba(251,191,36,0.1);
+      border: 1px solid rgba(251,191,36,0.35);
+      border-radius: 10px; padding: 11px 16px;
+      color: #fbbf24; font-family: var(--font); font-size: 14px; font-weight: 600;
+      cursor: pointer; display: flex; align-items: center; justify-content: center; gap: 8px;
+      transition: background var(--transition);
+    }
+    .btn-estadisticas-main:active { background: rgba(251,191,36,0.2); }
+
+    /* ── Panel Balances ── */
+    #balances-panel {
+      position: fixed; inset: 0; z-index: 150;
+      background: var(--navy);
+      display: flex; flex-direction: column;
+      transform: translateX(100%);
+      transition: transform .32s cubic-bezier(.33,1,.68,1);
+    }
+    #balances-panel.open { transform: translateX(0); }
+    .balance-card {
+      background: var(--card-bg); border: 1px solid var(--card-border);
+      border-radius: var(--radius); padding: 16px; margin-bottom: 12px;
+      backdrop-filter: blur(14px);
+    }
+    .balance-card-title {
+      font-size: 12px; font-weight: 700; text-transform: uppercase;
+      letter-spacing: .6px; margin-bottom: 12px;
+      display: flex; align-items: center; gap: 8px;
+    }
+    .balance-row {
+      display: flex; justify-content: space-between; align-items: center;
+      padding: 7px 0; border-bottom: 1px solid rgba(56,189,248,0.1);
+      font-size: 13px;
+    }
+    .balance-row:last-child { border-bottom: none; }
+    .balance-key { color: var(--muted); }
+    .balance-val { font-family: var(--mono); font-weight: 700; }
+    .balance-val.positive { color: #4ade80; }
+    .balance-val.negative { color: #f87171; }
+    .balance-val.neutral  { color: var(--sky); }
+    .balance-section {
+      font-size: 11px; font-weight: 700; text-transform: uppercase; letter-spacing: .7px;
+      color: var(--sky); padding: 14px 0 6px;
+      border-bottom: 1px solid var(--card-border); margin-bottom: 8px;
+    }
+    .balance-loading {
+      text-align: center; padding: 60px 20px; color: var(--muted); font-size: 14px;
+    }
+    .balance-refresh-btn {
+      background: none; border: 1px solid var(--card-border); border-radius: 8px;
+      padding: 8px 16px; color: var(--sky); font-family: var(--font);
+      font-size: 13px; cursor: pointer; display: flex; align-items: center; gap: 6px;
+      margin: 0 auto 16px;
+    }
+
+    .btn-record-edit {
+      flex: 1; padding: 8px; border-radius: 8px;
+      background: rgba(251,191,36,.1); border: 1px solid rgba(251,191,36,.3);
+      color: #fbbf24; font-size: 12px; font-weight: 600; cursor: pointer;
+      font-family: var(--font); display: flex; align-items: center; justify-content: center; gap: 5px;
+    }
+    .btn-record-del {
+      flex: 0 0 auto; padding: 8px 12px; border-radius: 8px;
+      background: rgba(239,68,68,.1); border: 1px solid rgba(239,68,68,.3);
+      color: #f87171; font-size: 12px; font-weight: 600; cursor: pointer;
+      font-family: var(--font); display: flex; align-items: center; justify-content: center; gap: 5px;
+    }
+
+    /* Modal de edición de registros */
+    #edit-record-modal {
+      position: fixed; inset: 0; z-index: 250;
+      background: rgba(5,12,24,0.85); backdrop-filter: blur(10px);
+      display: flex; align-items: flex-end; justify-content: center;
+      opacity: 0; pointer-events: none; transition: opacity .25s;
+    }
+    #edit-record-modal.open { opacity: 1; pointer-events: all; }
+    #edit-record-modal.open .modal-sheet { transform: translateY(0); transition: transform .32s cubic-bezier(.33,1,.68,1); }
     ::-webkit-scrollbar { width: 4px; }
     ::-webkit-scrollbar-track { background: transparent; }
     ::-webkit-scrollbar-thumb { background: var(--steel); border-radius: 99px; }
@@ -1094,6 +1192,10 @@
       <button class="btn-submenu btn-submenu-purple" onclick="openSale();toggleVentasMenu(true)">🏷️ Realizar venta</button>
       <button class="btn-submenu btn-submenu-purple" onclick="openSalesRecords();toggleVentasMenu(true)">📋 Registro de ventas y presupuestos</button>
     </div>
+
+    <!-- Botones Balances y Estadísticas -->
+    <button class="btn-balance-main" onclick="openBalances()">⚖️ Balances</button>
+    <button class="btn-estadisticas-main" onclick="toast('Estadísticas — próximamente')">📈 Estadísticas</button>
 
     <!-- Botón Calendario de eventos -->
     <button class="btn-calc btn-events" onclick="openEvents()" style="margin-top:4px">📅 Calendario de eventos</button>
@@ -1438,8 +1540,8 @@
       </div>
       <div class="cf-row">
         <div>
-          <div class="cf-label">Forma de pago y cuenta destino</div>
-          <input class="cf-input" id="s-formapago" type="text" placeholder="ej. Transferencia / Cuenta destino">
+          <div class="cf-label">Forma de pago y destino</div>
+          <input class="cf-input" id="s-formapago" type="text" placeholder="ej. Transferencia / Envío a domicilio">
         </div>
       </div>
     </div>
@@ -1482,6 +1584,40 @@
     </div>
   </div>
   <div class="big-panel-scroll" id="sales-records-list" style="padding-bottom:40px"></div>
+</div>
+
+
+<!-- PANEL BALANCES -->
+<div id="balances-panel">
+  <div class="big-panel-header">
+    <div class="big-panel-header-inner">
+      <button class="big-panel-back" onclick="closeBalances()">&#8592;</button>
+      <div>
+        <div class="big-panel-title">Balances</div>
+        <div class="big-panel-sub" style="color:#4ade80">Inversión · Ventas · Ganancia neta</div>
+      </div>
+      <button class="balance-refresh-btn" onclick="loadBalances()" style="margin:0">&#8635; Actualizar</button>
+    </div>
+  </div>
+  <div class="big-panel-scroll" id="balances-content" style="padding-bottom:40px">
+    <div class="balance-loading">&#8635; Cargando datos...</div>
+  </div>
+</div>
+
+
+<!-- MODAL EDICIÓN DE REGISTRO -->
+<div id="edit-record-modal" onclick="if(event.target===this)closeEditRecord()">
+  <div class="modal-sheet">
+    <div class="modal-header">
+      <div class="modal-title" id="edit-rec-title">Editar registro</div>
+      <button class="modal-close" onclick="closeEditRecord()">&#10005;</button>
+    </div>
+    <div class="modal-body" id="edit-rec-body"></div>
+    <div class="modal-footer">
+      <button class="btn btn-ghost" onclick="closeEditRecord()">Cancelar</button>
+      <button class="btn btn-primary" onclick="saveEditRecord()">&#128190; Guardar</button>
+    </div>
+  </div>
 </div>
 
 <!-- PANEL CÁLCULO DE COMPRA -->
@@ -2098,7 +2234,9 @@ function renderPurchaseRecords() {
       "<div class='record-total'>Total: USD " + fmt(rec.totalUSD) +
         (rec.totalARS > 0 ? " / ARS $" + fmtARS(rec.totalARS) : "") + "</div>" +
       "<div class='record-actions'>" +
-        "<button class='btn-record-pdf' data-idx='" + i + "' onclick='exportPurchaseRecordPDF(purchaseRecordsData[this.dataset.idx])'>&#128196; Exportar PDF</button>" +
+        "<button class='btn-record-pdf' data-idx='" + i + "' onclick='exportPurchaseRecordPDF(purchaseRecordsData[this.dataset.idx])'>&#128196; PDF</button>" +
+        "<button class='btn-record-edit' data-idx='" + i + "' onclick='openEditRecord("purchase", purchaseRecordsData[this.dataset.idx])'>&#9998; Editar</button>" +
+        "<button class='btn-record-del' data-id='" + esc(rec.id) + "' onclick='deleteRecord("purchase",this.dataset.id)'>&#128465;</button>" +
       "</div>" +
     "</div>";
   });
@@ -2335,14 +2473,19 @@ function renderSalesRecords() {
     var pdfBtns = isQuote
       ? "<button class='btn-record-pdf' data-idx='" + i + "' onclick=\"exportGenericPDF('Presupuesto', quotesData[this.dataset.idx], null)\">&#128196; PDF</button>"
       : "<button class='btn-record-pdf' data-idx='" + i + "' onclick=\"exportSaleRecordPDF(salesData[this.dataset.idx])\">&#128196; PDF cliente</button>" +
-        "<button class='btn-record-pdf' data-idx='" + i + "' onclick=\"exportSaleInternalPDF(salesData[this.dataset.idx])\" style='border-color:rgba(192,132,252,.4);color:#c084fc'>&#128196; PDF interno</button>";
+        "<button class='btn-record-pdf' data-idx='" + i + "' onclick=\"exportSaleInternalPDF(salesData[this.dataset.idx])\" style='border-color:rgba(192,132,252,.4);color:#c084fc'>&#128196; Interno</button>";
+    var recType = isQuote ? "quote" : "sale";
+    var recData = isQuote ? "quotesData" : "salesData";
+    var editDelBtns =
+      "<button class='btn-record-edit' data-idx='" + i + "' data-type='" + recType + "' onclick='openEditRecord(this.dataset.type," + recData + "[this.dataset.idx])'>&#9998; Editar</button>" +
+      "<button class='btn-record-del' data-id='" + esc(rec.id) + "' data-type='" + recType + "' onclick='deleteRecord(this.dataset.type,this.dataset.id)'>&#128465;</button>";
 
     html += "<div class='record-card'>" +
       "<div class='record-header'><span class='record-badge " + badgeCls + "'>" + badgeTxt + "</span><span class='record-fecha'>" + fechaStr + "</span></div>" +
       "<div class='record-doctor'>" + doctorTxt + "</div>" +
       itemsHtml +
       "<div class='record-total'>USD " + fmt(total) + "</div>" +
-      "<div class='record-actions'>" + pdfBtns + "</div>" +
+      "<div class='record-actions'>" + pdfBtns + editDelBtns + "</div>" +
     "</div>";
   });
   el.innerHTML = html;
@@ -2527,7 +2670,7 @@ function exportGenericPDF(docTitle, rec, saleExtras) {
   // Footer
   doc.setDrawColor.apply(doc, LIGHT); doc.setLineWidth(0.4); doc.line(mg,y,colR,y); y += 5;
   doc.setFontSize(7.5); doc.setFont("helvetica","italic"); doc.setTextColor.apply(doc, MUTED);
-  doc.text("Generado por Mis Productos · enicogon.github.io/mis-productos", mg, y);
+  doc.text("Generado por Mis Productos", mg, y);
   doc.text(fechaStr, colR, y, {align:"right"});
 
   var fname = docTitle.replace(/\s+/g,"-").toLowerCase() + "_" + new Date().toISOString().slice(0,10) + ".pdf";
@@ -3476,7 +3619,7 @@ function exportPDF() {
   doc.setFontSize(7.5);
   doc.setFont("helvetica", "italic");
   doc.setTextColor(...MUTED);
-  doc.text("Generado por Mis Productos · enicogon.github.io/mis-productos", margin, y);
+  doc.text("Generado por Mis Productos", margin, y);
   doc.text(fechaStr, col2, y, { align: "right" });
 
   // ── Guardar / compartir ───────────────────────────────────
@@ -3484,6 +3627,222 @@ function exportPDF() {
   doc.save(filename);
   toast("PDF generado ✓");
 }
+
+// ─────────────────────────────────────────────────────────
+//  BALANCES
+// ─────────────────────────────────────────────────────────
+function openBalances() {
+  document.getElementById("balances-panel").classList.add("open");
+  loadBalances();
+}
+function closeBalances() {
+  document.getElementById("balances-panel").classList.remove("open");
+}
+
+async function loadBalances() {
+  var el = document.getElementById("balances-content");
+  el.innerHTML = "<div class='balance-loading'>&#8635; Cargando datos...</div>";
+
+  var compras = [], ventas = [];
+  try {
+    if (API_URL) {
+      var rc = await fetch(API_URL + "?action=listPurchaseRecords&_t=" + Date.now());
+      var dc = await rc.json();
+      compras = dc.records || [];
+      var rs = await fetch(API_URL + "?action=listSales&_t=" + Date.now());
+      var ds = await rs.json();
+      ventas = ds.sales || [];
+    }
+  } catch(e) { el.innerHTML = "<div class='balance-loading'>Error al cargar datos</div>"; return; }
+
+  // ── Calcular inversión en compras ─────────────────────────
+  var invNic = 0, invCla = 0;
+  compras.forEach(function(rec) {
+    if (rec.comprador === "Nicolas")          invNic += parseFloat(rec.totalUSD) || 0;
+    else if (rec.comprador === "Claudia-Nicolas") invCla += parseFloat(rec.totalUSD) || 0;
+  });
+
+  // ── Calcular ventas y ganancia ────────────────────────────
+  var ventaNic = 0, ventaCla = 0, ventaSinCat = 0;
+  ventas.forEach(function(rec) {
+    var total = parseFloat(rec.totalFinal) || 0;
+    var tNic  = parseFloat(rec.totalNicolas) || 0;
+    var tCla  = parseFloat(rec.totalClaudiaNicolas) || 0;
+    // Ajustar proporcional si hay recargos/descuentos
+    var base  = parseFloat(rec.totalUSD) || 0;
+    var ratio = base > 0 ? total / base : 1;
+    ventaNic += tNic * ratio;
+    ventaCla += tCla * ratio;
+    // Productos sin categoría
+    var sinCat = base - tNic - tCla;
+    if (sinCat > 0) ventaSinCat += sinCat * ratio;
+  });
+
+  // ── Ganancia neta: venta - inversión por categoría ────────
+  var ganNic = ventaNic - invNic;
+  var ganCla = ventaCla - invCla;
+
+  // ── ARS ───────────────────────────────────────────────────
+  function toARS(usd) { return usdRate > 0 ? Math.round(usd * usdRate) : null; }
+  function arsStr(usd) {
+    var a = toARS(usd);
+    return a !== null ? " <span style='color:var(--ice);font-size:11px'>/ ARS $" + fmtARS(a) + "</span>" : "";
+  }
+  function valColor(v) { return v >= 0 ? "positive" : "negative"; }
+
+  var html = "";
+
+  // ── BLOQUE INVERSIÓN EN COMPRAS ───────────────────────────
+  html += "<div class='balance-card'>";
+  html += "<div class='balance-card-title' style='color:#38bdf8'>&#128722; Inversión total en compras</div>";
+  html += "<div class='balance-row'><span class='balance-key'>Nicolás</span><span class='balance-val neutral'>USD " + fmt(invNic) + arsStr(invNic) + "</span></div>";
+  html += "<div class='balance-row'><span class='balance-key'>Claudia y Nicolás</span><span class='balance-val neutral'>USD " + fmt(invCla) + arsStr(invCla) + "</span></div>";
+  html += "<div class='balance-row' style='border-top:1px solid var(--card-border);margin-top:6px;padding-top:10px'><span class='balance-key' style='font-weight:700;color:var(--white)'>Total invertido</span><span class='balance-val neutral' style='font-size:16px'>USD " + fmt(invNic + invCla) + arsStr(invNic + invCla) + "</span></div>";
+  html += "</div>";
+
+  // ── BLOQUE VENTAS ─────────────────────────────────────────
+  html += "<div class='balance-card'>";
+  html += "<div class='balance-card-title' style='color:#f87171'>&#128176; Total ventas (precio final)</div>";
+  html += "<div class='balance-row'><span class='balance-key'>Productos Nicolás</span><span class='balance-val neutral'>USD " + fmt(ventaNic) + arsStr(ventaNic) + "</span></div>";
+  html += "<div class='balance-row'><span class='balance-key'>Productos Claudia y Nicolás</span><span class='balance-val neutral'>USD " + fmt(ventaCla) + arsStr(ventaCla) + "</span></div>";
+  if (ventaSinCat > 0) html += "<div class='balance-row'><span class='balance-key'>Sin categoría</span><span class='balance-val neutral'>USD " + fmt(ventaSinCat) + arsStr(ventaSinCat) + "</span></div>";
+  html += "<div class='balance-row' style='border-top:1px solid var(--card-border);margin-top:6px;padding-top:10px'><span class='balance-key' style='font-weight:700;color:var(--white)'>Total ventas</span><span class='balance-val neutral' style='font-size:16px'>USD " + fmt(ventaNic + ventaCla + ventaSinCat) + arsStr(ventaNic + ventaCla + ventaSinCat) + "</span></div>";
+  html += "</div>";
+
+  // ── BLOQUE GANANCIA NETA ──────────────────────────────────
+  html += "<div class='balance-card'>";
+  html += "<div class='balance-card-title' style='color:#4ade80'>&#128200; Ganancia neta (ventas - compras)</div>";
+  html += "<div class='balance-row'><span class='balance-key'>Nicolás</span><span class='balance-val " + valColor(ganNic) + "'>USD " + fmt(ganNic) + arsStr(ganNic) + "</span></div>";
+  html += "<div class='balance-row'><span class='balance-key'>Claudia y Nicolás</span><span class='balance-val " + valColor(ganCla) + "'>USD " + fmt(ganCla) + arsStr(ganCla) + "</span></div>";
+  var ganTotal = ganNic + ganCla;
+  html += "<div class='balance-row' style='border-top:1px solid var(--card-border);margin-top:6px;padding-top:10px'><span class='balance-key' style='font-weight:700;color:var(--white)'>Ganancia neta total</span><span class='balance-val " + valColor(ganTotal) + "' style='font-size:16px'>USD " + fmt(ganTotal) + arsStr(ganTotal) + "</span></div>";
+  html += "</div>";
+
+  // Cotización usada
+  if (usdRate > 0) {
+    html += "<div style='text-align:center;font-size:11px;color:var(--muted);font-family:var(--mono);padding:8px 0'>Cotización dólar blue: $" + usdRate.toLocaleString("es-AR") + " / USD</div>";
+  }
+
+  el.innerHTML = html;
+}
+
+// ─────────────────────────────────────────────────────────
+//  EDITAR Y ELIMINAR REGISTROS
+// ─────────────────────────────────────────────────────────
+var editRecordType = null;
+var editRecordData = null;
+
+function openEditRecord(type, rec) {
+  editRecordType = type;
+  editRecordData = JSON.parse(JSON.stringify(rec)); // deep copy
+
+  var title = document.getElementById("edit-rec-title");
+  var body  = document.getElementById("edit-rec-body");
+  title.textContent = type === "purchase" ? "Editar registro de compra"
+    : type === "quote" ? "Editar presupuesto" : "Editar venta";
+
+  var html = "";
+
+  if (type === "purchase") {
+    html += buildEditField("Comprador", "er-comprador", rec.comprador || "");
+    html += buildEditField("Total USD", "er-totalusd", rec.totalUSD || 0, "number");
+    html += buildEditField("Total ARS", "er-totalars", rec.totalARS || 0, "number");
+  } else if (type === "quote" || type === "sale") {
+    html += buildEditField("Dr./Dra.", "er-doctor", rec.doctor || "");
+    html += buildEditField("Teléfono", "er-telefono", rec.telefono || "");
+    html += buildEditField("Envío", "er-envio", rec.envio || "");
+    if (type === "sale") {
+      html += buildEditField("Forma de pago", "er-formapago", rec.formaPago || "");
+      html += buildEditField("% Tarjeta", "er-tarjeta", rec.pctTarjeta || 0, "number");
+      html += buildEditField("% Descuento", "er-descuento", rec.pctDescuento || 0, "number");
+      html += buildEditField("Total final USD", "er-totalfinal", rec.totalFinal || 0, "number");
+    } else {
+      html += buildEditField("Total USD", "er-totalusd", rec.totalUSD || 0, "number");
+    }
+  }
+
+  body.innerHTML = html;
+  document.getElementById("edit-record-modal").classList.add("open");
+}
+
+function buildEditField(label, id, value, type) {
+  type = type || "text";
+  return "<div class='field-group' style='margin-bottom:12px'>" +
+    "<label class='field-label'>" + label + "</label>" +
+    "<input class='field-input' id='" + id + "' type='" + type + "' value='" + String(value).replace(/'/g, "&#39;") + "'>" +
+    "</div>";
+}
+
+function closeEditRecord() {
+  document.getElementById("edit-record-modal").classList.remove("open");
+  editRecordType = null; editRecordData = null;
+}
+
+async function saveEditRecord() {
+  if (!editRecordData || !editRecordType) return;
+  if (!API_URL) { toast("Configurá la URL de la API primero", true); return; }
+
+  var rec = JSON.parse(JSON.stringify(editRecordData));
+
+  if (editRecordType === "purchase") {
+    rec.comprador = document.getElementById("er-comprador").value.trim();
+    rec.totalUSD  = parseFloat(document.getElementById("er-totalusd").value) || 0;
+    rec.totalARS  = parseFloat(document.getElementById("er-totalars").value) || 0;
+  } else if (editRecordType === "quote") {
+    rec.doctor   = document.getElementById("er-doctor").value.trim();
+    rec.telefono = document.getElementById("er-telefono").value.trim();
+    rec.envio    = document.getElementById("er-envio").value.trim();
+    rec.totalUSD = parseFloat(document.getElementById("er-totalusd").value) || 0;
+  } else if (editRecordType === "sale") {
+    rec.doctor     = document.getElementById("er-doctor").value.trim();
+    rec.telefono   = document.getElementById("er-telefono").value.trim();
+    rec.envio      = document.getElementById("er-envio").value.trim();
+    rec.formaPago  = document.getElementById("er-formapago").value.trim();
+    rec.pctTarjeta  = parseFloat(document.getElementById("er-tarjeta").value)   || 0;
+    rec.pctDescuento = parseFloat(document.getElementById("er-descuento").value) || 0;
+    rec.totalFinal  = parseFloat(document.getElementById("er-totalfinal").value) || 0;
+  }
+
+  var actionMap = { purchase: "updatePurchaseRecord", quote: "updateQuote", sale: "updateSale" };
+  var recordKey = editRecordType === "purchase" ? "record" : "record";
+
+  try {
+    var res = await fetch(API_URL, {
+      method: "POST",
+      body: JSON.stringify({ action: actionMap[editRecordType], record: rec }),
+      headers: { "Content-Type": "text/plain;charset=utf-8" }
+    });
+    var data = await res.json();
+    if (data.error) throw new Error(data.error);
+    toast("Registro actualizado ✓");
+    closeEditRecord();
+    // Refresh the relevant list
+    if (editRecordType === "purchase") fetchPurchaseRecords();
+    else { fetchQuotes(); fetchSales(); }
+  } catch(e) { toast("Error: " + e.message, true); }
+}
+
+async function deleteRecord(type, id) {
+  if (!confirm("¿Eliminar este registro? Esta acción no se puede deshacer.")) return;
+  if (!API_URL) { toast("Configurá la URL de la API primero", true); return; }
+
+  var actionMap = { purchase: "deletePurchaseRecord", quote: "deleteQuote", sale: "deleteSale" };
+
+  try {
+    var res = await fetch(API_URL, {
+      method: "POST",
+      body: JSON.stringify({ action: actionMap[type], record: { id: id } }),
+      headers: { "Content-Type": "text/plain;charset=utf-8" }
+    });
+    var data = await res.json();
+    if (data.error) throw new Error(data.error);
+    toast("Registro eliminado");
+    if (type === "purchase") fetchPurchaseRecords();
+    else { fetchQuotes(); fetchSales(); }
+  } catch(e) { toast("Error: " + e.message, true); }
+}
+
+
 // ─────────────────────────────────────────────────────────
 //  PWA MANIFEST injection
 // ─────────────────────────────────────────────────────────
