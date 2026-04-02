@@ -1137,6 +1137,78 @@
     }
     #edit-record-modal.open { opacity: 1; pointer-events: all; }
     #edit-record-modal.open .modal-sheet { transform: translateY(0); transition: transform .32s cubic-bezier(.33,1,.68,1); }
+
+    /* ── Botón Menú principal ── */
+    .btn-menu-main {
+      background: rgba(37,99,235,0.15);
+      border: 1px solid rgba(37,99,235,0.4);
+      border-radius: 10px; padding: 9px 14px;
+      color: var(--sky); font-family: var(--font); font-size: 13px; font-weight: 700;
+      cursor: pointer; display: flex; align-items: center; justify-content: center; gap: 7px;
+      transition: background var(--transition);
+      white-space: nowrap; flex-shrink: 0;
+    }
+    .btn-menu-main:active { background: rgba(37,99,235,0.28); }
+    .btn-menu-main .menu-icon { font-size: 16px; }
+    .btn-menu-main .menu-arrow { font-size: 10px; transition: transform .22s; }
+    .btn-menu-main.open .menu-arrow { transform: rotate(180deg); }
+
+    /* ── Panel desplegable del menú ── */
+    #main-menu-panel {
+      display: none;
+      flex-direction: column;
+      gap: 0;
+      background: rgba(10,22,40,0.97);
+      border-bottom: 1px solid var(--card-border);
+      padding: 8px 14px 12px;
+      animation: slideDown .2s ease;
+    }
+    #main-menu-panel.open { display: flex; }
+    @keyframes slideDown {
+      from { opacity: 0; transform: translateY(-6px); }
+      to   { opacity: 1; transform: translateY(0); }
+    }
+
+    /* Grupos dentro del menú */
+    .menu-group { margin-bottom: 6px; }
+    .menu-group-btn {
+      width: 100%; display: flex; align-items: center; justify-content: space-between;
+      padding: 10px 12px; border-radius: 8px; border: none; cursor: pointer;
+      font-family: var(--font); font-size: 13px; font-weight: 700;
+      transition: background var(--transition);
+      background: transparent; color: var(--ice);
+    }
+    .menu-group-btn:active { opacity: .8; }
+    .menu-group-btn .mg-arrow { font-size: 10px; transition: transform .2s; }
+    .menu-group-btn.open .mg-arrow { transform: rotate(180deg); }
+
+    /* Sub-items dentro de cada grupo */
+    .menu-sub-items {
+      display: none; flex-direction: column; gap: 2px;
+      padding: 4px 0 4px 12px;
+    }
+    .menu-sub-items.open { display: flex; }
+    .menu-sub-item {
+      background: none; border: none;
+      padding: 9px 12px; border-radius: 7px;
+      color: var(--muted); font-family: var(--font); font-size: 13px; font-weight: 500;
+      cursor: pointer; text-align: left; display: flex; align-items: center; gap: 8px;
+      transition: background var(--transition), color var(--transition);
+    }
+    .menu-sub-item:hover { background: rgba(37,99,235,0.15); color: var(--white); }
+    .menu-sub-item:active { background: rgba(37,99,235,0.25); }
+
+    /* Items directos (sin sub) */
+    .menu-direct-item {
+      background: none; border: none;
+      width: 100%; padding: 10px 12px; border-radius: 8px;
+      color: var(--ice); font-family: var(--font); font-size: 13px; font-weight: 700;
+      cursor: pointer; text-align: left; display: flex; align-items: center; gap: 8px;
+      transition: background var(--transition), color var(--transition);
+    }
+    .menu-direct-item:hover { background: rgba(37,99,235,0.15); color: var(--white); }
+    .menu-direct-item:active { background: rgba(37,99,235,0.25); }
+    .menu-divider { height: 1px; background: var(--card-border); margin: 4px 0; }
     ::-webkit-scrollbar { width: 4px; }
     ::-webkit-scrollbar-track { background: transparent; }
     ::-webkit-scrollbar-thumb { background: var(--steel); border-radius: 99px; }
@@ -1168,37 +1240,55 @@
         <span class="search-icon">🔍</span>
         <input type="search" id="search-input" placeholder="Buscar productos..." oninput="filterProducts()" />
       </div>
+      <button class="btn-menu-main" id="btn-menu-main" onclick="toggleMainMenu()"><span class="menu-icon">☰</span> Menú <span class="menu-arrow">▾</span></button>
       <button class="btn-add" onclick="openModal()">＋ Nuevo</button>
     </div>
 
-    <!-- Menú Compra de productos -->
-    <button class="btn-compras-main" id="btn-compras-main" onclick="toggleComprasMenu()">
-      <span>🛒 Compra de productos</span>
-      <span class="arrow" id="arrow-compras">▾</span>
-    </button>
-    <div class="compras-submenu" id="compras-submenu">
-      <button class="btn-submenu" onclick="openCalc();toggleComprasMenu(true)">📊 Cálculo de compra</button>
-      <button class="btn-submenu" onclick="openBuyerSelection();toggleComprasMenu(true)">📥 Ingresar una compra</button>
-      <button class="btn-submenu" onclick="openPurchaseRecords();toggleComprasMenu(true)">📋 Registro de compras</button>
+    <!-- Panel menú desplegable -->
+    <div id="main-menu-panel">
+
+      <!-- Compra de productos -->
+      <div class="menu-group">
+        <button class="menu-group-btn" style="color:var(--sky)" onclick="toggleMenuGroup('mg-compras')">
+          <span>🛒 Compra de productos</span>
+          <span class="mg-arrow">▾</span>
+        </button>
+        <div class="menu-sub-items" id="mg-compras">
+          <button class="menu-sub-item" onclick="openCalc();closeMainMenu()">📊 Cálculo de compra</button>
+          <button class="menu-sub-item" onclick="openBuyerSelection();closeMainMenu()">📥 Ingresar una compra</button>
+          <button class="menu-sub-item" onclick="openPurchaseRecords();closeMainMenu()">📋 Registro de compras</button>
+        </div>
+      </div>
+
+      <div class="menu-divider"></div>
+
+      <!-- Ventas y presupuestos -->
+      <div class="menu-group">
+        <button class="menu-group-btn" style="color:#c084fc" onclick="toggleMenuGroup('mg-ventas')">
+          <span>💰 Ventas y presupuestos</span>
+          <span class="mg-arrow">▾</span>
+        </button>
+        <div class="menu-sub-items" id="mg-ventas">
+          <button class="menu-sub-item" onclick="openQuote();closeMainMenu()">📝 Realizar presupuesto</button>
+          <button class="menu-sub-item" onclick="openSale();closeMainMenu()">🏷️ Realizar venta</button>
+          <button class="menu-sub-item" onclick="openSalesRecords();closeMainMenu()">📋 Registro de ventas y presupuestos</button>
+        </div>
+      </div>
+
+      <div class="menu-divider"></div>
+
+      <!-- Balances -->
+      <button class="menu-direct-item" style="color:#4ade80" onclick="openBalances();closeMainMenu()">⚖️ Balances</button>
+
+      <!-- Estadísticas -->
+      <button class="menu-direct-item" style="color:#fbbf24" onclick="toast('Estadísticas — próximamente');closeMainMenu()">📈 Estadísticas</button>
+
+      <div class="menu-divider"></div>
+
+      <!-- Calendario de eventos -->
+      <button class="menu-direct-item" style="color:#34d399" onclick="openEvents();closeMainMenu()">📅 Calendario de eventos</button>
+
     </div>
-
-    <!-- Menú Ventas y presupuestos -->
-    <button class="btn-ventas-main" id="btn-ventas-main" onclick="toggleVentasMenu()">
-      <span>💰 Ventas y presupuestos</span>
-      <span class="arrow" id="arrow-ventas">▾</span>
-    </button>
-    <div class="ventas-submenu" id="ventas-submenu">
-      <button class="btn-submenu btn-submenu-purple" onclick="openQuote();toggleVentasMenu(true)">📝 Realizar presupuesto</button>
-      <button class="btn-submenu btn-submenu-purple" onclick="openSale();toggleVentasMenu(true)">🏷️ Realizar venta</button>
-      <button class="btn-submenu btn-submenu-purple" onclick="openSalesRecords();toggleVentasMenu(true)">📋 Registro de ventas y presupuestos</button>
-    </div>
-
-    <!-- Botones Balances y Estadísticas -->
-    <button class="btn-balance-main" onclick="openBalances()">⚖️ Balances</button>
-    <button class="btn-estadisticas-main" onclick="toast('Estadísticas — próximamente')">📈 Estadísticas</button>
-
-    <!-- Botón Calendario de eventos -->
-    <button class="btn-calc btn-events" onclick="openEvents()" style="margin-top:4px">📅 Calendario de eventos</button>
 
         <!-- Barra de cotización -->
     <div class="rate-bar">
@@ -2133,31 +2223,46 @@ function fmtARS(n) { return (parseFloat(n)||0).toLocaleString("es-AR"); }
 // ─────────────────────────────────────────────────────────
 //  MENÚS DROPDOWN
 // ─────────────────────────────────────────────────────────
-function toggleComprasMenu(forceClose) {
-  var btn  = document.getElementById("btn-compras-main");
-  var menu = document.getElementById("compras-submenu");
-  if (!btn || !menu) return;
-  if (forceClose || btn.classList.contains("open")) {
-    btn.classList.remove("open"); menu.classList.remove("open");
-  } else {
-    btn.classList.add("open"); menu.classList.add("open");
-    // Cerrar ventas si está abierto
-    document.getElementById("btn-ventas-main").classList.remove("open");
-    document.getElementById("ventas-submenu").classList.remove("open");
+// ── Menú principal único ─────────────────────────────────────
+function toggleMainMenu() {
+  var btn   = document.getElementById("btn-menu-main");
+  var panel = document.getElementById("main-menu-panel");
+  if (!btn || !panel) return;
+  var isOpen = btn.classList.contains("open");
+  btn.classList.toggle("open", !isOpen);
+  panel.classList.toggle("open", !isOpen);
+}
+
+function closeMainMenu() {
+  var btn   = document.getElementById("btn-menu-main");
+  var panel = document.getElementById("main-menu-panel");
+  if (btn)   btn.classList.remove("open");
+  if (panel) panel.classList.remove("open");
+}
+
+function toggleMenuGroup(id) {
+  var items = document.getElementById(id);
+  if (!items) return;
+  var isOpen = items.classList.contains("open");
+  // Cerrar todos los grupos primero
+  document.querySelectorAll(".menu-sub-items").forEach(function(el) { el.classList.remove("open"); });
+  document.querySelectorAll(".menu-group-btn").forEach(function(el) { el.classList.remove("open"); });
+  if (!isOpen) {
+    items.classList.add("open");
+    // Marcar el botón padre como open
+    var btn = items.previousElementSibling;
+    if (btn) btn.classList.add("open");
   }
 }
+
+// Compatibilidad con llamadas antiguas (por si quedan referencias)
+function toggleComprasMenu(forceClose) {
+  if (forceClose) closeMainMenu();
+  else toggleMainMenu();
+}
 function toggleVentasMenu(forceClose) {
-  var btn  = document.getElementById("btn-ventas-main");
-  var menu = document.getElementById("ventas-submenu");
-  if (!btn || !menu) return;
-  if (forceClose || btn.classList.contains("open")) {
-    btn.classList.remove("open"); menu.classList.remove("open");
-  } else {
-    btn.classList.add("open"); menu.classList.add("open");
-    // Cerrar compras si está abierto
-    document.getElementById("btn-compras-main").classList.remove("open");
-    document.getElementById("compras-submenu").classList.remove("open");
-  }
+  if (forceClose) closeMainMenu();
+  else toggleMainMenu();
 }
 
 // ─────────────────────────────────────────────────────────
@@ -2235,8 +2340,8 @@ function renderPurchaseRecords() {
         (rec.totalARS > 0 ? " / ARS $" + fmtARS(rec.totalARS) : "") + "</div>" +
       "<div class='record-actions'>" +
         "<button class='btn-record-pdf' data-idx='" + i + "' onclick='exportPurchaseRecordPDF(purchaseRecordsData[this.dataset.idx])'>&#128196; PDF</button>" +
-        "<button class='btn-record-edit' data-idx='" + i + "' onclick='openEditRecord(\"purchase\", purchaseRecordsData[this.dataset.idx])'>&#9998; Editar</button>" +
-        "<button class='btn-record-del' data-id='" + esc(rec.id) + "' onclick='deleteRecord(\"purchase\",this.dataset.id)'>&#128465;</button>" +
+        "<button class='btn-record-edit' data-idx='" + i + "' onclick='openEditRecord("purchase", purchaseRecordsData[this.dataset.idx])'>&#9998; Editar</button>" +
+        "<button class='btn-record-del' data-id='" + esc(rec.id) + "' onclick='deleteRecord("purchase",this.dataset.id)'>&#128465;</button>" +
       "</div>" +
     "</div>";
   });
