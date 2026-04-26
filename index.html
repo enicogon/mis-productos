@@ -693,11 +693,11 @@
 
     /* Footer */
     .purchase-footer {
-      position: fixed; bottom: 0; left: 0; right: 0;
+      position: sticky; bottom: 0;
       background: rgba(10,22,40,0.97);
       border-top: 1px solid var(--card-border);
       padding: 12px 18px env(safe-area-inset-bottom, 12px);
-      z-index: 20;
+      flex-shrink: 0;
     }
     .pur-footer-row {
       display: flex; align-items: center; justify-content: space-between;
@@ -882,6 +882,20 @@
     .menu-direct-item:hover { background: rgba(37,99,235,0.15); color: var(--white); }
     .menu-direct-item:active { background: rgba(37,99,235,0.25); }
     .menu-divider { height: 1px; background: var(--card-border); margin: 4px 0; }
+
+    /* ── Purchase panel (ingresar compra) ── */
+    #purchase-panel {
+      position: fixed; inset: 0; z-index: 150;
+      background: var(--navy);
+      display: flex; flex-direction: column;
+      transform: translateX(100%);
+      transition: transform .32s cubic-bezier(.33,1,.68,1);
+    }
+    #purchase-panel.open { transform: translateX(0); }
+    #purchase-scroll {
+      flex: 1; overflow-y: scroll; -webkit-overflow-scrolling: touch;
+      padding: 14px 14px 10px;
+    }
     ::-webkit-scrollbar { width: 4px; }
     ::-webkit-scrollbar-track { background: transparent; }
     ::-webkit-scrollbar-thumb { background: var(--steel); border-radius: 99px; }
@@ -1410,7 +1424,7 @@
 
 
 <!-- MODAL INVERSIÓN PERSONAL -->
-<div id="inv-modal" style="position:fixed;inset:0;z-index:250;background:rgba(5,12,24,0.85);backdrop-filter:blur(10px);display:flex;align-items:flex-end;justify-content:center;opacity:0;pointer-events:none;transition:opacity .25s;padding:0" onclick="if(event.target===this)closeInvModal()">
+<div id="inv-modal" class="modal-overlay" onclick="if(event.target===this)closeInvModal()">
   <div class="modal-sheet">
     <div class="modal-header">
       <div class="modal-title">Registrar inversión personal</div>
@@ -1442,7 +1456,7 @@
 </div>
 
 <!-- MODAL DIVISIÓN DE GANANCIAS -->
-<div id="division-modal" style="position:fixed;inset:0;z-index:250;background:rgba(5,12,24,0.85);backdrop-filter:blur(10px);display:flex;align-items:flex-end;justify-content:center;opacity:0;pointer-events:none;transition:opacity .25s;padding:0" onclick="if(event.target===this)closeDivisionModal()">
+<div id="division-modal" class="modal-overlay" onclick="if(event.target===this)closeDivisionModal()">
   <div class="modal-sheet">
     <div class="modal-header">
       <div class="modal-title">Registrar división de ganancias</div>
@@ -3313,13 +3327,12 @@ function saveDivisiones(arr) { localStorage.setItem("mp_divisiones", JSON.string
 // ── Inversiones ───────────────────────────────────────────
 function openInvModal() {
   var m = document.getElementById("inv-modal");
-  m.style.opacity = "1"; m.style.pointerEvents = "all";
+  m.classList.add("open");
   document.getElementById("inv-monto").value = "";
   document.getElementById("inv-desc").value  = "";
 }
 function closeInvModal() {
-  var m = document.getElementById("inv-modal");
-  m.style.opacity = "0"; m.style.pointerEvents = "none";
+  document.getElementById("inv-modal").classList.remove("open");
 }
 function saveInversion() {
   var persona = document.getElementById("inv-persona").value;
@@ -3367,13 +3380,12 @@ function deleteInversion(id) {
 // ── División de ganancias ─────────────────────────────────
 function openDivisionModal() {
   var m = document.getElementById("division-modal");
-  m.style.opacity = "1"; m.style.pointerEvents = "all";
+  m.classList.add("open");
   document.getElementById("div-monto").value = "";
   document.getElementById("div-desc").value  = "";
 }
 function closeDivisionModal() {
-  var m = document.getElementById("division-modal");
-  m.style.opacity = "0"; m.style.pointerEvents = "none";
+  document.getElementById("division-modal").classList.remove("open");
 }
 function saveDivision() {
   var persona = document.getElementById("div-persona").value;
