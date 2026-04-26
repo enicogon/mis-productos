@@ -505,333 +505,6 @@
       font-weight: 700;
     }
 
-    /* ── Botón Cálculo de compra ── */
-    .btn-calc {
-      width: 100%; background: rgba(56,189,248,0.12);
-      border: 1px solid rgba(56,189,248,0.35);
-      border-radius: 10px; padding: 11px 16px;
-      color: var(--sky); font-family: var(--font); font-size: 14px; font-weight: 600;
-      cursor: pointer; display: flex; align-items: center; justify-content: center; gap: 8px;
-      transition: background var(--transition), border-color var(--transition);
-      margin: 0 18px 12px; width: calc(100% - 36px);
-    }
-    .btn-calc:active { background: rgba(56,189,248,0.22); }
-
-    /* ── Panel Cálculo de compra ── */
-    #calc-panel {
-      position: fixed; inset: 0; z-index: 150;
-      background: var(--navy);
-      display: flex; flex-direction: column;
-      transform: translateX(100%);
-      transition: transform .32s cubic-bezier(.33,1,.68,1);
-    }
-    #calc-panel.open { transform: translateX(0); }
-
-    .calc-header {
-      background: rgba(10,22,40,0.95);
-      backdrop-filter: blur(18px);
-      -webkit-backdrop-filter: blur(18px);
-      border-bottom: 1px solid var(--card-border);
-      padding: env(safe-area-inset-top, 0) 0 0;
-      position: sticky; top: 0; z-index: 10; flex-shrink: 0;
-    }
-    .calc-header-inner {
-      display: flex; align-items: center; gap: 12px;
-      padding: 14px 18px;
-    }
-    .calc-back {
-      width: 40px; height: 40px; border-radius: 10px; flex-shrink: 0;
-      background: rgba(255,255,255,0.07); border: 1px solid var(--card-border);
-      color: var(--ice); font-size: 20px; cursor: pointer;
-      display: flex; align-items: center; justify-content: center;
-    }
-    .calc-title-wrap { flex: 1; }
-    .calc-title { font-size: 17px; font-weight: 700; }
-    .calc-sub { font-size: 11px; color: var(--sky); text-transform: uppercase; letter-spacing: .5px; margin-top: 1px; }
-
-    .btn-reset-calc {
-      background: none; border: 1px solid var(--card-border);
-      border-radius: 8px; padding: 6px 12px;
-      color: var(--muted); font-size: 12px; font-family: var(--font);
-      cursor: pointer;
-    }
-
-    /* Lista de productos en el calculador */
-    #calc-scroll {
-      flex: 1; overflow-y: auto;
-      -webkit-overflow-scrolling: touch;
-    }
-    #calc-list {
-      padding: 14px 16px 10px;
-      display: flex; flex-direction: column; gap: 10px;
-    }
-
-    .calc-item {
-      background: var(--card-bg);
-      border: 1px solid var(--card-border);
-      border-radius: var(--radius);
-      backdrop-filter: blur(14px);
-      -webkit-backdrop-filter: blur(14px);
-      padding: 12px 14px;
-      display: flex; flex-direction: column; gap: 10px;
-      animation: fadeUp .25s ease forwards; opacity: 0;
-    }
-    /* Fila superior: imagen + nombre */
-    .calc-item-top { display: flex; align-items: center; gap: 10px; }
-    .calc-item-img {
-      width: 42px; height: 42px; border-radius: 8px;
-      object-fit: cover; flex-shrink: 0;
-      background: var(--mid); border: 1px solid var(--card-border);
-    }
-    .calc-item-img-ph {
-      width: 42px; height: 42px; border-radius: 8px; flex-shrink: 0;
-      background: var(--mid); border: 1px solid var(--card-border);
-      display: flex; align-items: center; justify-content: center; font-size: 20px;
-    }
-    .calc-item-name {
-      font-size: 15px; font-weight: 600;
-      white-space: normal; line-height: 1.35;
-      word-break: break-word;
-      flex: 1;
-    }
-    /* Fila inferior: precio + controles */
-    .calc-item-bottom {
-      display: flex; align-items: center; justify-content: space-between;
-      border-top: 1px solid var(--card-border); padding-top: 9px;
-    }
-    .calc-item-info { display: flex; flex-direction: column; gap: 2px; }
-    .calc-item-price {
-      font-family: var(--mono); font-size: 13px; color: var(--sky);
-      font-weight: 600;
-    }
-    .calc-item-subtotal {
-      font-size: 11px; color: var(--muted);
-      font-family: var(--mono);
-    }
-    /* Control de cantidad */
-    .calc-qty-ctrl { display: flex; align-items: center; gap: 8px; flex-shrink: 0; }
-    .calc-qty-btn {
-      width: 36px; height: 36px; border-radius: 9px;
-      background: rgba(37,99,235,0.2); border: 1px solid rgba(37,99,235,0.4);
-      color: var(--white); font-size: 20px; font-weight: 700;
-      cursor: pointer; display: flex; align-items: center; justify-content: center;
-      transition: background var(--transition);
-    }
-    .calc-qty-btn:active { background: rgba(37,99,235,0.5); }
-    .calc-qty-val {
-      font-family: var(--mono); font-size: 18px; font-weight: 700;
-      min-width: 32px; text-align: center; color: var(--white);
-    }
-    .calc-qty-val.has-qty { color: var(--sky); }
-
-    /* Barra de total fija abajo */
-    .calc-footer {
-      position: fixed; bottom: 0; left: 0; right: 0;
-      background: rgba(10,22,40,0.97);
-      backdrop-filter: blur(20px);
-      -webkit-backdrop-filter: blur(20px);
-      border-top: 1px solid var(--card-border);
-      padding: 12px 18px env(safe-area-inset-bottom, 12px);
-      z-index: 20;
-    }
-    .calc-total-row {
-      display: flex; align-items: center; justify-content: space-between;
-      margin-bottom: 12px;
-    }
-    .calc-total-label { font-size: 13px; color: var(--muted); font-weight: 600; text-transform: uppercase; letter-spacing: .5px; }
-    .calc-total-usd { font-family: var(--mono); font-size: 22px; font-weight: 700; color: var(--sky); }
-    .calc-total-ars { font-family: var(--mono); font-size: 14px; color: var(--ice); margin-top: 2px; }
-    .calc-items-count { font-size: 12px; color: var(--muted); margin-top: 2px; }
-
-    .btn-calc-total {
-      width: 100%; background: linear-gradient(135deg, var(--bright), #1d4ed8);
-      border: none; border-radius: var(--radius-sm); padding: 15px;
-      color: #fff; font-family: var(--font); font-size: 16px; font-weight: 700;
-      cursor: pointer; display: flex; align-items: center; justify-content: center; gap: 8px;
-      box-shadow: 0 4px 20px rgba(37,99,235,0.5);
-      transition: opacity var(--transition), transform var(--transition);
-    }
-    .btn-calc-total:active { opacity: .85; transform: scale(.98); }
-    .btn-calc-total.has-items { background: linear-gradient(135deg, #16a34a, #15803d); box-shadow: 0 4px 20px rgba(22,163,74,0.4); }
-
-    /* Resultado del cálculo */
-    .calc-result-block {
-      background: linear-gradient(135deg, rgba(37,99,235,0.15), rgba(56,189,248,0.08));
-      border: 1px solid rgba(56,189,248,0.3);
-      border-radius: var(--radius); padding: 16px 18px; margin-top: 10px;
-      display: none;
-    }
-    .calc-result-block.show { display: block; }
-    .calc-result-title { font-size: 11px; font-weight: 700; text-transform: uppercase; letter-spacing: .7px; color: var(--sky); margin-bottom: 12px; }
-    .calc-result-row { display: flex; justify-content: space-between; align-items: center; padding: 6px 0; border-bottom: 1px solid rgba(56,189,248,0.1); }
-    .calc-result-row:last-child { border-bottom: none; padding-bottom: 0; }
-    .calc-result-row.total-row { padding-top: 10px; margin-top: 4px; border-top: 1px solid rgba(56,189,248,0.25); border-bottom: none; }
-    .calc-result-key { font-size: 13px; color: var(--muted); }
-    .calc-result-key.bold { font-weight: 700; color: var(--white); font-size: 14px; }
-    .calc-result-val { font-family: var(--mono); font-size: 13px; font-weight: 600; color: var(--ice); }
-    .calc-result-val.total-val { font-size: 20px; color: var(--sky); }
-    .calc-result-val.ars-val { font-size: 15px; color: var(--white); }
-    .btn-export-pdf {
-      width: 100%; margin-top: 16px;
-      background: rgba(56,189,248,0.12); border: 1px solid rgba(56,189,248,0.4);
-      border-radius: var(--radius-sm); padding: 12px;
-      color: var(--sky); font-family: var(--font); font-size: 14px; font-weight: 600;
-      cursor: pointer; display: flex; align-items: center; justify-content: center; gap: 8px;
-      transition: background var(--transition);
-    }
-    .btn-export-pdf:active { background: rgba(56,189,248,0.25); }
-    .btn-events {
-      background: rgba(34,197,94,0.1) !important;
-      border-color: rgba(34,197,94,0.35) !important;
-      color: #4ade80 !important;
-    }
-    .btn-events:active { background: rgba(34,197,94,0.2) !important; }
-
-    /* ── Panel Calendario de eventos ── */
-    #events-panel {
-      position: fixed; inset: 0; z-index: 150;
-      background: var(--navy);
-      display: flex; flex-direction: column;
-      transform: translateX(100%);
-      transition: transform .32s cubic-bezier(.33,1,.68,1);
-    }
-    #events-panel.open { transform: translateX(0); }
-
-    .events-header {
-      background: rgba(10,22,40,0.95);
-      backdrop-filter: blur(18px); -webkit-backdrop-filter: blur(18px);
-      border-bottom: 1px solid var(--card-border);
-      padding: env(safe-area-inset-top, 0) 0 0;
-      position: sticky; top: 0; z-index: 10; flex-shrink: 0;
-    }
-    .events-header-inner {
-      display: flex; align-items: center; gap: 12px; padding: 14px 18px;
-    }
-    .events-back {
-      width: 40px; height: 40px; border-radius: 10px; flex-shrink: 0;
-      background: rgba(255,255,255,0.07); border: 1px solid var(--card-border);
-      color: var(--ice); font-size: 20px; cursor: pointer;
-      display: flex; align-items: center; justify-content: center;
-    }
-    .events-title-wrap { flex: 1; }
-    .events-title { font-size: 17px; font-weight: 700; }
-    .events-sub { font-size: 11px; color: #4ade80; text-transform: uppercase; letter-spacing: .5px; margin-top: 1px; }
-
-    .btn-add-event {
-      background: linear-gradient(135deg, #16a34a, #15803d);
-      border: none; border-radius: 10px; padding: 9px 14px;
-      color: #fff; font-family: var(--font); font-size: 13px; font-weight: 600;
-      cursor: pointer; white-space: nowrap;
-      box-shadow: 0 4px 12px rgba(22,163,74,0.4);
-    }
-
-    /* Scroll area */
-    #events-scroll {
-      flex: 1;
-      overflow-y: scroll;
-      -webkit-overflow-scrolling: touch;
-      padding: 16px 16px 32px;
-      display: flex; flex-direction: column; gap: 14px;
-    }
-
-    /* Tarjeta de evento */
-    .event-card {
-      background: var(--card-bg);
-      border: 1px solid var(--card-border);
-      border-radius: var(--radius);
-      backdrop-filter: blur(14px); -webkit-backdrop-filter: blur(14px);
-      overflow: hidden;
-      position: relative;
-      opacity: 1;
-      flex-shrink: 0;
-    }
-    /* Barra de color lateral según estado */
-    .event-card::before {
-      content: ''; position: absolute; left: 0; top: 0; bottom: 0;
-      width: 4px; border-radius: 4px 0 0 4px;
-    }
-    .event-card.upcoming::before { background: #4ade80; }
-    .event-card.ongoing::before  { background: #facc15; }
-    .event-card.past::before     { background: var(--steel); }
-
-    .event-card-body { padding: 16px 16px 14px 20px; }
-    .event-status-row { display: flex; align-items: center; justify-content: space-between; margin-bottom: 6px; }
-    .event-status-badge {
-      font-size: 10px; font-weight: 700; text-transform: uppercase;
-      letter-spacing: .5px; padding: 2px 8px; border-radius: 20px;
-    }
-    .badge-upcoming { background: rgba(74,222,128,0.15); color: #4ade80; border: 1px solid rgba(74,222,128,0.3); }
-    .badge-ongoing  { background: rgba(250,204,21,0.15); color: #facc15; border: 1px solid rgba(250,204,21,0.3); }
-    .badge-past     { background: rgba(100,116,139,0.15); color: var(--muted); border: 1px solid rgba(100,116,139,0.25); }
-
-    .event-title { font-size: 17px; font-weight: 700; margin-bottom: 10px; line-height: 1.4; white-space: normal; word-break: break-word; color: var(--white); }
-    .event-meta { display: flex; flex-direction: column; gap: 5px; }
-    .event-meta-row { display: flex; align-items: flex-start; gap: 8px; font-size: 14px; }
-    .event-meta-icon { font-size: 14px; flex-shrink: 0; margin-top: 1px; }
-    .event-meta-text { color: var(--muted); line-height: 1.5; word-break: break-word; }
-    .event-meta-text strong { color: var(--white); font-weight: 600; }
-
-    .event-card-footer {
-      display: flex; justify-content: flex-end; gap: 8px;
-      padding: 10px 14px; border-top: 1px solid var(--card-border);
-    }
-
-    /* Modal de evento */
-    #event-modal-overlay {
-      position: fixed; inset: 0; z-index: 250;
-      background: rgba(5,12,24,0.82); backdrop-filter: blur(8px);
-      -webkit-backdrop-filter: blur(8px);
-      display: flex; align-items: flex-end; justify-content: center;
-      opacity: 0; pointer-events: none; transition: opacity .25s ease;
-    }
-    #event-modal-overlay.open { opacity: 1; pointer-events: all; }
-    #event-modal-overlay.open .modal-sheet { transform: translateY(0); transition: transform .32s cubic-bezier(.33,1,.68,1); }
-
-    /* ════════════════════════════════════════════
-       INGRESAR UNA COMPRA — CSS limpio
-    ════════════════════════════════════════════ */
-    .btn-purchase {
-      background: rgba(251,191,36,0.12) !important;
-      border: 1px solid rgba(251,191,36,0.4) !important;
-      color: #fbbf24 !important;
-    }
-    .btn-purchase:active { background: rgba(251,191,36,0.22) !important; }
-
-    #purchase-panel {
-      position: fixed; inset: 0; z-index: 150;
-      background: var(--navy);
-      display: flex; flex-direction: column;
-      transform: translateX(100%);
-      transition: transform .32s cubic-bezier(.33,1,.68,1);
-    }
-    #purchase-panel.open { transform: translateX(0); }
-
-    .purchase-header {
-      background: rgba(10,22,40,0.97);
-      border-bottom: 1px solid var(--card-border);
-      padding: env(safe-area-inset-top,0) 0 0;
-      flex-shrink: 0;
-    }
-    .purchase-header-inner {
-      display: flex; align-items: center; gap: 12px; padding: 14px 18px;
-    }
-    .purchase-back {
-      width: 40px; height: 40px; border-radius: 10px; flex-shrink: 0;
-      background: rgba(255,255,255,0.08); border: 1px solid var(--card-border);
-      color: var(--ice); font-size: 20px; cursor: pointer;
-      display: flex; align-items: center; justify-content: center;
-    }
-    .purchase-title-wrap { flex: 1; }
-    .purchase-title { font-size: 17px; font-weight: 700; color: var(--white); }
-    .purchase-sub { font-size: 11px; color: #fbbf24; text-transform: uppercase; letter-spacing: .5px; margin-top: 1px; }
-
-    #purchase-scroll {
-      flex: 1;
-      overflow-y: scroll;
-      -webkit-overflow-scrolling: touch;
-      padding: 14px 14px 180px;
-    }
-
     /* ── Tarjeta de producto ── */
     .pur-card {
       background: rgba(30,58,95,0.8);
@@ -1254,9 +927,9 @@
           <span class="mg-arrow">▾</span>
         </button>
         <div class="menu-sub-items" id="mg-compras">
-          <button class="menu-sub-item" onclick="openCalc();closeMainMenu()">📊 Cálculo de compra</button>
           <button class="menu-sub-item" onclick="openBuyerSelection();closeMainMenu()">📥 Ingresar una compra</button>
           <button class="menu-sub-item" onclick="openPurchaseRecords();closeMainMenu()">📋 Registro de compras</button>
+          <button class="menu-sub-item" style="color:#38bdf8" onclick="openDriveInvoices();closeMainMenu()">📂 Facturas y otros gastos</button>
         </div>
       </div>
 
@@ -1354,43 +1027,45 @@
         <input class="field-input" id="f-stock" type="number" min="0" placeholder="0" />
       </div>
 
-      <div class="section-title">Valores</div>
+      <!-- Campos de valores — ocultos al crear, visibles al editar -->
+      <div id="form-values-section" style="display:none">
+        <div class="section-title" style="margin-top:8px">Valores (por unidad)</div>
 
-      <!-- Cotización en el form -->
-      <div style="display:flex;align-items:center;justify-content:space-between">
-        <span class="rate-badge">
-          <span class="dot-sm"></span>
-          <span id="rate-display">Cargando cotización…</span>
-        </span>
-        <button class="rate-refresh" onclick="fetchUsdRate()" style="color:var(--sky);font-size:12px">↻ Actualizar</button>
-      </div>
+        <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:8px">
+          <span class="rate-badge">
+            <span class="dot-sm"></span>
+            <span id="rate-display">Cargando cotización…</span>
+          </span>
+          <button class="rate-refresh" onclick="fetchUsdRate()" style="color:var(--sky);font-size:12px">↻ Actualizar</button>
+        </div>
 
-      <div class="field-row">
-        <div class="field-group">
-          <label class="field-label">Costo USD</label>
-          <input class="field-input" id="f-compra" type="number" min="0" step="0.01" placeholder="0.00" oninput="recalcGain()" />
+        <div class="field-row">
+          <div class="field-group">
+            <label class="field-label">Costo USD/unidad</label>
+            <input class="field-input" id="f-compra" type="number" min="0" step="0.01" placeholder="0.00" oninput="recalcGain()" />
+          </div>
+          <div class="field-group">
+            <label class="field-label">Venta USD/unidad</label>
+            <input class="field-input" id="f-venta" type="number" min="0" step="0.01" placeholder="0.00" oninput="recalcGain()" />
+          </div>
         </div>
-        <div class="field-group">
-          <label class="field-label">Venta USD</label>
-          <input class="field-input" id="f-venta" type="number" min="0" step="0.01" placeholder="0.00" oninput="recalcGain()" />
-        </div>
-      </div>
 
-      <div class="field-row">
-        <div class="field-group">
-          <label class="field-label">% Ganancia neta</label>
-          <input class="field-input" id="f-pct" type="number" min="0" step="0.1" placeholder="0.0" oninput="recalcFromPct()" />
+        <div class="field-row">
+          <div class="field-group">
+            <label class="field-label">% Ganancia neta</label>
+            <input class="field-input" id="f-pct" type="number" min="0" step="0.1" placeholder="0.0" oninput="recalcFromPct()" />
+          </div>
+          <div class="field-group">
+            <label class="field-label">Venta en ARS $</label>
+            <input class="field-input" id="f-ars" type="number" min="0" step="1" placeholder="Auto" readonly />
+            <span class="field-hint">Calculado con cotización blue</span>
+          </div>
         </div>
-        <div class="field-group">
-          <label class="field-label">Venta en ARS $</label>
-          <input class="field-input" id="f-ars" type="number" min="0" step="1" placeholder="Auto" readonly title="Calculado automáticamente con cotización blue" />
-          <span class="field-hint">Calculado automáticamente · podés editarlo</span>
-        </div>
-      </div>
 
-      <div class="gain-display">
-        <span class="gain-label">📊 Ganancia calculada</span>
-        <span class="gain-val" id="gain-display">$ 0.00</span>
+        <div class="gain-display">
+          <span class="gain-label">📊 Ganancia por unidad</span>
+          <span class="gain-val" id="gain-display">$ 0.00</span>
+        </div>
       </div>
 
     </div>
@@ -1710,47 +1385,91 @@
   </div>
 </div>
 
-<!-- PANEL CÁLCULO DE COMPRA -->
-<div id="calc-panel">
-  <div class="calc-header">
-    <div class="calc-header-inner">
-      <button class="calc-back" onclick="closeCalc()">←</button>
-      <div class="calc-title-wrap">
-        <div class="calc-title">Cálculo de compra</div>
-        <div class="calc-sub">Seleccioná cantidades</div>
-      </div>
-      <button class="btn-reset-calc" onclick="resetCalc()">↺ Limpiar</button>
-    </div>
-  </div>
 
-  <!-- Zona scrolleable única: lista + resultado -->
-  <div id="calc-scroll">
-    <div id="calc-list"></div>
-    <div id="calc-result-block" class="calc-result-block" style="margin:0 16px 12px;">
-      <div class="calc-result-title">📊 Resumen de compra</div>
-      <div id="calc-result-rows"></div>
-      <button class="btn-export-pdf" id="btn-export-pdf" onclick="exportPDF()">
-        📄 Exportar como PDF
-      </button>
-    </div>
-    <!-- Espaciador para que el último elemento no quede bajo el footer fijo -->
-    <div style="height:140px"></div>
-  </div>
 
-  <div class="calc-footer">
-    <div class="calc-total-row">
+
+<!-- PANEL FACTURAS Y OTROS GASTOS (Drive) -->
+<div id="drive-invoices-panel" style="position:fixed;inset:0;z-index:150;background:var(--navy);display:flex;flex-direction:column;transform:translateX(100%);transition:transform .32s cubic-bezier(.33,1,.68,1)">
+  <div class="big-panel-header">
+    <div class="big-panel-header-inner">
+      <button class="big-panel-back" onclick="closeDriveInvoices()">&#8592;</button>
       <div>
-        <div class="calc-total-label">Total estimado</div>
-        <div class="calc-items-count" id="calc-items-count">Sin productos seleccionados</div>
+        <div class="big-panel-title">Facturas y otros gastos</div>
+        <div class="big-panel-sub" style="color:var(--sky)">Archivos en Google Drive</div>
       </div>
-      <div style="text-align:right">
-        <div class="calc-total-usd" id="calc-total-usd">USD 0.00</div>
-        <div class="calc-total-ars" id="calc-total-ars">ARS $ 0</div>
+      <a href="https://drive.google.com/drive/folders/1bcqpHnKGePTvbCA2Btzbf8LSwPdaEPKI" target="_blank"
+         style="background:rgba(37,99,235,.15);border:1px solid rgba(37,99,235,.4);border-radius:8px;padding:7px 11px;color:var(--sky);font-size:12px;font-weight:600;text-decoration:none;white-space:nowrap">
+        &#128193; Abrir Drive
+      </a>
+    </div>
+  </div>
+  <div style="flex:1;overflow-y:scroll;-webkit-overflow-scrolling:touch;padding:14px 16px 40px" id="drive-files-list">
+    <div class="balance-loading">&#8635; Cargando...</div>
+  </div>
+</div>
+
+
+<!-- MODAL INVERSIÓN PERSONAL -->
+<div id="inv-modal" style="position:fixed;inset:0;z-index:250;background:rgba(5,12,24,0.85);backdrop-filter:blur(10px);display:flex;align-items:flex-end;justify-content:center;opacity:0;pointer-events:none;transition:opacity .25s;padding:0" onclick="if(event.target===this)closeInvModal()">
+  <div class="modal-sheet">
+    <div class="modal-header">
+      <div class="modal-title">Registrar inversión personal</div>
+      <button class="modal-close" onclick="closeInvModal()">&#10005;</button>
+    </div>
+    <div class="modal-body">
+      <div class="field-group">
+        <label class="field-label">Persona</label>
+        <select class="field-input" id="inv-persona" style="appearance:auto">
+          <option value="Nicolas">Nicolás</option>
+          <option value="Claudia">Claudia (parte de Claudia y Nicolás)</option>
+          <option value="Nicolas-CyN">Nicolás (parte de Claudia y Nicolás)</option>
+        </select>
+      </div>
+      <div class="field-group">
+        <label class="field-label">Monto (USD)</label>
+        <input class="field-input" id="inv-monto" type="number" min="0" step="0.01" placeholder="0.00">
+      </div>
+      <div class="field-group">
+        <label class="field-label">Descripción</label>
+        <input class="field-input" id="inv-desc" type="text" placeholder="ej. Transferencia para pedido AliExpress">
       </div>
     </div>
-    <button class="btn-calc-total" id="btn-calc-action" onclick="calcularTotal()">
-      🧮 Calcular total
-    </button>
+    <div class="modal-footer">
+      <button class="btn btn-ghost" onclick="closeInvModal()">Cancelar</button>
+      <button class="btn btn-primary" onclick="saveInversion()">&#128190; Guardar</button>
+    </div>
+  </div>
+</div>
+
+<!-- MODAL DIVISIÓN DE GANANCIAS -->
+<div id="division-modal" style="position:fixed;inset:0;z-index:250;background:rgba(5,12,24,0.85);backdrop-filter:blur(10px);display:flex;align-items:flex-end;justify-content:center;opacity:0;pointer-events:none;transition:opacity .25s;padding:0" onclick="if(event.target===this)closeDivisionModal()">
+  <div class="modal-sheet">
+    <div class="modal-header">
+      <div class="modal-title">Registrar división de ganancias</div>
+      <button class="modal-close" onclick="closeDivisionModal()">&#10005;</button>
+    </div>
+    <div class="modal-body">
+      <div class="field-group">
+        <label class="field-label">Para quién</label>
+        <select class="field-input" id="div-persona" style="appearance:auto">
+          <option value="Nicolas">Nicolás</option>
+          <option value="Claudia">Claudia</option>
+          <option value="Ambos">Ambos (partes iguales)</option>
+        </select>
+      </div>
+      <div class="field-group">
+        <label class="field-label">Monto (USD)</label>
+        <input class="field-input" id="div-monto" type="number" min="0" step="0.01" placeholder="0.00">
+      </div>
+      <div class="field-group">
+        <label class="field-label">Detalle / forma de división</label>
+        <input class="field-input" id="div-desc" type="text" placeholder="ej. Transferencia bancaria 50/50">
+      </div>
+    </div>
+    <div class="modal-footer">
+      <button class="btn btn-ghost" onclick="closeDivisionModal()">Cancelar</button>
+      <button class="btn btn-primary" onclick="saveDivision()">&#128190; Guardar</button>
+    </div>
   </div>
 </div>
 
@@ -1968,6 +1687,7 @@ function openModal(id = null) {
     const p = products.find(x => x.id === id);
     if (!p) return;
     document.getElementById("modal-title").textContent = "Editar Producto";
+    document.getElementById("form-values-section").style.display = "block";
     document.getElementById("f-nombre").value  = p.nombre;
     document.getElementById("f-desc").value    = p.descripcion || "";
     document.getElementById("f-foto").value    = p.fotoURL || "";
@@ -1979,6 +1699,7 @@ function openModal(id = null) {
     recalcGain();
   } else {
     document.getElementById("modal-title").textContent = "Nuevo Producto";
+    document.getElementById("form-values-section").style.display = "none";
     ["f-nombre","f-desc","f-foto","f-stock","f-compra","f-venta","f-pct","f-ars"].forEach(fid => {
       document.getElementById(fid).value = "";
     });
@@ -2002,11 +1723,11 @@ function openDetail(id) {
   const rows = [
     ["📝 Descripción",     p.descripcion || "—"],
     ["📦 Stock actual",    p.stock],
-    ["💵 Costo (USD)",     `$ ${fmt(p.valorCompraUSD)}`],
-    ["💲 Venta (USD)",     `$ ${fmt(p.valorVentaUSD)}`],
-    ["📈 Ganancia neta",   `${fmt(p.gananciaPct)} %`],
+    ["💵 Costo USD/unidad", `$ ${fmt(p.valorCompraUSD)}`],
+    ["💲 Venta USD/unidad", `$ ${fmt(p.valorVentaUSD)}`],
+    ["📈 Ganancia neta/u.", `${fmt(p.gananciaPct)} %  (USD ${fmt(p.valorVentaUSD - p.valorCompraUSD)})`],
     ["🏛 Venta (ARS)",     `$ ${fmtARS(p.valorVentaARS)}`],
-    ["💰 Ganancia USD $",  `$ ${fmt(p.valorVentaUSD - p.valorCompraUSD)}`],
+    ["💰 Ganancia neta/u.", `$ ${fmt(p.valorVentaUSD - p.valorCompraUSD)} USD`],
   ];
 
   // Descripción como bloque especial con título
@@ -2339,8 +2060,8 @@ function renderPurchaseRecords() {
       "<div class='record-total'>Total: USD " + fmt(rec.totalUSD) +
         (rec.totalARS > 0 ? " / ARS $" + fmtARS(rec.totalARS) : "") + "</div>" +
       "<div class='record-actions'>" +
-        "<button class='btn-record-pdf' data-idx='" + i + "' onclick='exportPurchaseRecordPDF(purchaseRecordsData[this.dataset.idx])'>&#128196; PDF</button>" +
-        "<button class='btn-record-edit' data-idx='" + i + "' onclick='openEditRecord(\"purchase\", purchaseRecordsData[this.dataset.idx])'>&#9998; Editar</button>" +
+        "<button class='btn-record-pdf' data-recid='" + esc(rec.id) + "' onclick='exportPurRecordPDFById(this.dataset.recid)'>&#128196; PDF</button>" +
+        "<button class='btn-record-edit' data-recid='" + esc(rec.id) + "' onclick='openEditPurRecordById(this.dataset.recid)'>&#9998; Editar</button>" +
         "<button class='btn-record-del' data-id='" + esc(rec.id) + "' onclick='deleteRecord(\"purchase\", this.dataset.id)'>&#128465;</button>" +
       "</div>" +
     "</div>";
@@ -2575,15 +2296,16 @@ function renderSalesRecords() {
       return "<div class='record-item'>" + esc(it.nombre) + " x" + it.qty + "</div>";
     }).join("") + ((rec.items||[]).length > 3 ? "<div class='record-item'>+ " + ((rec.items||[]).length-3) + " más...</div>" : "") + formaPagoHtml;
 
+    // Store record id to look up safely at click time
+    var safeId = esc(rec.id);
     var pdfBtns = isQuote
-      ? "<button class='btn-record-pdf' data-idx='" + i + "' onclick=\"exportGenericPDF('Presupuesto', quotesData[this.dataset.idx], null)\">&#128196; PDF</button>"
-      : "<button class='btn-record-pdf' data-idx='" + i + "' onclick=\"exportSaleRecordPDF(salesData[this.dataset.idx])\">&#128196; PDF cliente</button>" +
-        "<button class='btn-record-pdf' data-idx='" + i + "' onclick=\"exportSaleInternalPDF(salesData[this.dataset.idx])\" style='border-color:rgba(192,132,252,.4);color:#c084fc'>&#128196; Interno</button>";
+      ? "<button class='btn-record-pdf' data-recid='" + safeId + "' onclick='exportQuotePDFById(this.dataset.recid)'>&#128196; PDF</button>"
+      : "<button class='btn-record-pdf' data-recid='" + safeId + "' onclick='exportSalePDFById(this.dataset.recid, false)'>&#128196; PDF cliente</button>" +
+        "<button class='btn-record-pdf' data-recid='" + safeId + "' onclick='exportSalePDFById(this.dataset.recid, true)' style='border-color:rgba(192,132,252,.4);color:#c084fc'>&#128196; Interno</button>";
     var recType = isQuote ? "quote" : "sale";
-    var recData = isQuote ? "quotesData" : "salesData";
     var editDelBtns =
-      "<button class='btn-record-edit' data-idx='" + i + "' data-type='" + recType + "' onclick='openEditRecord(this.dataset.type," + recData + "[this.dataset.idx])'>&#9998; Editar</button>" +
-      "<button class='btn-record-del' data-id='" + esc(rec.id) + "' data-type='" + recType + "' onclick='deleteRecord(this.dataset.type,this.dataset.id)'>&#128465;</button>";
+      "<button class='btn-record-edit' data-recid='" + safeId + "' data-type='" + recType + "' onclick='openEditRecordById(this.dataset.type,this.dataset.recid)'>&#9998; Editar</button>" +
+      "<button class='btn-record-del' data-id='" + safeId + "' data-type='" + recType + "' onclick='deleteRecord(this.dataset.type,this.dataset.id)'>&#128465;</button>";
 
     html += "<div class='record-card'>" +
       "<div class='record-header'><span class='record-badge " + badgeCls + "'>" + badgeTxt + "</span><span class='record-fecha'>" + fechaStr + "</span></div>" +
@@ -2845,7 +2567,7 @@ function buildPurchaseList() {
   }
   for (var i = 0; i < products.length; i++) {
     var p = products[i];
-    purState[p.id] = { qty: 0, facturas: [0], pesoKg: 0 };
+    purState[p.id] = { qty: 0, gastos: [{tipo:'', monto:0}] };
     var card = buildPurCard(p);
     scroll.appendChild(card);
   }
@@ -2943,61 +2665,22 @@ function buildPurCard(p) {
   // — Facturación —
   var factTitle = document.createElement("div");
   factTitle.className = "pur-subtitle";
-  factTitle.textContent = "Valores de facturación (USD)";
+  factTitle.innerHTML = "Gastos de la compra (USD) <small style='font-size:10px;font-weight:400;text-transform:none;letter-spacing:0;color:var(--muted)'>&nbsp;· costo por unidad</small>";
   body.appendChild(factTitle);
 
   var factContainer = document.createElement("div");
   factContainer.id = "purfact-" + pid;
   body.appendChild(factContainer);
-  purRenderFacturas(pid);
+  purRenderGastos(pid);
 
   var addFactBtn = document.createElement("button");
   addFactBtn.className = "pur-add-fact";
-  addFactBtn.textContent = "+ Agregar valor de factura";
+  addFactBtn.textContent = "+ Agregar ítem de gasto";
   addFactBtn.setAttribute("data-pid", pid);
-  addFactBtn.addEventListener("click", function() { purAddFactura(this.getAttribute("data-pid")); });
+  addFactBtn.addEventListener("click", function() { purAddGasto(this.getAttribute("data-pid")); });
   body.appendChild(addFactBtn);
 
-  // — Peso —
-  var pesoTitle = document.createElement("div");
-  pesoTitle.className = "pur-subtitle";
-  pesoTitle.textContent = "Peso del producto";
-  body.appendChild(pesoTitle);
-
-  var pesoWrap = document.createElement("div");
-  pesoWrap.className = "pur-peso-wrap";
-
-  var pesoLabel = document.createElement("span");
-  pesoLabel.className = "pur-peso-label";
-  pesoLabel.textContent = "Peso";
-  pesoWrap.appendChild(pesoLabel);
-
-  var pesoInput = document.createElement("input");
-  pesoInput.className = "pur-peso-input";
-  pesoInput.type = "number";
-  pesoInput.min = "0";
-  pesoInput.step = "0.01";
-  pesoInput.placeholder = "0.00";
-  pesoInput.id = "purpeso-" + pid;
-  pesoInput.setAttribute("data-pid", pid);
-  pesoInput.addEventListener("input", function() {
-    purState[this.getAttribute("data-pid")].pesoKg = parseFloat(this.value) || 0;
-    purRefreshBreakdown(this.getAttribute("data-pid"));
-    purUpdateFooter();
-  });
-  pesoWrap.appendChild(pesoInput);
-
-  var pesoUnit = document.createElement("span");
-  pesoUnit.className = "pur-peso-unit";
-  pesoUnit.textContent = "kg";
-  pesoWrap.appendChild(pesoUnit);
-
-  body.appendChild(pesoWrap);
-
-  var pesoHint = document.createElement("div");
-  pesoHint.className = "pur-peso-hint";
-  pesoHint.textContent = "USD 80 por kg de envío";
-  body.appendChild(pesoHint);
+  // Peso removido — costos se ingresan manualmente
 
   // — Breakdown —
   var bd = document.createElement("div");
@@ -3034,98 +2717,128 @@ function purChangeQty(pid, delta) {
   purUpdateFooter();
 }
 
-// ── Facturas ────────────────────────────────────────────────
-function purRenderFacturas(pid) {
+// ── Gastos de la compra (por unidad) ────────────────────────
+function purRenderGastos(pid) {
   var container = document.getElementById("purfact-" + pid);
   if (!container) return;
   container.innerHTML = "";
-  var facturas = purState[pid].facturas;
-  for (var i = 0; i < facturas.length; i++) {
-    container.appendChild(purFactRow(pid, i, facturas[i]));
+  if (!purState[pid].gastos) purState[pid].gastos = [{tipo:'',monto:0}];
+  var gastos = purState[pid].gastos;
+  for (var i = 0; i < gastos.length; i++) {
+    container.appendChild(purGastoRow(pid, i, gastos[i]));
   }
 }
 
-function purFactRow(pid, idx, val) {
+function purGastoRow(pid, idx, gasto) {
   var row = document.createElement("div");
   row.className = "pur-fact-row";
+  row.style.cssText = "display:flex;align-items:center;gap:6px;margin-bottom:6px";
   row.id = "purfrow-" + pid + "-" + idx;
 
-  var num = document.createElement("span");
-  num.className = "pur-fact-num";
-  num.textContent = idx + 1;
-  row.appendChild(num);
+  // Tipo de gasto input
+  var tipoInput = document.createElement("input");
+  tipoInput.className = "pur-fact-input";
+  tipoInput.style.cssText = "flex:1.5;font-size:13px;padding:8px 9px";
+  tipoInput.type = "text";
+  tipoInput.placeholder = "Tipo (ej. Factura, Aduana)";
+  tipoInput.value = gasto.tipo || "";
+  tipoInput.setAttribute("data-pid", pid);
+  tipoInput.setAttribute("data-idx", idx);
+  tipoInput.addEventListener("input", function() {
+    purState[this.getAttribute("data-pid")].gastos[parseInt(this.getAttribute("data-idx"))].tipo = this.value;
+  });
+  row.appendChild(tipoInput);
 
-  var input = document.createElement("input");
-  input.className = "pur-fact-input";
-  input.type = "number";
-  input.min = "0";
-  input.step = "0.01";
-  input.placeholder = "0.00";
-  input.value = val || "";
-  input.setAttribute("data-pid", pid);
-  input.setAttribute("data-idx", idx);
-  input.addEventListener("input", function() {
+  // Monto input
+  var montoInput = document.createElement("input");
+  montoInput.className = "pur-fact-input";
+  montoInput.style.cssText = "flex:1;font-size:13px;padding:8px 9px;text-align:right";
+  montoInput.type = "number";
+  montoInput.min = "0";
+  montoInput.step = "0.01";
+  montoInput.placeholder = "USD";
+  montoInput.value = gasto.monto || "";
+  montoInput.setAttribute("data-pid", pid);
+  montoInput.setAttribute("data-idx", idx);
+  montoInput.addEventListener("input", function() {
     var p2 = this.getAttribute("data-pid");
     var i2 = parseInt(this.getAttribute("data-idx"));
-    purState[p2].facturas[i2] = parseFloat(this.value) || 0;
+    purState[p2].gastos[i2].monto = parseFloat(this.value) || 0;
     purRefreshBreakdown(p2);
     purUpdateFooter();
   });
-  row.appendChild(input);
+  row.appendChild(montoInput);
 
-  if (idx > 0) {
-    var del = document.createElement("button");
-    del.className = "pur-fact-del";
-    del.textContent = "✕";
-    del.setAttribute("data-pid", pid);
-    del.setAttribute("data-idx", idx);
-    del.addEventListener("click", function() {
-      var p2 = this.getAttribute("data-pid");
-      var i2 = parseInt(this.getAttribute("data-idx"));
-      purState[p2].facturas.splice(i2, 1);
-      purRenderFacturas(p2);
-      purRefreshBreakdown(p2);
-      purUpdateFooter();
-    });
-    row.appendChild(del);
-  }
+  // Delete button (always show except if only 1 row)
+  var del = document.createElement("button");
+  del.className = "pur-fact-del";
+  del.textContent = "✕";
+  del.style.visibility = idx === 0 ? "hidden" : "visible";
+  del.setAttribute("data-pid", pid);
+  del.setAttribute("data-idx", idx);
+  del.addEventListener("click", function() {
+    var p2 = this.getAttribute("data-pid");
+    var i2 = parseInt(this.getAttribute("data-idx"));
+    purState[p2].gastos.splice(i2, 1);
+    purRenderGastos(p2);
+    purRefreshBreakdown(p2);
+    purUpdateFooter();
+  });
+  row.appendChild(del);
   return row;
 }
 
-function purAddFactura(pid) {
+function purAddGasto(pid) {
   if (!purState[pid]) return;
-  purState[pid].facturas.push(0);
-  purRenderFacturas(pid);
+  if (!purState[pid].gastos) purState[pid].gastos = [];
+  purState[pid].gastos.push({tipo:'', monto:0});
+  purRenderGastos(pid);
 }
 
 // ── Breakdown ───────────────────────────────────────────────
+// Calcula el COSTO POR UNIDAD (suma de todos los gastos ingresados)
 function purCalc(pid) {
-  var st = purState[pid] || { facturas:[0], pesoKg:0 };
-  var fac = 0;
-  for (var i = 0; i < st.facturas.length; i++) fac += parseFloat(st.facturas[i]) || 0;
-  var traslado = fac * 0.20;
-  var peso     = (parseFloat(st.pesoKg) || 0) * 80;
-  return { fac: fac, traslado: traslado, peso: peso, total: fac + traslado + peso };
+  var st = purState[pid] || { gastos:[] };
+  var gastos = st.gastos || [];
+  var totalGastos = 0;
+  for (var i = 0; i < gastos.length; i++) {
+    totalGastos += parseFloat(gastos[i].monto) || 0;
+  }
+  // El total es la suma de todos los gastos (por unidad)
+  return { totalPorUnidad: totalGastos, gastos: gastos };
 }
 
 function purRefreshBreakdown(pid) {
   var bd = document.getElementById("purbd-" + pid);
   if (!bd) return;
-  var c = purCalc(pid);
-  var st = purState[pid] || { pesoKg: 0 };
+  var c  = purCalc(pid);
+  var st = purState[pid] || { qty: 0 };
+  var qty = st.qty || 0;
+  var totalCompra = c.totalPorUnidad * (qty > 0 ? qty : 1);
+
+  var rowsHtml = "";
+  c.gastos.forEach(function(g) {
+    if (g.tipo || g.monto > 0) {
+      rowsHtml += "<div class='pur-bd-row'><span class='pur-bd-key'>" + esc(g.tipo || "Gasto") + "</span><span class='pur-bd-val'>USD " + fmt(g.monto||0) + "</span></div>";
+    }
+  });
   bd.innerHTML =
-    "<div class='pur-bd-row'><span class='pur-bd-key'>Facturación total</span><span class='pur-bd-val'>USD " + fmt(c.fac) + "</span></div>" +
-    "<div class='pur-bd-row'><span class='pur-bd-key'>Traslado (20%)</span><span class='pur-bd-val'>USD " + fmt(c.traslado) + "</span></div>" +
-    "<div class='pur-bd-row'><span class='pur-bd-key'>Peso (" + fmt(parseFloat(st.pesoKg)||0) + " kg x $80)</span><span class='pur-bd-val'>USD " + fmt(c.peso) + "</span></div>" +
-    "<div class='pur-bd-total'><span class='pur-bd-total-key'>Valor final</span><span class='pur-bd-total-val'>USD " + fmt(c.total) + "</span></div>";
+    rowsHtml +
+    "<div class='pur-bd-row' style='border-top:1px solid rgba(56,189,248,0.15);margin-top:4px;padding-top:6px'>" +
+      "<span class='pur-bd-key' style='font-weight:600;color:var(--ice)'>Costo por unidad</span>" +
+      "<span class='pur-bd-val' style='color:var(--sky)'>USD " + fmt(c.totalPorUnidad) + "</span>" +
+    "</div>" +
+    (qty > 1 ? "<div class='pur-bd-total'><span class='pur-bd-total-key'>Total " + qty + " unidades</span><span class='pur-bd-total-val'>USD " + fmt(totalCompra) + "</span></div>" : "");
 }
 
 // ── Footer ──────────────────────────────────────────────────
 function purUpdateFooter() {
   var total = 0; var units = 0; var count = 0;
   for (var pid in purState) {
-    total += purCalc(pid).total;
-    if (purState[pid].qty > 0) { units += purState[pid].qty; count++; }
+    var c = purCalc(pid);
+    var qty = purState[pid].qty || 0;
+    total += c.totalPorUnidad * (qty > 0 ? qty : 0);
+    if (qty > 0) { units += qty; count++; }
   }
   document.getElementById("pur-summary-total").textContent = "USD " + fmt(total);
   document.getElementById("pur-summary-items").textContent = units > 0
@@ -3154,11 +2867,12 @@ async function confirmPurchase() {
     var p   = null;
     for (var j = 0; j < products.length; j++) { if (products[j].id === pid) { p = products[j]; break; } }
     if (!p) continue;
-    var newCosto = purCalc(pid).total;
+    var calc = purCalc(pid);
+    var newCostoPorUnidad = calc.totalPorUnidad; // COSTO POR UNIDAD
     var updated  = {
       id: p.id, nombre: p.nombre, descripcion: p.descripcion, fotoURL: p.fotoURL,
       stock: p.stock + st.qty,
-      valorCompraUSD: newCosto > 0 ? newCosto : p.valorCompraUSD,
+      valorCompraUSD: newCostoPorUnidad > 0 ? newCostoPorUnidad : p.valorCompraUSD,
       valorVentaUSD: p.valorVentaUSD, gananciaPct: p.gananciaPct, valorVentaARS: p.valorVentaARS,
       categoria: purchaseBuyer
     };
@@ -3168,11 +2882,12 @@ async function confirmPurchase() {
       ok++;
       recItems.push({
         id: p.id, nombre: p.nombre, qty: st.qty,
-        subtotal: newCosto, precioUSD: newCosto,
-        facturas: st.facturas.slice(), pesoKg: st.pesoKg,
+        precioUSD: newCostoPorUnidad,      // COSTO POR UNIDAD
+        subtotal: newCostoPorUnidad * st.qty, // SUBTOTAL = unidades * costo
+        gastos: (st.gastos||[]).slice(),
         categoria: purchaseBuyer
       });
-      totalUSD += newCosto;
+      totalUSD += newCostoPorUnidad * st.qty;
     } catch(e) { errors++; }
   }
 
@@ -3209,529 +2924,6 @@ async function confirmPurchase() {
   }
 }
 
-// ─────────────────────────────────────────────────────────
-//  CÁLCULO DE COMPRA
-// ─────────────────────────────────────────────────────────
-let calcQtys = {}; // { productId: cantidad }
-let lastCalcData = null; // datos del último cálculo para PDF
-
-function openCalc() {
-  calcQtys = {};
-  renderCalcList();
-  document.getElementById("calc-panel").classList.add("open");
-  // Resetear footer
-  updateCalcFooter();
-  document.getElementById("calc-result-block").classList.remove("show");
-  document.getElementById("btn-calc-action").classList.remove("has-items");
-  document.getElementById("btn-calc-action").textContent = "🧮 Calcular total";
-}
-
-function closeCalc() {
-  document.getElementById("calc-panel").classList.remove("open");
-}
-
-function resetCalc() {
-  calcQtys = {};
-  renderCalcList();
-  updateCalcFooter();
-  document.getElementById("calc-result-block").classList.remove("show");
-  document.getElementById("btn-calc-action").classList.remove("has-items");
-}
-
-function renderCalcList() {
-  const el = document.getElementById("calc-list");
-  if (!products.length) {
-    el.innerHTML = `<div class="state-msg"><span class="emoji">📦</span><p>No hay productos cargados.</p></div>`;
-    return;
-  }
-  el.innerHTML = products.map((p, i) => calcItem(p, i)).join("");
-}
-
-function calcItem(p, idx) {
-  const qty = calcQtys[p.id] || 0;
-  const subtotal = qty * p.valorCompraUSD;
-  const img = p.fotoURL
-    ? `<img class="calc-item-img" src="${esc(normalizeFotoUrl(p.fotoURL))}" loading="lazy" onerror="this.className='calc-item-img-ph';this.textContent='📦'">`
-    : `<div class="calc-item-img-ph">📦</div>`;
-  const delay = `animation-delay:${idx * 0.04}s`;
-  const qtyClass = qty > 0 ? "has-qty" : "";
-
-  return `
-  <div class="calc-item" style="${delay}">
-    <div class="calc-item-top">
-      ${img}
-      <div class="calc-item-name">${esc(p.nombre)}</div>
-    </div>
-    <div class="calc-item-bottom">
-      <div class="calc-item-info">
-        <div class="calc-item-price">Costo: USD ${fmt(p.valorCompraUSD)}</div>
-        ${qty > 0 ? `<div class="calc-item-subtotal">Subtotal: USD ${fmt(subtotal)}</div>` : ''}
-      </div>
-      <div class="calc-qty-ctrl">
-        <button class="calc-qty-btn" onclick="changeCalcQty('${p.id}', -1)">−</button>
-        <span class="calc-qty-val ${qtyClass}" id="cqty-${p.id}">${qty}</span>
-        <button class="calc-qty-btn" onclick="changeCalcQty('${p.id}', +1)">＋</button>
-      </div>
-    </div>
-  </div>`;
-}
-
-function changeCalcQty(id, delta) {
-  const cur = calcQtys[id] || 0;
-  const newVal = Math.max(0, cur + delta);
-  if (newVal === 0) delete calcQtys[id];
-  else calcQtys[id] = newVal;
-  // Re-render solo el item afectado para no perder scroll
-  const p = products.find(x => x.id === id);
-  const el = document.querySelector(`.calc-item [id="cqty-${id}"]`);
-  if (el) {
-    const item = el.closest(".calc-item");
-    const idx = products.indexOf(p);
-    item.outerHTML = calcItem(p, idx);
-  }
-  updateCalcFooter();
-  // Ocultar resultado previo si cambian cantidades
-  document.getElementById("calc-result-block").classList.remove("show");
-  document.getElementById("btn-calc-action").classList.remove("has-items");
-}
-
-function updateCalcFooter() {
-  const totalUSD = Object.entries(calcQtys).reduce((acc, [id, qty]) => {
-    const p = products.find(x => x.id === id);
-    return acc + (p ? p.valorCompraUSD * qty : 0);
-  }, 0);
-  const totalARS = usdRate > 0 ? Math.round(totalUSD * usdRate) : 0;
-  const totalItems = Object.values(calcQtys).reduce((a, b) => a + b, 0);
-
-  document.getElementById("calc-total-usd").textContent = `USD ${fmt(totalUSD)}`;
-  document.getElementById("calc-total-ars").textContent = totalARS > 0 ? `ARS $ ${fmtARS(totalARS)}` : "";
-  document.getElementById("calc-items-count").textContent = totalItems > 0
-    ? `${totalItems} unidad${totalItems !== 1 ? "es" : ""} · ${Object.keys(calcQtys).length} producto${Object.keys(calcQtys).length !== 1 ? "s" : ""}`
-    : "Sin productos seleccionados";
-}
-
-function calcularTotal() {
-  const selected = Object.entries(calcQtys).filter(([,q]) => q > 0);
-  if (!selected.length) { toast("Seleccioná al menos un producto", true); return; }
-
-  const totalUSD = selected.reduce((acc, [id, qty]) => {
-    const p = products.find(x => x.id === id);
-    return acc + (p ? p.valorCompraUSD * qty : 0);
-  }, 0);
-  const totalARS = usdRate > 0 ? Math.round(totalUSD * usdRate) : 0;
-  const totalItems = selected.reduce((acc, [,q]) => acc + q, 0);
-
-  // Construir filas del resumen
-  let rowsHtml = selected.map(([id, qty]) => {
-    const p = products.find(x => x.id === id);
-    if (!p) return "";
-    const sub = p.valorCompraUSD * qty;
-    return `
-    <div class="calc-result-row">
-      <span class="calc-result-key">${esc(p.nombre)} × ${qty}</span>
-      <span class="calc-result-val">USD ${fmt(sub)}</span>
-    </div>`;
-  }).join("");
-
-  if (usdRate > 0) {
-    rowsHtml += `
-    <div class="calc-result-row total-row">
-      <span class="calc-result-key bold">TOTAL (${totalItems} u.)</span>
-      <div style="text-align:right">
-        <div class="calc-result-val total-val">USD ${fmt(totalUSD)}</div>
-        <div class="calc-result-val ars-val">ARS $ ${fmtARS(totalARS)}</div>
-      </div>
-    </div>`;
-  } else {
-    rowsHtml += `
-    <div class="calc-result-row total-row">
-      <span class="calc-result-key bold">TOTAL (${totalItems} u.)</span>
-      <div class="calc-result-val total-val">USD ${fmt(totalUSD)}</div>
-    </div>`;
-  }
-
-  document.getElementById("calc-result-rows").innerHTML = rowsHtml;
-  // Guardar datos para exportar PDF
-  lastCalcData = { selected, totalUSD, totalARS, totalItems, date: new Date() };
-
-  document.getElementById("calc-result-block").classList.add("show");
-  document.getElementById("btn-calc-action").classList.add("has-items");
-  document.getElementById("btn-calc-action").innerHTML = `✅ Total: USD ${fmt(totalUSD)}`;
-
-  // Scroll al resultado dentro del contenedor scrolleable
-  setTimeout(() => {
-    const scroller = document.getElementById("calc-scroll");
-    const rb       = document.getElementById("calc-result-block");
-    const offset   = rb.offsetTop - 16;
-    scroller.scrollTo({ top: offset, behavior: "smooth" });
-  }, 80);
-}
-
-
-
-// ─────────────────────────────────────────────────────────
-//  CALENDARIO DE EVENTOS
-// ─────────────────────────────────────────────────────────
-let events      = [];
-let editingEvId = null;
-
-// Abrir / cerrar panel
-function openEvents() {
-  fetchEvents();
-  document.getElementById("events-panel").classList.add("open");
-}
-function closeEvents() {
-  document.getElementById("events-panel").classList.remove("open");
-}
-
-// Fetch desde API
-async function fetchEvents() {
-  if (!API_URL) return;
-  try {
-    const res  = await fetch(`${API_URL}?action=listEvents&_t=${Date.now()}`);
-    const data = await res.json();
-    if (data.error) throw new Error(data.error);
-    events = data.events || [];
-    renderEvents();
-  } catch (e) {
-    console.error("Events fetch error:", e);
-  }
-}
-
-// Determinar estado del evento
-function eventStatus(ev) {
-  const today = new Date(); today.setHours(0,0,0,0);
-  // Limpiar posibles timestamps ISO antes de parsear
-  const fromStr = ev.fechaDesde ? String(ev.fechaDesde).substring(0, 10) : null;
-  const toStr   = ev.fechaHasta ? String(ev.fechaHasta).substring(0, 10) : fromStr;
-  const from    = fromStr ? new Date(fromStr + "T00:00:00") : null;
-  const to      = toStr   ? new Date(toStr   + "T23:59:59") : from;
-  if (!from) return "upcoming";
-  if (today < from) return "upcoming";
-  if (today > to)   return "past";
-  return "ongoing";
-}
-
-// Ordenar: cronológicamente, los más próximos primero (arriba)
-// flex-direction:column-reverse invierte visualmente → appendamos en orden normal
-function sortedEvents() {
-  return [...events].sort((a, b) => {
-    const da = a.fechaDesde || "9999";
-    const db = b.fechaDesde || "9999";
-    return da.localeCompare(db);
-  });
-}
-
-// Formatear fecha "YYYY-MM-DD" → "DD/MM/YYYY"
-function fmtDate(d) {
-  if (!d) return "";
-  // Tomar solo los primeros 10 chars por si viene con timestamp ISO
-  const clean = String(d).substring(0, 10);
-  const [y, m, day] = clean.split("-");
-  if (!y || !m || !day) return d;
-  return `${day}/${m}/${y}`;
-}
-
-function renderEvents() {
-  const el = document.getElementById("events-scroll");
-  if (!events.length) {
-    el.innerHTML = `<div class="state-msg" style="flex-direction:column;display:flex"><span class="emoji">📅</span><p>No hay eventos cargados.</p></div>`;
-    return;
-  }
-  const sorted = sortedEvents();
-  el.innerHTML = sorted.map((ev, i) => eventCard(ev, i)).join("");
-}
-
-function eventCard(ev, idx) {
-  const status = eventStatus(ev);
-  const badgeClass = { upcoming:"badge-upcoming", ongoing:"badge-ongoing", past:"badge-past" }[status];
-  const badgeLabel = { upcoming:"Próximo", ongoing:"En curso", past:"Finalizado" }[status];
-  const delay = ``;
-
-  // Rango de fechas
-  let fechaStr = "";
-  if (ev.fechaDesde && ev.fechaHasta && ev.fechaDesde !== ev.fechaHasta)
-    fechaStr = `${fmtDate(ev.fechaDesde)} al ${fmtDate(ev.fechaHasta)}`;
-  else if (ev.fechaDesde)
-    fechaStr = fmtDate(ev.fechaDesde);
-
-  const ubicacion = [ev.ciudad, ev.provincia].filter(Boolean).join(", ");
-
-  return `
-  <div class="event-card ${status}" style="${delay}">
-    <div class="event-card-body">
-      <div class="event-status-row">
-        <span class="event-status-badge ${badgeClass}">${badgeLabel}</span>
-        ${fechaStr ? `<span style="font-size:12px;color:var(--muted);font-family:var(--mono)">${fechaStr}</span>` : ""}
-      </div>
-      <div class="event-title">${esc(ev.titulo || "Sin título")}</div>
-      <div class="event-meta">
-        ${ev.horarios  ? `<div class="event-meta-row"><span class="event-meta-icon">🕐</span><span class="event-meta-text"><strong>Horarios:</strong> ${esc(ev.horarios)}</span></div>` : ""}
-        ${ubicacion    ? `<div class="event-meta-row"><span class="event-meta-icon">📍</span><span class="event-meta-text"><strong>Ubicación:</strong> ${esc(ubicacion)}</span></div>` : ""}
-      </div>
-    </div>
-    <div class="event-card-footer">
-      <button class="icon-btn" onclick="openEventModal('${ev.id}')" title="Editar">✏️</button>
-    </div>
-  </div>`;
-}
-
-// ── Modal evento ──────────────────────────────────────────
-function openEventModal(id = null) {
-  editingEvId = id;
-  const overlay = document.getElementById("event-modal-overlay");
-
-  if (id) {
-    const ev = events.find(x => x.id === id);
-    if (!ev) return;
-    document.getElementById("event-modal-title").textContent = "Editar Evento";
-    document.getElementById("ev-titulo").value    = ev.titulo    || "";
-    document.getElementById("ev-desde").value     = ev.fechaDesde|| "";
-    document.getElementById("ev-hasta").value     = ev.fechaHasta|| "";
-    document.getElementById("ev-horarios").value  = ev.horarios  || "";
-    document.getElementById("ev-ciudad").value    = ev.ciudad    || "";
-    document.getElementById("ev-provincia").value = ev.provincia || "";
-    document.getElementById("ev-btn-delete").style.display = "flex";
-  } else {
-    document.getElementById("event-modal-title").textContent = "Nuevo Evento";
-    ["ev-titulo","ev-desde","ev-hasta","ev-horarios","ev-ciudad","ev-provincia"]
-      .forEach(fid => { document.getElementById(fid).value = ""; });
-    document.getElementById("ev-btn-delete").style.display = "none";
-  }
-
-  overlay.classList.add("open");
-  setTimeout(() => document.getElementById("ev-titulo").focus(), 300);
-}
-
-function closeEventModal() {
-  document.getElementById("event-modal-overlay").classList.remove("open");
-  editingEvId = null;
-}
-
-function closeEventModalOnBack(e) {
-  if (e.target === document.getElementById("event-modal-overlay")) closeEventModal();
-}
-
-// ── Guardar evento ────────────────────────────────────────
-async function saveEvent() {
-  const titulo = document.getElementById("ev-titulo").value.trim();
-  if (!titulo) { toast("El título es obligatorio", true); return; }
-
-  const ev = {
-    id:         editingEvId || null,
-    titulo,
-    fechaDesde: document.getElementById("ev-desde").value,
-    fechaHasta: document.getElementById("ev-hasta").value,
-    horarios:   document.getElementById("ev-horarios").value.trim(),
-    ciudad:     document.getElementById("ev-ciudad").value.trim(),
-    provincia:  document.getElementById("ev-provincia").value.trim(),
-  };
-
-  const action = editingEvId ? "updateEvent" : "createEvent";
-  const btn    = document.getElementById("ev-btn-save");
-  btn.textContent = "⏳ Guardando…"; btn.disabled = true;
-
-  try {
-    const res = await apiPostEvent(action, ev);
-    if (res.error) throw new Error(res.error);
-    toast(editingEvId ? "Evento actualizado ✓" : "Evento creado ✓");
-    closeEventModal();
-    fetchEvents();
-  } catch (e) {
-    toast("Error: " + e.message, true);
-  } finally {
-    btn.textContent = "💾 Guardar"; btn.disabled = false;
-  }
-}
-
-// ── Eliminar evento ───────────────────────────────────────
-async function deleteEventFromModal() {
-  if (!editingEvId) return;
-  if (!confirm("¿Eliminar este evento?")) return;
-  try {
-    const res = await apiPostEvent("deleteEvent", { id: editingEvId });
-    if (res.error) throw new Error(res.error);
-    toast("Evento eliminado");
-    closeEventModal();
-    fetchEvents();
-  } catch (e) {
-    toast("Error: " + e.message, true);
-  }
-}
-
-// ── API helper para eventos ───────────────────────────────
-async function apiPostEvent(action, event) {
-  if (!API_URL) { toast("Configurá la URL de la API primero", true); return {}; }
-  const res = await fetch(API_URL, {
-    method: "POST",
-    body: JSON.stringify({ action, event }),
-    headers: { "Content-Type": "text/plain;charset=utf-8" }
-  });
-  return res.json();
-}
-
-// ─────────────────────────────────────────────────────────
-//  EXPORTAR PDF
-// ─────────────────────────────────────────────────────────
-function exportPDF() {
-  if (!lastCalcData) return;
-  if (typeof window.jspdf === "undefined") {
-    toast("Cargando librería PDF, intentá de nuevo…", true);
-    return;
-  }
-
-  const { jsPDF } = window.jspdf;
-  const doc = new jsPDF({ unit: "mm", format: "a4" });
-
-  const W = 210, margin = 18;
-  const col1 = margin, col2 = W - margin;
-  let y = 0;
-
-  // ── Paleta ──
-  const NAVY   = [10,  22,  40];
-  const BRIGHT = [37,  99, 235];
-  const SKY    = [56, 189, 248];
-  const WHITE  = [240, 248, 255];
-  const MUTED  = [100, 116, 139];
-  const SUCCESS= [22, 163, 74];
-  const LIGHT  = [226, 232, 240];
-
-  // ── Header azul ──────────────────────────────────────────
-  doc.setFillColor(...NAVY);
-  doc.rect(0, 0, W, 38, "F");
-
-  // Ícono: cuadrado redondeado azul con "MP" (sin emojis — jsPDF no los soporta)
-  doc.setFillColor(...BRIGHT);
-  doc.roundedRect(margin, 7, 16, 16, 3, 3, "F");
-  doc.setTextColor(...WHITE);
-  doc.setFontSize(9);
-  doc.setFont("helvetica", "bold");
-  doc.text("MP", margin + 3.2, 17.5);
-
-  doc.setTextColor(...WHITE);
-  doc.setFontSize(16);
-  doc.setFont("helvetica", "bold");
-  doc.text("Mis Productos", margin + 20, 16);
-  doc.setFontSize(8);
-  doc.setFont("helvetica", "normal");
-  doc.setTextColor(...SKY);
-  doc.text("GESTION DE STOCK", margin + 20, 22);
-
-  // Fecha arriba a la derecha
-  const fechaStr = lastCalcData.date.toLocaleDateString("es-AR", {
-    day: "2-digit", month: "2-digit", year: "numeric",
-    hour: "2-digit", minute: "2-digit"
-  });
-  doc.setFontSize(8);
-  doc.setTextColor(...MUTED);
-  doc.text(fechaStr, col2, 21, { align: "right" });
-
-  y = 48;
-
-  // ── Título sección ───────────────────────────────────────
-  doc.setFillColor(...BRIGHT);
-  doc.rect(margin, y - 5, 4, 12, "F");
-  doc.setTextColor(...NAVY);
-  doc.setFontSize(14);
-  doc.setFont("helvetica", "bold");
-  doc.text("Resumen de compra", margin + 8, y + 3);
-
-  // Cotización
-  if (usdRate > 0) {
-    doc.setFontSize(8);
-    doc.setFont("helvetica", "normal");
-    doc.setTextColor(...MUTED);
-    doc.text(`Cotización dólar blue: $${usdRate.toLocaleString("es-AR")} / USD`, col2, y + 3, { align: "right" });
-  }
-  y += 16;
-
-  // ── Encabezado tabla ─────────────────────────────────────
-  doc.setFillColor(...NAVY);
-  doc.rect(margin, y, W - margin * 2, 9, "F");
-  doc.setTextColor(...WHITE);
-  doc.setFontSize(8);
-  doc.setFont("helvetica", "bold");
-  doc.text("PRODUCTO", col1 + 3, y + 6);
-  doc.text("CANT.", col2 - 42, y + 6, { align: "right" });
-  doc.text("COSTO UNIT.", col2 - 22, y + 6, { align: "right" });
-  doc.text("SUBTOTAL", col2, y + 6, { align: "right" });
-  y += 9;
-
-  // ── Filas de productos ───────────────────────────────────
-  doc.setFont("helvetica", "normal");
-  let rowBg = false;
-  for (const [id, qty] of lastCalcData.selected) {
-    const p = products.find(x => x.id === id);
-    if (!p) continue;
-    const sub = p.valorCompraUSD * qty;
-    const rowH = 9;
-
-    if (rowBg) {
-      doc.setFillColor(248, 250, 252);
-      doc.rect(margin, y, W - margin * 2, rowH, "F");
-    }
-    rowBg = !rowBg;
-
-    doc.setTextColor(...NAVY);
-    doc.setFontSize(9);
-    // Nombre — truncar si es muy largo
-    const nombre = p.nombre.length > 42 ? p.nombre.substring(0, 40) + "…" : p.nombre;
-    doc.text(nombre, col1 + 3, y + 6);
-    doc.setFont("helvetica", "normal");
-    doc.text(String(qty), col2 - 42, y + 6, { align: "right" });
-    doc.setTextColor(...MUTED);
-    doc.text(`USD ${fmt(p.valorCompraUSD)}`, col2 - 22, y + 6, { align: "right" });
-    doc.setTextColor(...NAVY);
-    doc.setFont("helvetica", "bold");
-    doc.text(`USD ${fmt(sub)}`, col2, y + 6, { align: "right" });
-    doc.setFont("helvetica", "normal");
-
-    // Línea separadora
-    doc.setDrawColor(...LIGHT);
-    doc.setLineWidth(0.2);
-    doc.line(margin, y + rowH, col2, y + rowH);
-    y += rowH;
-  }
-
-  // ── Fila total ───────────────────────────────────────────
-  y += 2;
-  doc.setFillColor(...NAVY);
-  doc.rect(margin, y, W - margin * 2, 14, "F");
-  doc.setTextColor(...WHITE);
-  doc.setFontSize(9);
-  doc.setFont("helvetica", "bold");
-  doc.text(`TOTAL  (${lastCalcData.totalItems} unidades)`, col1 + 3, y + 6);
-
-  doc.setFontSize(12);
-  doc.setTextColor(...SKY);
-  doc.text(`USD ${fmt(lastCalcData.totalUSD)}`, col2, y + 6, { align: "right" });
-
-  if (lastCalcData.totalARS > 0) {
-    doc.setFontSize(8);
-    doc.setTextColor(186, 230, 253);
-    doc.text(`ARS $ ${fmtARS(lastCalcData.totalARS)}`, col2, y + 12, { align: "right" });
-    y += 14;
-  } else {
-    y += 14;
-  }
-
-  // ── Footer ───────────────────────────────────────────────
-  y += 10;
-  doc.setDrawColor(...LIGHT);
-  doc.setLineWidth(0.4);
-  doc.line(margin, y, col2, y);
-  y += 5;
-  doc.setFontSize(7.5);
-  doc.setFont("helvetica", "italic");
-  doc.setTextColor(...MUTED);
-  doc.text("Generado por Mis Productos", margin, y);
-  doc.text(fechaStr, col2, y, { align: "right" });
-
-  // ── Guardar / compartir ───────────────────────────────────
-  const filename = `compra_${lastCalcData.date.toISOString().slice(0,10)}.pdf`;
-  doc.save(filename);
-  toast("PDF generado ✓");
-}
 
 // ─────────────────────────────────────────────────────────
 //  BALANCES
@@ -3823,12 +3015,36 @@ async function loadBalances() {
   html += "<div class='balance-row' style='border-top:1px solid var(--card-border);margin-top:6px;padding-top:10px'><span class='balance-key' style='font-weight:700;color:var(--white)'>Ganancia neta total</span><span class='balance-val " + valColor(ganTotal) + "' style='font-size:16px'>USD " + fmt(ganTotal) + arsStr(ganTotal) + "</span></div>";
   html += "</div>";
 
+  // ── BLOQUE REGISTRO DE INVERSIONES PERSONALES ───────────────
+  html += "<div class='balance-card' id='inv-personal-card'>" +
+    "<div class='balance-card-title' style='color:#fbbf24;justify-content:space-between'>" +
+      "<span>💳 Registro de inversiones personales</span>" +
+      "<button onclick='openInvModal()' style='background:rgba(251,191,36,.15);border:1px solid rgba(251,191,36,.4);border-radius:7px;padding:4px 10px;color:#fbbf24;font-family:var(--font);font-size:11px;font-weight:600;cursor:pointer'>+ Agregar</button>" +
+    "</div>" +
+    "<div id='inv-personal-list'><div style='color:var(--muted);font-size:12px;text-align:center;padding:8px'>Cargando...</div></div>" +
+  "</div>";
+
+  // ── BLOQUE DIVISIÓN DE GANANCIAS ──────────────────────────
+  html += "<div class='balance-card'>" +
+    "<div class='balance-card-title' style='color:#4ade80;justify-content:space-between'>" +
+      "<span>✂️ División de ganancias netas</span>" +
+      "<button onclick='openDivisionModal()' style='background:rgba(34,197,94,.15);border:1px solid rgba(34,197,94,.4);border-radius:7px;padding:4px 10px;color:#4ade80;font-family:var(--font);font-size:11px;font-weight:600;cursor:pointer'>+ Registrar división</button>" +
+    "</div>" +
+    "<div class='balance-row'><span class='balance-key'>Ganancia neta total (disponible)</span><span class='balance-val " + valColor(ganTotal) + "'>USD " + fmt(ganTotal) + "</span></div>" +
+    "<div id='division-list'><div style='color:var(--muted);font-size:12px;text-align:center;padding:8px'>Cargando...</div></div>" +
+    "<div id='division-saldo' style='padding-top:10px;border-top:1px solid var(--card-border);margin-top:6px'></div>" +
+  "</div>";
+
   // Cotización usada
   if (usdRate > 0) {
     html += "<div style='text-align:center;font-size:11px;color:var(--muted);font-family:var(--mono);padding:8px 0'>Cotización dólar blue: $" + usdRate.toLocaleString("es-AR") + " / USD</div>";
   }
 
   el.innerHTML = html;
+
+  // Load investment and division records
+  loadInvPersonal();
+  loadDivisiones(ganTotal);
 }
 
 // ─────────────────────────────────────────────────────────
@@ -3933,6 +3149,47 @@ async function deleteRecord(type, id) {
 
   var actionMap = { purchase: "deletePurchaseRecord", quote: "deleteQuote", sale: "deleteSale" };
 
+  // For purchase records: restore stock BEFORE deleting
+  if (type === "purchase") {
+    var rec = purchaseRecordsData.find(function(r){ return r.id === id; });
+    if (rec && rec.items && rec.items.length > 0) {
+      var restoreMsg = "";
+      for (var i = 0; i < rec.items.length; i++) {
+        var it = rec.items[i];
+        var p  = products.find(function(x){ return x.id === it.id; });
+        if (!p) continue;
+        var restoredStock = Math.max(0, p.stock - (it.qty || 0));
+        var upd = {
+          id: p.id, nombre: p.nombre, descripcion: p.descripcion, fotoURL: p.fotoURL,
+          stock: restoredStock,
+          valorCompraUSD: p.valorCompraUSD, valorVentaUSD: p.valorVentaUSD,
+          gananciaPct: p.gananciaPct, valorVentaARS: p.valorVentaARS, categoria: p.categoria
+        };
+        try { await apiPost("update", upd); } catch(e) { console.warn("Stock restore error:", e); }
+      }
+    }
+  }
+
+  // For sale records: restore stock
+  if (type === "sale") {
+    var srec = salesData.find(function(r){ return r.id === id; });
+    if (srec && srec.items && srec.items.length > 0) {
+      for (var si = 0; si < srec.items.length; si++) {
+        var sit = srec.items[si];
+        var sp  = products.find(function(x){ return x.id === sit.id; });
+        if (!sp) continue;
+        var restoredSaleStock = sp.stock + (sit.qty || 0);
+        var supd = {
+          id: sp.id, nombre: sp.nombre, descripcion: sp.descripcion, fotoURL: sp.fotoURL,
+          stock: restoredSaleStock,
+          valorCompraUSD: sp.valorCompraUSD, valorVentaUSD: sp.valorVentaUSD,
+          gananciaPct: sp.gananciaPct, valorVentaARS: sp.valorVentaARS, categoria: sp.categoria
+        };
+        try { await apiPost("update", supd); } catch(e) { console.warn("Sale stock restore error:", e); }
+      }
+    }
+  }
+
   try {
     var res = await fetch(API_URL, {
       method: "POST",
@@ -3941,10 +3198,224 @@ async function deleteRecord(type, id) {
     });
     var data = await res.json();
     if (data.error) throw new Error(data.error);
-    toast("Registro eliminado");
+    toast("Registro eliminado · stock restituido");
     if (type === "purchase") fetchPurchaseRecords();
     else { fetchQuotes(); fetchSales(); }
+    fetchProducts();
   } catch(e) { toast("Error: " + e.message, true); }
+}
+
+
+
+// ─────────────────────────────────────────────────────────
+//  PDF HELPERS — look up by record ID (avoids stale index bug)
+// ─────────────────────────────────────────────────────────
+function exportQuotePDFById(id) {
+  var rec = quotesData.find(function(r){ return r.id === id; });
+  if (!rec) { toast("Registro no encontrado", true); return; }
+  exportGenericPDF("Presupuesto", rec, null);
+}
+function exportSalePDFById(id, isInternal) {
+  var rec = salesData.find(function(r){ return r.id === id; });
+  if (!rec) { toast("Registro no encontrado", true); return; }
+  if (isInternal) exportSaleInternalPDF(rec);
+  else exportSaleRecordPDF(rec);
+}
+function openEditRecordById(type, id) {
+  var arr = type === "quote" ? quotesData : salesData;
+  var rec = arr.find(function(r){ return r.id === id; });
+  if (!rec) { toast("Registro no encontrado", true); return; }
+  openEditRecord(type, rec);
+}
+
+function exportPurRecordPDFById(id) {
+  var rec = purchaseRecordsData.find(function(r){ return r.id === id; });
+  if (!rec) { toast("Registro no encontrado", true); return; }
+  exportPurchaseRecordPDF(rec);
+}
+function openEditPurRecordById(id) {
+  var rec = purchaseRecordsData.find(function(r){ return r.id === id; });
+  if (!rec) { toast("Registro no encontrado", true); return; }
+  openEditRecord("purchase", rec);
+}
+
+
+// ─────────────────────────────────────────────────────────
+//  FACTURAS Y OTROS GASTOS (Drive)
+// ─────────────────────────────────────────────────────────
+var DRIVE_FOLDER_ID_INVOICES = "1bcqpHnKGePTvbCA2Btzbf8LSwPdaEPKI";
+
+function openDriveInvoices() {
+  var panel = document.getElementById("drive-invoices-panel");
+  panel.style.transform = "translateX(0)";
+  loadDriveFiles();
+}
+function closeDriveInvoices() {
+  document.getElementById("drive-invoices-panel").style.transform = "translateX(100%)";
+}
+
+async function loadDriveFiles() {
+  var el = document.getElementById("drive-files-list");
+  el.innerHTML = "<div class='balance-loading'>&#8635; Cargando archivos de Drive...</div>";
+  if (!API_URL) {
+    el.innerHTML = "<div class='balance-loading'>Configurá la URL de la API primero<br><br><a href=\"https://drive.google.com/drive/folders/" + DRIVE_FOLDER_ID_INVOICES + "\" target=\"_blank\" style=\"color:var(--sky)\">Abrir carpeta en Drive</a></div>";
+    return;
+  }
+  try {
+    var res  = await fetch(API_URL + "?action=listDriveFiles&folderId=" + DRIVE_FOLDER_ID_INVOICES + "&_t=" + Date.now());
+    var data = await res.json();
+    if (data.error) {
+      // Fallback: show direct link to Drive folder
+      el.innerHTML = "<div class='balance-loading'><p style='margin-bottom:16px'>No se pudieron listar los archivos automáticamente.</p><a href=\"https://drive.google.com/drive/folders/" + DRIVE_FOLDER_ID_INVOICES + "\" target=\"_blank\" class=\"btn-drive-download\" style=\"display:inline-flex;margin:0 auto\">&#128193; Abrir carpeta en Drive</a></div>";
+      return;
+    }
+    var files = data.files || [];
+    if (!files.length) {
+      el.innerHTML = "<div class='balance-loading'>No hay archivos en esta carpeta</div>"; return;
+    }
+    var html = "";
+    files.forEach(function(f) {
+      var icon = f.mimeType && f.mimeType.includes("pdf") ? "📄" : (f.mimeType && f.mimeType.includes("image")) ? "🖼️" : "📁";
+      var viewUrl     = "https://drive.google.com/file/d/" + f.id + "/view";
+      var downloadUrl = "https://drive.google.com/uc?export=download&id=" + f.id;
+      html += "<div style='display:flex;align-items:center;gap:10px;background:rgba(30,58,95,0.7);border:1px solid var(--card-border);border-radius:8px;padding:10px 12px;margin-bottom:8px'>" +
+        "<span style='font-size:20px;flex-shrink:0'>" + icon + "</span>" +
+        "<div style='flex:1;min-width:0'>" +
+          "<div style='font-size:13px;font-weight:600;color:var(--white);overflow:hidden;text-overflow:ellipsis;white-space:nowrap'>" + esc(f.name) + "</div>" +
+          (f.size ? "<div style='font-size:11px;color:var(--muted);font-family:var(--mono)'>" + Math.round(f.size/1024) + " KB</div>" : "") +
+        "</div>" +
+        "<div style='display:flex;gap:6px'>" +
+          "<a href='" + viewUrl + "' target='_blank' style='background:rgba(37,99,235,.15);border:1px solid rgba(37,99,235,.4);border-radius:7px;padding:6px 10px;color:var(--sky);font-size:12px;font-weight:600;text-decoration:none'>&#128065; Ver</a>" +
+          "<a href='" + downloadUrl + "' target='_blank' style='background:rgba(37,99,235,.15);border:1px solid rgba(37,99,235,.4);border-radius:7px;padding:6px 10px;color:var(--sky);font-size:12px;font-weight:600;text-decoration:none'>&#11015; Bajar</a>" +
+        "</div>" +
+      "</div>";
+    });
+    el.innerHTML = html;
+  } catch(e) {
+    el.innerHTML = "<div class='balance-loading'>Error: " + e.message + "<br><br><a href=\"https://drive.google.com/drive/folders/" + DRIVE_FOLDER_ID_INVOICES + "\" target=\"_blank\" style=\"color:var(--sky)\">Abrir carpeta en Drive</a></div>";
+  }
+}
+
+
+// ─────────────────────────────────────────────────────────
+//  INVERSIONES PERSONALES Y DIVISIÓN DE GANANCIAS
+//  (stored in localStorage as lightweight registry)
+// ─────────────────────────────────────────────────────────
+function getInversiones() {
+  try { return JSON.parse(localStorage.getItem("mp_inversiones") || "[]"); } catch(_){ return []; }
+}
+function saveInversiones(arr) { localStorage.setItem("mp_inversiones", JSON.stringify(arr)); }
+function getDivisiones() {
+  try { return JSON.parse(localStorage.getItem("mp_divisiones") || "[]"); } catch(_){ return []; }
+}
+function saveDivisiones(arr) { localStorage.setItem("mp_divisiones", JSON.stringify(arr)); }
+
+// ── Inversiones ───────────────────────────────────────────
+function openInvModal() {
+  var m = document.getElementById("inv-modal");
+  m.style.opacity = "1"; m.style.pointerEvents = "all";
+  document.getElementById("inv-monto").value = "";
+  document.getElementById("inv-desc").value  = "";
+}
+function closeInvModal() {
+  var m = document.getElementById("inv-modal");
+  m.style.opacity = "0"; m.style.pointerEvents = "none";
+}
+function saveInversion() {
+  var persona = document.getElementById("inv-persona").value;
+  var monto   = parseFloat(document.getElementById("inv-monto").value) || 0;
+  var desc    = document.getElementById("inv-desc").value.trim();
+  if (!monto) { toast("Ingresá un monto", true); return; }
+  var arr = getInversiones();
+  arr.push({ id: Date.now().toString(), fecha: new Date().toISOString(), persona: persona, monto: monto, desc: desc });
+  saveInversiones(arr);
+  closeInvModal();
+  loadInvPersonal();
+  toast("Inversión registrada ✓");
+}
+function loadInvPersonal() {
+  var el = document.getElementById("inv-personal-list");
+  if (!el) return;
+  var arr = getInversiones();
+  if (!arr.length) { el.innerHTML = "<div style='color:var(--muted);font-size:12px;text-align:center;padding:8px'>Sin registros</div>"; return; }
+  var personaLabels = { Nicolas: "Nicolás", Claudia: "Claudia (C y N)", "Nicolas-CyN": "Nicolás (C y N)" };
+  var totals = {};
+  var html = arr.slice().reverse().slice(0, 10).map(function(r) {
+    var fStr = fmtDateFromISO(r.fecha);
+    var lbl  = personaLabels[r.persona] || r.persona;
+    return "<div class='balance-row'>" +
+      "<span class='balance-key'><b>" + lbl + "</b>" + (r.desc ? " — " + esc(r.desc) : "") + "<br><small>" + fStr + "</small></span>" +
+      "<span class='balance-val neutral'>USD " + fmt(r.monto) + "</span>" +
+    "</div>";
+  }).join("");
+  // Totals
+  arr.forEach(function(r) { totals[r.persona] = (totals[r.persona]||0) + r.monto; });
+  html += "<div class='balance-row' style='margin-top:8px;border-top:1px solid var(--card-border);padding-top:8px'><span class='balance-key' style='font-weight:700;color:var(--white)'>Totales por persona</span><span></span></div>";
+  Object.keys(totals).forEach(function(k) {
+    html += "<div class='balance-row'><span class='balance-key'>" + (personaLabels[k]||k) + "</span><span class='balance-val neutral'>USD " + fmt(totals[k]) + "</span></div>";
+  });
+  el.innerHTML = html;
+}
+function deleteInversion(id) {
+  if (!confirm("¿Eliminar este registro?")) return;
+  var arr = getInversiones().filter(function(r){ return r.id !== id; });
+  saveInversiones(arr);
+  loadInvPersonal();
+  toast("Registro eliminado");
+}
+
+// ── División de ganancias ─────────────────────────────────
+function openDivisionModal() {
+  var m = document.getElementById("division-modal");
+  m.style.opacity = "1"; m.style.pointerEvents = "all";
+  document.getElementById("div-monto").value = "";
+  document.getElementById("div-desc").value  = "";
+}
+function closeDivisionModal() {
+  var m = document.getElementById("division-modal");
+  m.style.opacity = "0"; m.style.pointerEvents = "none";
+}
+function saveDivision() {
+  var persona = document.getElementById("div-persona").value;
+  var monto   = parseFloat(document.getElementById("div-monto").value) || 0;
+  var desc    = document.getElementById("div-desc").value.trim();
+  if (!monto) { toast("Ingresá un monto", true); return; }
+  var arr = getDivisiones();
+  arr.push({ id: Date.now().toString(), fecha: new Date().toISOString(), persona: persona, monto: monto, desc: desc });
+  saveDivisiones(arr);
+  closeDivisionModal();
+  // Reload balances to recalculate saldo
+  loadBalances();
+  toast("División registrada ✓");
+}
+function loadDivisiones(ganTotal) {
+  var listEl  = document.getElementById("division-list");
+  var saldoEl = document.getElementById("division-saldo");
+  if (!listEl) return;
+  var arr = getDivisiones();
+  var totalDividido = arr.reduce(function(s,r){ return s + r.monto; }, 0);
+  var saldo = (parseFloat(ganTotal)||0) - totalDividido;
+
+  if (!arr.length) {
+    listEl.innerHTML = "<div style='color:var(--muted);font-size:12px;text-align:center;padding:8px'>Sin registros de división</div>";
+  } else {
+    var personaLabels = { Nicolas: "Nicolás", Claudia: "Claudia", Ambos: "Ambos" };
+    listEl.innerHTML = arr.slice().reverse().slice(0,10).map(function(r) {
+      return "<div class='balance-row'>" +
+        "<span class='balance-key'><b>" + (personaLabels[r.persona]||r.persona) + "</b>" + (r.desc ? " — " + esc(r.desc) : "") + "<br><small>" + fmtDateFromISO(r.fecha) + "</small></span>" +
+        "<span class='balance-val negative'>- USD " + fmt(r.monto) + "</span>" +
+      "</div>";
+    }).join("");
+  }
+
+  if (saldoEl) {
+    saldoEl.innerHTML =
+      "<div class='balance-row'><span class='balance-key'>Total dividido</span><span class='balance-val negative'>USD " + fmt(totalDividido) + "</span></div>" +
+      "<div class='balance-row' style='border-top:1px solid var(--card-border);padding-top:8px;margin-top:4px'>" +
+        "<span class='balance-key' style='font-weight:700;color:var(--white)'>Saldo disponible</span>" +
+        "<span class='balance-val " + (saldo >= 0 ? "positive" : "negative") + "' style='font-size:16px'>USD " + fmt(saldo) + "</span>" +
+      "</div>";
+  }
 }
 
 
