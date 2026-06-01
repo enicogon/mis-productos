@@ -3554,35 +3554,82 @@ async function fetchEvents() {
   } catch(e) { console.error("Events fetch error:", e); }
 }
 
+// ── Parsear fecha robustamente desde cualquier formato ─────────
+function parseEventDate(val) {
+  if (!val) return null;
+  var s = String(val).trim();
+  if (!s || s === "undefined" || s === "null") return null;
+
+  // Ya tiene formato YYYY-MM-DD (puede venir con hora)
+  var m1 = s.match(/^(\d{4})-(\d{2})-(\d{2})/);
+  if (m1) return new Date(m1[1] + "-" + m1[2] + "-" + m1[3] + "T00:00:00");
+
+  // Formato DD/MM/YYYY
+  var m2 = s.match(/^(\d{1,2})\/(\d{1,2})\/(\d{4})/);
+  if (m2) return new Date(m2[3] + "-" + m2[2].padStart(2,"0") + "-" + m2[1].padStart(2,"0") + "T00:00:00");
+
+  // Intentar Date() genérico
+  var d = new Date(s);
+  return isNaN(d.getTime()) ? null : d;
+}
+
+// ── Convertir a YYYY-MM-DD para input[type=date] ──────────────
+function toInputDate(val) {
+  var d = parseEventDate(val);
+  if (!d || isNaN(d.getTime())) return "";
+  var yyyy = d.getFullYear();
+  var mm   = String(d.getMonth() + 1).padStart(2, "0");
+  var dd   = String(d.getDate()).padStart(2, "0");
+  return yyyy + "-" + mm + "-" + dd;
+}
+
+// ── Formatear fecha para mostrar ────────────────────────────────
+function fmtEventDate(val) {
+  var d = parseEventDate(val);
+  if (!d || isNaN(d.getTime())) return "";
+  return d.toLocaleDateString("es-AR", { day: "2-digit", month: "2-digit", year: "numeric" });
+}
+
 function renderEvents() {
   var el = document.getElementById("events-scroll");
   if (!events.length) {
     el.innerHTML = "<div class='state-msg'><span class='emoji'>📅</span><p>Sin eventos cargados</p></div>";
     return;
   }
-  var today = new Date(); today.setHours(0,0,0,0);
-  var sorted = events.slice().sort(function(a,b) {
-    var da = new Date(a.fechaDesde || ""); var db = new Date(b.fechaDesde || "");
+  var today = new Date(); today.setHours(0, 0, 0, 0);
+
+  var sorted = events.slice().sort(function(a, b) {
+    var da = parseEventDate(a.fechaDesde) || new Date(0);
+    var db = parseEventDate(b.fechaDesde) || new Date(0);
     return da - db;
   });
+
   var html = "";
   sorted.forEach(function(ev) {
-    var desde  = ev.fechaDesde ? new Date(ev.fechaDesde + "T00:00:00") : null;
-    var hasta  = ev.fechaHasta ? new Date(ev.fechaHasta + "T00:00:00") : null;
+    var desde = parseEventDate(ev.fechaDesde);
+    var hasta = parseEventDate(ev.fechaHasta);
+
     var status = "upcoming";
     if (desde && hasta) {
-      if (today > hasta)        status = "finished";
-      else if (today >= desde)  status = "ongoing";
+      if (today > hasta)       status = "finished";
+      else if (today >= desde) status = "ongoing";
+    } else if (desde && today >= desde) {
+      status = "ongoing";
     }
+
     var badgeTxt = status === "finished" ? "Finalizado" : status === "ongoing" ? "En curso" : "Próximo";
     var badgeCls = status === "finished" ? "badge-finished" : status === "ongoing" ? "badge-ongoing" : "badge-upcoming";
     var statusCls = status === "finished" ? "status-finished" : status === "ongoing" ? "status-ongoing" : "";
-    var fmtDate = function(d) {
-      if (!d) return ""; return d.toLocaleDateString("es-AR",{day:"2-digit",month:"2-digit",year:"numeric"});
-    };
-    var datesStr = desde && hasta && desde.toDateString() !== hasta.toDateString()
-      ? fmtDate(desde) + " al " + fmtDate(hasta)
-      : (desde ? fmtDate(desde) : "");
+
+    var desdeStr = fmtEventDate(ev.fechaDesde);
+    var hastaStr = fmtEventDate(ev.fechaHasta);
+    var datesStr = "";
+    if (desdeStr && hastaStr && desdeStr !== hastaStr) datesStr = desdeStr + " al " + hastaStr;
+    else if (desdeStr) datesStr = desdeStr;
+
+    var metaHtml = "";
+    if (ev.horarios)                 metaHtml += "<div class='event-meta-row'><span class='event-meta-icon'>🕐</span><span class='event-meta-text'>" + esc(ev.horarios) + "</span></div>";
+    if (ev.ciudad || ev.provincia)   metaHtml += "<div class='event-meta-row'><span class='event-meta-icon'>📍</span><span class='event-meta-text'>" + esc([ev.ciudad, ev.provincia].filter(Boolean).join(", ")) + "</span></div>";
 
     html += "<div class='event-card " + statusCls + "'>" +
       "<div class='event-card-body'>" +
@@ -3591,10 +3638,7 @@ function renderEvents() {
           "<span class='event-dates'>" + datesStr + "</span>" +
         "</div>" +
         "<div class='event-title'>" + esc(ev.titulo || "") + "</div>" +
-        "<div class='event-meta'>" +
-          (ev.horarios ? "<div class='event-meta-row'><span class='event-meta-icon'>🕐</span><span class='event-meta-text'>" + esc(ev.horarios) + "</span></div>" : "") +
-          ((ev.ciudad || ev.provincia) ? "<div class='event-meta-row'><span class='event-meta-icon'>📍</span><span class='event-meta-text'>" + esc([ev.ciudad, ev.provincia].filter(Boolean).join(", ")) + "</span></div>" : "") +
-        "</div>" +
+        (metaHtml ? "<div class='event-meta'>" + metaHtml + "</div>" : "") +
       "</div>" +
       "<div class='event-card-footer'>" +
         "<button class='btn-edit-event' data-id='" + esc(ev.id) + "' onclick='openEventModal(this.dataset.id)'>✏️ Editar</button>" +
@@ -3612,20 +3656,21 @@ function openEventModal(id) {
   document.getElementById("ev-btn-delete").style.display = id ? "block" : "none";
 
   if (id) {
-    var ev = events.find(function(e){ return e.id === id; });
+    var ev = events.find(function(e) { return String(e.id) === String(id); });
     if (ev) {
-      document.getElementById("ev-titulo").value    = ev.titulo   || "";
-      document.getElementById("ev-desde").value     = ev.fechaDesde || "";
-      document.getElementById("ev-hasta").value     = ev.fechaHasta || "";
+      document.getElementById("ev-titulo").value    = ev.titulo    || "";
+      document.getElementById("ev-desde").value     = toInputDate(ev.fechaDesde);
+      document.getElementById("ev-hasta").value     = toInputDate(ev.fechaHasta);
       document.getElementById("ev-horarios").value  = ev.horarios  || "";
       document.getElementById("ev-ciudad").value    = ev.ciudad    || "";
       document.getElementById("ev-provincia").value = ev.provincia || "";
     }
   } else {
     ["ev-titulo","ev-desde","ev-hasta","ev-horarios","ev-ciudad","ev-provincia"]
-      .forEach(function(id){ document.getElementById(id).value = ""; });
+      .forEach(function(fid) { document.getElementById(fid).value = ""; });
   }
 }
+
 function closeEventModal() {
   document.getElementById("event-modal-overlay").classList.remove("open");
 }
@@ -3639,7 +3684,6 @@ async function saveEvent() {
   if (!API_URL) { toast("Configurá la URL de la API primero", true); return; }
 
   var ev = {
-    id:         editingEventId || undefined,
     titulo:     titulo,
     fechaDesde: document.getElementById("ev-desde").value,
     fechaHasta: document.getElementById("ev-hasta").value,
@@ -3647,14 +3691,13 @@ async function saveEvent() {
     ciudad:     document.getElementById("ev-ciudad").value.trim(),
     provincia:  document.getElementById("ev-provincia").value.trim()
   };
+  if (editingEventId) ev.id = editingEventId;
 
   var action = editingEventId ? "updateEvent" : "createEvent";
-  var body   = editingEventId ? { action: action, event: ev } : { action: action, event: ev };
-
   try {
     var res  = await fetch(API_URL, {
       method: "POST",
-      body: JSON.stringify(body),
+      body: JSON.stringify({ action: action, event: ev }),
       headers: { "Content-Type": "text/plain;charset=utf-8" }
     });
     var data = await res.json();
@@ -3682,7 +3725,6 @@ async function deleteEventFromModal() {
     fetchEvents();
   } catch(e) { toast("Error: " + e.message, true); }
 }
-
 // ─────────────────────────────────────────────────────────
 //  PWA MANIFEST injection
 // ─────────────────────────────────────────────────────────
